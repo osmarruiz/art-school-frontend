@@ -16,6 +16,7 @@ import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import PublicLayout from './layout/PublicLayout';
+import NotFound from './pages/Error/NotFound';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -146,6 +147,19 @@ function App() {
           </PublicLayout>
         }
       />
+      <Route
+      path="*"
+      element={
+        <PublicLayout>
+          <>
+            <PageTitle title="P&aacute;gina no encontrada | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+            <NotFound />
+          </>
+        </PublicLayout>
+      }
+    />
+
+
       
     </Routes>
   );
