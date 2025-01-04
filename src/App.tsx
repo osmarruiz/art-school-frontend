@@ -4,7 +4,6 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
-import SignUp from './pages/Authentication/SignUp';
 import Calendar from './pages/Calendar';
 import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/ECommerce';
@@ -141,23 +140,13 @@ function App() {
         element={
           <PublicLayout>
             <>
-              <PageTitle title="Signin | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Iniciar sesi&oacute;n | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
               <SignIn />
             </>
           </PublicLayout>
         }
       />
-      <Route
-        path="/auth/signup"
-        element={
-          <PublicLayout>
-            <>
-              <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <SignUp />
-            </>
-          </PublicLayout>
-        }
-      />
+      
     </Routes>
   );
   
