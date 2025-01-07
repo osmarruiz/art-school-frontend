@@ -138,7 +138,7 @@ const ChartTwo: React.FC = () => {
             options={options}
             series={state.series}
             type="bar"
-            height={350}
+            height={280}
           />
         </div>
       </div>

@@ -67,7 +67,7 @@ const ChartThree: React.FC = () => {
       <div className="mb-3 justify-between gap-4 sm:flex">
         <div>
           <h5 className="text-xl font-semibold text-black dark:text-white">
-            Visitors Analytics
+            Disciplinas
           </h5>
         </div>
         <div>
@@ -78,10 +78,10 @@ const ChartThree: React.FC = () => {
               className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
             >
               <option value="" className="dark:bg-boxdark">
-                Monthly
+                Mensual
               </option>
               <option value="" className="dark:bg-boxdark">
-                Yearly
+                Anual
               </option>
             </select>
             <span className="absolute right-3 top-1/2 z-10 -translate-y-1/2">
