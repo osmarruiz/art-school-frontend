@@ -72,7 +72,9 @@ const Header = (props: {
             {/* <!-- Dark Mode Toggler --> */}
 
             {/* <!-- Notification Menu Area --> */}
+            <div className='hidden'>
             <DropdownNotification />
+            </div>
             {/* <!-- Notification Menu Area --> */}
 
           </ul>
