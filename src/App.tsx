@@ -17,6 +17,7 @@ import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import PublicLayout from './layout/PublicLayout';
 import NotFound from './pages/Error/NotFound';
+import Forbidden from './pages/Error/Forbidden';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,7 +45,7 @@ function App() {
                 index
                 element={
                   <>
-                    <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+                    <PageTitle title="Inicio | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
                     <ECommerce />
                   </>
                 }
@@ -154,6 +155,17 @@ function App() {
           <>
             <PageTitle title="P&aacute;gina no encontrada | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
             <NotFound />
+          </>
+        </PublicLayout>
+      }
+    />
+    <Route
+      path="/403"
+      element={
+        <PublicLayout>
+          <>
+            <PageTitle title="Acceso prohibido | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+            <Forbidden />
           </>
         </PublicLayout>
       }
