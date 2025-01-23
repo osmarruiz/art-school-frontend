@@ -45,7 +45,7 @@ function App() {
                 index
                 element={
                   <>
-                    <PageTitle title="Inicio | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+                    <PageTitle title="Dashboard | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
                     <ECommerce />
                   </>
                 }
