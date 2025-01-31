@@ -6,7 +6,8 @@ import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import Calendar from './pages/Calendar';
 import Chart from './pages/Chart';
-import ECommerce from './pages/Dashboard/ECommerce';
+import Admin from './pages/Dashboard/Admin';
+import Operator from './pages/Dashboard/Operator';
 import FormElements from './pages/Form/FormElements';
 import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
@@ -14,6 +15,7 @@ import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
+import OperatorLayout from './layout/OperatorLayout';
 import DefaultLayout from './layout/DefaultLayout';
 import PublicLayout from './layout/PublicLayout';
 import NotFound from './pages/Error/NotFound';
@@ -40,102 +42,25 @@ function App() {
         path="/"
         element={
           <DefaultLayout>
-            <Routes>
-              <Route
-                index
-                element={
-                  <>
-                    <PageTitle title="Dashboard | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-                    <ECommerce />
-                  </>
-                }
-              />
-              <Route
-                path="/calendar"
-                element={
-                  <>
-                    <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                    <Calendar />
-                  </>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <>
-                    <PageTitle title="Profile | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                    <Profile />
-                  </>
-                }
-              />
-              <Route
-                path="/forms/form-elements"
-                element={
-                  <>
-                    <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                    <FormElements />
-                  </>
-                }
-              />
-              <Route
-                path="/forms/form-layout"
-                element={
-                  <>
-                    <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                    <FormLayout />
-                  </>
-                }
-              />
-              <Route
-                path="/tables"
-                element={
-                  <>
-                    <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                    <Tables />
-                  </>
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <>
-                    <PageTitle title="Settings | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                    <Settings />
-                  </>
-                }
-              />
-              <Route
-                path="/chart"
-                element={
-                  <>
-                    <PageTitle title="Basic Chart | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                    <Chart />
-                  </>
-                }
-              />
-              <Route
-                path="/ui/alerts"
-                element={
-                  <>
-                    <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                    <Alerts />
-                  </>
-                }
-              />
-              <Route
-                path="/ui/buttons"
-                element={
-                  <>
-                    <PageTitle title="Buttons | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-                    <Buttons />
-                  </>
-                }
-              />
-            </Routes>
+            <>
+              <PageTitle title="Dashboard | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <Admin />
+            </>
           </DefaultLayout>
         }
       />
-  
+      {/* Rutas con OperatorLayout */}
+      <Route
+        path="/operator"
+        element={
+          <OperatorLayout>
+            <>
+              <PageTitle title="Dashboard | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <Operator />
+            </>
+          </OperatorLayout>
+        }
+      />
       {/* Rutas con PublicLayout */}
       <Route
         path="/auth/signin"
@@ -149,33 +74,70 @@ function App() {
         }
       />
       <Route
-      path="*"
-      element={
-        <PublicLayout>
-          <>
-            <PageTitle title="P&aacute;gina no encontrada | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-            <NotFound />
-          </>
-        </PublicLayout>
-      }
-    />
-    <Route
-      path="/403"
-      element={
-        <PublicLayout>
-          <>
-            <PageTitle title="Acceso prohibido | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-            <Forbidden />
-          </>
-        </PublicLayout>
-      }
-    />
+        path="*"
+        element={
+          <PublicLayout>
+            <>
+              <PageTitle title="P&aacute;gina no encontrada | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <NotFound />
+            </>
+          </PublicLayout>
+        }
+      />
+      <Route
+        path="/403"
+        element={
+          <PublicLayout>
+            <>
+              <PageTitle title="Acceso prohibido | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <Forbidden />
+            </>
+          </PublicLayout>
+        }
+      />
 
 
-      
+
+
+
+      {/* Componentes */}
+      <Route
+        path="/tables"
+        element={
+          <>
+            <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            <Tables />
+          </>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <>
+            <PageTitle title="Settings | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            <Settings />
+          </>
+        }
+      />
+      <Route
+        path="/ui/alerts"
+        element={
+          <>
+            <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            <Alerts />
+          </>
+        }
+      />
+      <Route
+        path="/ui/buttons"
+        element={
+          <>
+            <PageTitle title="Buttons | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            <Buttons />
+          </>
+        }
+      />
     </Routes>
   );
-  
 }
-
 export default App;
