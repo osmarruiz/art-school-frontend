@@ -71,11 +71,11 @@ const ChartThree: React.FC = () => {
           </h5>
         </div>
         <div>
-          <div className="relative z-20 inline-block">
+          <div className="relative z-20  hidden">
             <select
               name=""
               id=""
-              className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
+              className="relative z-20  appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none "
             >
               <option value="" className="dark:bg-boxdark">
                 Mensual
@@ -147,8 +147,7 @@ const ChartThree: React.FC = () => {
           </div>
         </div>
         <div className="sm:w-1/2 w-full px-8">
-          <div className="flex w-full items-center">
-          </div>
+          <div className="flex w-full items-center"></div>
         </div>
       </div>
     </div>

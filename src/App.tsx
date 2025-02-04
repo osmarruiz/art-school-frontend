@@ -4,15 +4,8 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
-import Calendar from './pages/Calendar';
-import Chart from './pages/Chart';
 import Admin from './pages/Dashboard/Admin';
 import Operator from './pages/Dashboard/Operator';
-import FormElements from './pages/Form/FormElements';
-import FormLayout from './pages/Form/FormLayout';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
-import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import OperatorLayout from './layout/OperatorLayout';
@@ -20,6 +13,7 @@ import DefaultLayout from './layout/DefaultLayout';
 import PublicLayout from './layout/PublicLayout';
 import NotFound from './pages/Error/NotFound';
 import Forbidden from './pages/Error/Forbidden';
+import Payment from './pages/Operator/Payment';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -57,6 +51,17 @@ function App() {
             <>
               <PageTitle title="Dashboard | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
               <Operator />
+            </>
+          </OperatorLayout>
+        }
+      />
+      <Route
+        path="/operator/payment"
+        element={
+          <OperatorLayout>
+            <>
+              <PageTitle title="Registrar Pago | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <Payment />
             </>
           </OperatorLayout>
         }
@@ -101,24 +106,6 @@ function App() {
 
 
       {/* Componentes */}
-      <Route
-        path="/tables"
-        element={
-          <>
-            <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-            <Tables />
-          </>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <>
-            <PageTitle title="Settings | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-            <Settings />
-          </>
-        }
-      />
       <Route
         path="/ui/alerts"
         element={
