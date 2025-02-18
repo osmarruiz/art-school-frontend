@@ -2,42 +2,50 @@ import { useEffect, useState } from 'react';
 
 type SetValue<T> = T | ((val: T) => T);
 
-function useLocalStorage<T>(
-  key: string,
-  initialValue: T
-): [T, (value: SetValue<T>) => void] {
-  // State to store our value
-  // Pass  initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState(() => {
+function useLocalStorage<T>(key: string, initialValue: T): [T, (value: SetValue<T>) => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
     try {
-      // Get from local storage by key
       const item = window.localStorage.getItem(key);
-      // Parse stored json or if none return initialValue
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      // If error also return initialValue
       console.log(error);
       return initialValue;
     }
   });
 
-  // useEffect to update local storage when the state changes
-  useEffect(() => {
+  const setValue = (value: SetValue<T>) => {
     try {
-      // Allow value to be a function so we have same API as useState
-      const valueToStore =
-        typeof storedValue === 'function'
-          ? storedValue(storedValue)
-          : storedValue;
-      // Save state
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      const newValue = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(newValue);
+      window.localStorage.setItem(key, JSON.stringify(newValue));
+
+      // 🔥 Disparar manualmente el evento 'storage' para que otros listeners lo detecten en la misma pestaña
+      window.dispatchEvent(new StorageEvent('storage', { key, newValue: JSON.stringify(newValue) }));
     } catch (error) {
-      // A more advanced implementation would handle the error case
       console.log(error);
     }
-  }, [key, storedValue]);
+  };
 
-  return [storedValue, setStoredValue];
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === key) {
+        try {
+          const item = e.newValue ? JSON.parse(e.newValue) : initialValue;
+          setStoredValue(item);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [key, initialValue]);
+
+  return [storedValue, setValue];
 }
 
 export default useLocalStorage;
+
