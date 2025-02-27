@@ -1,43 +1,59 @@
 import React, { useState } from 'react';
+import { course } from '../../../types/course';
+import { shift } from '../../../types/shift';
 
-const SelectGroupOne: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<string>('');
-  const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
+interface SelectProps {
+  title: string;
+  placeholder: string;
+  course?: course[]; 
+  shift?: shift[];
+  onChange?: (value: number) => void;
+  
+}
 
-  const changeTextColor = () => {
-    setIsOptionSelected(true);
+const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shift, onChange }) => {
+  const [selectedOption, setSelectedOption] = useState<string | number>('');
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = Number(event.target.value);
+    setSelectedOption(value);
+    if (onChange) {
+      onChange(value); // Llamar a `handleCourseChange`
+    }
   };
 
   return (
     <div className="mb-4.5">
       <label className="mb-2.5 block text-black dark:text-white">
-        {' '}
-        Subject{' '}
+        {title}
       </label>
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
           value={selectedOption}
-          onChange={(e) => {
-            setSelectedOption(e.target.value);
-            changeTextColor();
-          }}
-          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
-            isOptionSelected ? 'text-black dark:text-white' : ''
+          required
+          onChange={handleSelectChange}
+          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-white py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
+            selectedOption ? 'text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'
           }`}
         >
-          <option value="" disabled className="text-body dark:text-bodydark">
-            Select your subject
+          <option value="" disabled>
+            {placeholder}
           </option>
-          <option value="USA" className="text-body dark:text-bodydark">
-            USA
-          </option>
-          <option value="UK" className="text-body dark:text-bodydark">
-            UK
-          </option>
-          <option value="Canada" className="text-body dark:text-bodydark">
-            Canada
-          </option>
+          {Array.isArray(course) &&
+            course.map((item) => (
+              <option key={item.id} value={item.id} className="text-black dark:text-white">
+                {item.name}
+              </option>
+            ) )
+            }
+            {Array.isArray(shift) &&
+            shift.map((item) => (
+              <option key={item.id} value={item.id} className="text-black dark:text-white">
+                {item.name}
+              </option>
+            ) )
+            }
         </select>
 
         <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">

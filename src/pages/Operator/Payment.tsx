@@ -6,33 +6,41 @@ import CardTransaction from '../../components/Cards/CardTransaction';
 import StudentSearch from '../../components/Search/StudentSearch';
 import { Student } from '../../types/student';
 import { Transaction } from '../../types/transaction';
+import { colorVariants } from '../../types/colorVariants';
+import clsx from 'clsx';
 
 const StudentCard = ({
   student,
   onReset,
+  color,
 }: {
   student: Student;
   onReset: () => void;
+  color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }) => (
   <motion.div
     animate={{ scale: [0.9, 1] }}
     transition={{ duration: 0.1 }}
-    className="p-4 border rounded-lg shadow-md bg-white dark:bg-boxdark dark:border-boxdark"
+    className={clsx("p-4 rounded-lg ", colorVariants[color].bg)}
   >
     <div className="flex justify-between">
-      <div className="text-gray-800 dark:text-gray-200">
+      <div className={clsx(colorVariants[color].text)}>
         <h3 className="text-lg font-bold">{student.name}</h3>
         <p>ID: {student.id_card}</p>
         <p>Disciplina: {student.course}</p>
       </div>
-      <button onClick={onReset} className="text-red-500 hover:text-red-700">
+      <button onClick={onReset} className= {clsx( colorVariants[color].btnSc)}>
         <FaArrowLeft size={24} />
       </button>
     </div>
   </motion.div>
 );
 
-const Payment = () => {
+const Payment = ({
+  color,
+}: {
+  color: 'violet' | 'white' | 'red' | 'orange' | 'green';
+})  => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -63,33 +71,35 @@ const Payment = () => {
     >
       <FaWallet size={20} className="text-white" />
       <div>
-        <p className="text-3xl font-bold mb-2">Estudiante</p>
+        <p className={ clsx("text-3xl font-bold mb-2", colorVariants[color].text)}>Estudiante</p>
         {!selectedStudent ? (
-          <StudentSearch onSelect={setSelectedStudent} />
+          <StudentSearch onSelect={setSelectedStudent} color="red"/>
         ) : (
           <StudentCard
             student={selectedStudent}
             onReset={() => setSelectedStudent(null)}
+            color="red"
           />
         )}
       </div>
 
       <div>
-        <p className="text-3xl font-bold">Transacciones</p>
+        <p className={ clsx("text-3xl font-bold mb-2", colorVariants[color].text)}>Transacciones</p>
         {selectedStudent ? (
           selectedStudent && (
             <CardTransaction
               transactions={transactions}
               reloadTransactions={fetchTransactions}
+              color="red"
             />
           )
         ) : (
-          <p className="text-lg py-5">
+          <p className={ clsx("text-l py-5 font-medium ", colorVariants[color].text)}>
             Seleccione un estudiante para ver sus transacciones
           </p>
         )}
       </div>
-      <button className="inline-flex items-center justify-center py-4 px-10 text-white bg-red-600 hover:bg-red-700">
+      <button className={clsx("inline-flex items-center justify-center py-4 px-10", colorVariants[color].btn)}>
         Comenzar Transacción
       </button>
     </CardOperator>

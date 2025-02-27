@@ -14,6 +14,10 @@ import PublicLayout from './layout/PublicLayout';
 import NotFound from './pages/Error/NotFound';
 import Forbidden from './pages/Error/Forbidden';
 import Payment from './pages/Operator/Payment';
+import Enrollment from './pages/Operator/Enrollment';
+import FormLayout from './pages/FormLayout';
+import FormElements from './components/Forms/FormElements';
+
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -24,7 +28,7 @@ function App() {
   }, [pathname]);
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
+    setTimeout(() => setLoading(false), 600);
   }, []);
 
   return loading ? (
@@ -56,12 +60,23 @@ function App() {
         }
       />
       <Route
-        path="/operator/payment"
+        path="/payment"
         element={
           <OperatorLayout>
             <>
               <PageTitle title="Registrar Pago | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-              <Payment />
+              <Payment color='red'/>
+            </>
+          </OperatorLayout>
+        }
+      />
+      <Route
+        path="/enrollment"
+        element={
+          <OperatorLayout>
+            <>
+              <PageTitle title="Matricular Estudiante | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <Enrollment color='violet'/>
             </>
           </OperatorLayout>
         }
@@ -112,6 +127,24 @@ function App() {
           <>
             <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
             <Alerts />
+          </>
+        }
+      />
+      <Route
+        path="/ui/form"
+        element={
+          <>
+            <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            <FormLayout />
+          </>
+        }
+      />
+      <Route
+        path="/ui/form/elements"
+        element={
+          <>
+            <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            <FormElements />
           </>
         }
       />

@@ -19,8 +19,11 @@ export const revokeReceiptButton = async (
       text: 'No podrá revertir esta acción',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      customClass: {
+        popup: "bg-white text-black dark:bg-boxdark-2 dark:text-white",
+        confirmButton: "bg-blue-500 text-white dark:bg-boxdark dark:text-white",
+        cancelButton: "bg-gray-300 text-black dark:bg-gray-700 dark:text-white"
+      },
       confirmButtonText: 'Si, revocar',
       cancelButtonText: 'No, cancelar',
     });
@@ -52,8 +55,11 @@ export const revokeTransactionButton = async (
       text: 'No podrá revertir esta acción',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      customClass: {
+        popup: "bg-white text-black dark:bg-boxdark-2 dark:text-white",
+        confirmButton: "bg-blue-500 text-white dark:bg-boxdark dark:text-white",
+        cancelButton: "bg-gray-300 text-black dark:bg-gray-700 dark:text-white"
+      },
       confirmButtonText: 'Si, revocar',
       cancelButtonText: 'No, cancelar',
     });
@@ -81,15 +87,18 @@ export const addReceiptButton = async (
     await Swal.fire({
       title: 'Agregar Recibo',
       html: `
-          <input id="swal-no" class="swal2-input" type="number" min="0" placeholder="Numero de recibo">
-          <input id="swal-amount" class="swal2-input" type="number" min="0" placeholder="Monto del recibo">
-          <input id="swal-payer" class="swal2-input" type="text" placeholder="Pagado por">
-          <input id="swal-remarks" class="swal2-input" type="text" placeholder="Concepto">
-        `,
+    <input id="swal-no" class="swal2-input bg-white text-black dark:bg-boxdark-2 dark:text-white" type="number" min="0" placeholder="Número de recibo">
+    <input id="swal-amount" class="swal2-input bg-white text-black dark:bg-boxdark-2 dark:text-white" type="number" min="0" placeholder="Monto del recibo">
+    <input id="swal-payer" class="swal2-input bg-white text-black dark:bg-boxdark-2 dark:text-white" type="text" placeholder="Pagado por">
+    <input id="swal-remarks" class="swal2-input bg-white text-black dark:bg-boxdark-2 dark:text-white" type="text" placeholder="Concepto">
+  `,
       focusConfirm: false,
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      customClass: {
+        popup: "bg-white text-black dark:bg-boxdark-2 dark:text-white",
+        confirmButton: "bg-blue-500 text-white dark:bg-boxdark dark:text-white",
+        cancelButton: "bg-gray-300 text-black dark:bg-gray-700 dark:text-white"
+      },
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
       didOpen: () => {

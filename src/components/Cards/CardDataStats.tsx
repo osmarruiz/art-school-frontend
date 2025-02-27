@@ -1,4 +1,6 @@
 import React, { ReactNode } from 'react';
+import { colorVariants } from '../../types/colorVariants';
+import clsx from 'clsx';
 
 interface CardDataStatsProps {
   title: string;
@@ -17,33 +19,9 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   levelUp = null,
   levelDown = null,
   children,
-  color = 'white', // Color por defecto 'violet'
+  color = 'white', 
 }) => {
-  // Define colores en función del prop `color`
-  const bgColorClasses = {
-    violet: 'bg-violet-100 dark:bg-violet-900',
-    white: 'bg-white dark:bg-boxdark',
-    red: 'bg-red-100 dark:bg-red-900',
-    orange: 'bg-orange-100 dark:bg-orange-900',
-    green: 'bg-green-100 dark:bg-green-900',
-  };
-
-  const iconBgClasses = {
-    violet: 'bg-violet-900 dark:bg-violet-700',
-    white: 'bg-meta-2 dark:bg-meta-4',
-    red: 'bg-red-500 dark:bg-red-700',
-    orange: 'bg-orange-500 dark:bg-orange-700',
-    green: 'bg-green-500 dark:bg-green-700',
-  };
-
-  const textColorClasses = {
-    violet: 'text-black dark:text-white',
-    white: 'text-black dark:text-white',
-    red: 'text-black dark:text-white',
-    orange: 'text-black dark:text-white',
-    green: 'text-black dark:text-white',
-  };
-
+  
   const rateColorClasses = {
     violet: 'text-meta-3',
     white: 'text-meta-3',
@@ -53,17 +31,17 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   };
 
   return (
-    <div className={`rounded-sm border border-stroke bg- dark:border-strokedark py-6 px-7.5 shadow-default ${bgColorClasses[color]}`}>
-      <div className={`flex h-11.5 w-11.5 items-center justify-center rounded-full ${iconBgClasses[color]}`}>
+    <div className={clsx("rounded-sm border border-stroke bg- dark:border-strokedark py-6 px-7.5 shadow-default", colorVariants[color].bg)}>
+      <div className={clsx("flex h-11.5 w-11.5 items-center justify-center rounded-full", colorVariants[color].icon )}>
         {children}
       </div>
 
       <div className="mt-4 pt-4 flex items-end justify-between">
         <div>
-          <h4 className={`text-title-md font-bold ${textColorClasses[color]}`}>
+          <h4 className={"text-title-md font-bold text-black dark:text-white"}>
             {total}
           </h4>
-          <span className={`text-s font-medium ${textColorClasses[color]}`}>{title}</span>
+          <span className={"text-s font-medium text-black dark:text-white"}>{title}</span>
         </div>
 
         <span

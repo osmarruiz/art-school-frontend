@@ -6,7 +6,7 @@ import { FaArrowLeft } from 'react-icons/fa6';
 interface CardDataStatsProps {
   title: string;
   subtitle: string;
-  children: ReactNode[];
+  children: ReactNode;
   color?: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }
 
@@ -16,6 +16,7 @@ const CardOperator: React.FC<CardDataStatsProps> = ({
   children,
   color = 'white',
 }) => {
+  const childrenArray = React.Children.toArray(children);
   return (
     <div
       className={clsx(
@@ -31,13 +32,13 @@ const CardOperator: React.FC<CardDataStatsProps> = ({
             colorVariants[color].icon,
           )}
         >
-          {children[0]}
+          {childrenArray[0]}
         </div>
         <div className="pl-7">
-          <p className={'text-s font-medium text-black dark:text-white'}>
+          <p className={ clsx("text-s font-medium ", colorVariants[color].text)}>
             {title}
           </p>
-          <p className={'text-sm font-light text-black dark:text-white'}>
+          <p className={ clsx("text-sm font-light ", colorVariants[color].text)}>
             {subtitle}
           </p>
         </div>
@@ -46,10 +47,10 @@ const CardOperator: React.FC<CardDataStatsProps> = ({
             <div
               className={clsx(
                 'flex h-8.5 w-8.5 items-center justify-center rounded-full',
-                colorVariants[color].icon,
+                colorVariants[color].btn,
               )}
             >
-              <FaArrowLeft size={20} className="text-white" />
+              <FaArrowLeft size={20}  />
             </div>
           </a>
         </div>
@@ -57,20 +58,20 @@ const CardOperator: React.FC<CardDataStatsProps> = ({
 
       {/* Contenido */}
       <div
-        className={clsx('mt-4 p-4 block text-white', colorVariants[color].icon)}
+        className={clsx('mt-4 p-4 block', colorVariants[color].bgSub)}
       >
-        {children[1]}
+        {childrenArray[1]}
       </div>
 
       <div
-        className={clsx('mt-4 p-4 block text-white', colorVariants[color].icon)}
+        className={clsx('mt-4 p-4 block', colorVariants[color].bgSub)}
       >
-        {children[2]}
+        {childrenArray[2]}
       </div>
 
       {/* Botón */}
       <div className="mt-4 flex justify-end gap-3 align-middle">
-        {children[3]}
+        {childrenArray[3]}
       </div>
     </div>
   );

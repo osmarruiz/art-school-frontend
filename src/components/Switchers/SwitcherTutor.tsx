@@ -1,22 +1,18 @@
-import { useState } from 'react';
 
-const SwitcherOne = () => {
-  const [enabled, setEnabled] = useState<boolean>(false);
+const SwitcherTutor = ({ enabled, onToggle }: { enabled: boolean; onToggle: (value: boolean) => void }) => {
 
   return (
     <div>
       <label
-        htmlFor="toggle1"
+        htmlFor="toggle2"
         className="flex cursor-pointer select-none items-center"
       >
         <div className="relative">
           <input
             type="checkbox"
-            id="toggle1"
+            id="toggle2"
             className="sr-only"
-            onChange={() => {
-              setEnabled(!enabled);
-            }}
+            onChange={(e) => onToggle(e.target.checked) }
           />
           <div className="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
           <div
@@ -30,4 +26,4 @@ const SwitcherOne = () => {
   );
 };
 
-export default SwitcherOne;
+export default SwitcherTutor;

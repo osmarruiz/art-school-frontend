@@ -28,6 +28,8 @@ import {
   revokeTransactionButton,
   addReceiptButton,
 } from '../../utils/actionButton';
+import { colorVariants } from '../../types/colorVariants';
+import clsx from 'clsx';
 
 moment.locale('es');
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -37,11 +39,13 @@ const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 interface TransactionListProps {
   transactions: Transaction[];
   reloadTransactions: () => void;
+  color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }
 
 const CardTransaction: React.FC<TransactionListProps> = ({
   transactions,
   reloadTransactions,
+  color,
 }) => {
   const { showSuccess, showError } = useToast();
   const gridRef = useRef<AgGridReact<any> | null>(null);
@@ -56,7 +60,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     onClick?: () => void;
     children: React.ReactNode;
   }> = ({ onClick, children }) => (
-    <button className="text-red-500 hover:text-red-700" onClick={onClick}>
+    <button className={clsx(colorVariants[color].btnSc)} onClick={onClick}>
       {children}
     </button>
   );
@@ -105,7 +109,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
         field: 'action',
         cellRenderer: (params: any) => (
           <button
-            className="text-red hover:text-red-700"
+            className={clsx(colorVariants[color].btnSc)}
             onClick={() =>
               revokeReceiptButton(
                 params.data.id,
@@ -142,10 +146,10 @@ const CardTransaction: React.FC<TransactionListProps> = ({
           key={type}
           animate={{ scale: [0.9, 1] }}
           transition={{ duration: 0.3 }}
-          className="bg-white dark:bg-boxdark p-4 my-2 rounded-lg w-full"
+          className={clsx("p-4 my-2 rounded-lg w-full",colorVariants[color].bg)}
         >
           {/* Encabezado de tipo de transacción */}
-          <h3 className="text-black dark:text-white text-lg font-semibold">
+          <h3 className={clsx(" text-lg font-semibold", colorVariants[color].text)}>
             {type}
           </h3>
 
@@ -162,7 +166,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
               <div key={transaction.id} className=" py-2">
                 {/* Información de la transacción */}
                 <div className="flex justify-between items-center">
-                  <div className="text-black dark:text-white">
+                  <div className={clsx("text-black dark:text-white", colorVariants[color].text)}>
                     <p>{moment(transaction.started_at).format('LL')}</p>
                     <p className="font-bold block xl:inline-flex">
                       Total: {formatCurrency(transaction.total)}

@@ -11,8 +11,6 @@ import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
 import { motion } from 'framer-motion';
 import { FaSearch } from 'react-icons/fa';
-import { colorVariants } from '../../types/colorVariants';
-import clsx from 'clsx';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -20,10 +18,9 @@ const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
 interface StudentSearchProps {
   onSelect: (student: Student) => void;
-  color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }
 
-const StudentSearch: React.FC<StudentSearchProps> = ({ onSelect, color}) => {
+const TutorSearch: React.FC<StudentSearchProps> = ({ onSelect }) => {
   const [studentData, setStudentData] = useState<Student[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -88,14 +85,14 @@ const StudentSearch: React.FC<StudentSearchProps> = ({ onSelect, color}) => {
     >
       <div className="relative mb-4">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-          <FaSearch size={16} className={clsx(colorVariants[color].text)} />
+          <FaSearch size={16} className="text-boxdark" />
         </span>
         <input
           type="text"
-          placeholder="Buscar estudiante"
+          placeholder="Buscar tutor"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className={clsx("w-full h-12 bg-white pl-9 pr-4 text-black focus:outline-none rounded-lg shadow-default",colorVariants[color].inp)}
+          className="w-full h-12 bg-white border border-stroke pl-9 pr-4 text-black focus:outline-none rounded-lg shadow-default"
         />
       </div>
       <div className=" " style={{ height: 250, width: '100%' }}>
@@ -114,4 +111,4 @@ const StudentSearch: React.FC<StudentSearchProps> = ({ onSelect, color}) => {
   );
 };
 
-export default StudentSearch;
+export default TutorSearch;
