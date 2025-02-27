@@ -31,7 +31,7 @@ export const colorVariants = {
     bg: 'bg-[#FFFAF1] dark:bg-boxdark',
     bgSub: 'bg-[#FAEFDF] dark:bg-boxdark-2',
     icon: 'bg-[#FF947A] dark:bg-boxdark-2',
-    btnSc: '',
+    btnSc: 'text-[#FF947A] hover:text-[#FF5733] dark:text-white dark:hover:text-graydark',
     text: 'text-[#05004E] dark:text-white dark:hover:text-graydark',
     btn: 'bg-[#FF947A] hover:bg-[#F2785E] text-white dark:bg-boxdark-2 dark:hover:bg-graydark',
     inp: '',

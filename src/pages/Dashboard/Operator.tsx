@@ -46,13 +46,13 @@ const Operator: React.FC = () => {
                 <FaWallet size={18} className='fill-white' />
               </CardDataStats>
             </motion.a>
-            <motion.a href='/operator/payment' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
+            <motion.a href='/renew' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
               <CardDataStats title="Renovar Matricula" color="orange">
                 <FaRepeat size={18} className='fill-white'/>
               </CardDataStats>
             </motion.a>
-            <motion.a href='/operator/payment' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
-              <CardDataStats title="Vizualizar Estudiantes" color="green">
+            <motion.a href='#' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
+              <CardDataStats title="Vizualizar Estudiantes" color="green" >
                 <FaEye size={18} className='fill-white' />
               </CardDataStats>
             </motion.a>

@@ -17,6 +17,7 @@ import Payment from './pages/Operator/Payment';
 import Enrollment from './pages/Operator/Enrollment';
 import FormLayout from './pages/FormLayout';
 import FormElements from './components/Forms/FormElements';
+import Renew from './pages/Operator/Renew';
 
 
 function App() {
@@ -77,6 +78,17 @@ function App() {
             <>
               <PageTitle title="Matricular Estudiante | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
               <Enrollment color='violet'/>
+            </>
+          </OperatorLayout>
+        }
+      />
+      <Route
+        path="/renew"
+        element={
+          <OperatorLayout>
+            <>
+              <PageTitle title="Renovar Matr&iacute;cula | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <Renew color='orange'/>
             </>
           </OperatorLayout>
         }
