@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import SwitcherSchool from '../Switchers/SwitcherSchool';
-import SwitcherTutor from '../Switchers/SwitcherTutor';
+import Switcher from './Switcher/Switcher';
 import DatePickerOne from './DatePicker/DatePickerOne';
 
 const FormStudent = ({ onToggle }: { onToggle: (value: boolean) => void }) => {
@@ -158,13 +157,13 @@ const FormStudent = ({ onToggle }: { onToggle: (value: boolean) => void }) => {
         <label className="mb-2.5 block text-black dark:text-white ">
             Asignar o registrar tutor 
           </label>
-          <SwitcherTutor enabled={enabled} onToggle={handleToggle}/>
+          <Switcher enabled={enabled} onToggle={handleToggle} labelId='toggleTutor'/>
           </div>
           <div>
         <label className="mb-2.5 block text-black dark:text-white ">
             Registrar datos de escuela 
           </label>
-          <SwitcherSchool enabled={switcherSchoolEnabled} onToggle={setSwitcherSchoolEnabled}/>
+          <Switcher enabled={switcherSchoolEnabled} onToggle={setSwitcherSchoolEnabled} labelId='toggleSchool'/>
           </div>
         </div>
         

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import {  FaRepeat } from 'react-icons/fa6';
 import CardOperator from '../../components/Cards/CardOperator';
 import CardTransaction from '../../components/Cards/CardTransaction';
-import StudentSearch from '../../components/Search/StudentSearch';
+import StudentSearch from '../../components/Tables/TableStudent';
 import { Student } from '../../types/student';
 import { Transaction } from '../../types/transaction';
 import { colorVariants } from '../../types/colorVariants';

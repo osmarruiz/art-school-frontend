@@ -1,11 +1,9 @@
 import React from 'react';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import background from '../../images/background/background1.jpg';
 
 const SignIn: React.FC = () => {
   return (
     <>
-      <Breadcrumb pageName="Iniciar Sesi&oacute;n" />
 
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">

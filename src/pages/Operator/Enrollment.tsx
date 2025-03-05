@@ -6,7 +6,7 @@ import { Transaction } from '../../types/transaction';
 import FormStudent from '../../components/Forms/FormStudent';
 import FormCourse from '../../components/Forms/FormCourse';
 import FormTutor from '../../components/Forms/FormTutor';
-import TutorSearch from '../../components/Search/TutorSearch';
+import TableTutor from '../../components/Tables/TableTutor';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import clsx from 'clsx';
 import { colorVariants } from '../../types/colorVariants';
@@ -18,7 +18,7 @@ const Enrollment = ({
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }) => {
   const [selectedTutor, setSelectedTutor] = useState<Student | null>(null);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [_, setTransactions] = useState<Transaction[]>([]);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
   const [selectedOption, setSelectedOption] = useState<
     null | 'search' | 'form'
@@ -144,7 +144,7 @@ const Enrollment = ({
                       colorVariants[color].inp,
                     )}
                   >
-                    <TutorSearch onSelect={setSelectedTutor} />
+                    <TableTutor onSelect={setSelectedTutor} />
                     <SelectGroupOne
                       title="Parentezco"
                       placeholder="Selecciona un parentezco"

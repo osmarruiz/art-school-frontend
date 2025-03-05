@@ -6,8 +6,6 @@ import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import Admin from './pages/Dashboard/Admin';
 import Operator from './pages/Dashboard/Operator';
-import Alerts from './pages/UiElements/Alerts';
-import Buttons from './pages/UiElements/Buttons';
 import OperatorLayout from './layout/OperatorLayout';
 import DefaultLayout from './layout/DefaultLayout';
 import PublicLayout from './layout/PublicLayout';
@@ -15,9 +13,8 @@ import NotFound from './pages/Error/NotFound';
 import Forbidden from './pages/Error/Forbidden';
 import Payment from './pages/Operator/Payment';
 import Enrollment from './pages/Operator/Enrollment';
-import FormLayout from './pages/FormLayout';
-import FormElements from './components/Forms/FormElements';
 import Renew from './pages/Operator/Renew';
+import Student from './pages/Admin/Student';
 
 
 function App() {
@@ -44,6 +41,17 @@ function App() {
             <>
               <PageTitle title="Dashboard | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
               <Admin />
+            </>
+          </DefaultLayout>
+        }
+      />
+      <Route
+        path="/student"
+        element={
+          <DefaultLayout>
+            <>
+              <PageTitle title="Estudiantes | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <Student />
             </>
           </DefaultLayout>
         }
@@ -128,47 +136,6 @@ function App() {
         }
       />
 
-
-
-
-
-      {/* Componentes */}
-      <Route
-        path="/ui/alerts"
-        element={
-          <>
-            <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-            <Alerts />
-          </>
-        }
-      />
-      <Route
-        path="/ui/form"
-        element={
-          <>
-            <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-            <FormLayout />
-          </>
-        }
-      />
-      <Route
-        path="/ui/form/elements"
-        element={
-          <>
-            <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-            <FormElements />
-          </>
-        }
-      />
-      <Route
-        path="/ui/buttons"
-        element={
-          <>
-            <PageTitle title="Buttons | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-            <Buttons />
-          </>
-        }
-      />
     </Routes>
   );
 }

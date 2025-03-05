@@ -1,16 +1,17 @@
+import { label } from "framer-motion/client";
 
-const SwitcherTutor = ({ enabled, onToggle }: { enabled: boolean; onToggle: (value: boolean) => void }) => {
+const SwitcherTutor = ({ enabled, onToggle, labelId }: { enabled: boolean; onToggle: (value: boolean) => void; labelId: string}) => {
 
   return (
     <div>
       <label
-        htmlFor="toggle2"
+        htmlFor={labelId}
         className="flex cursor-pointer select-none items-center"
       >
         <div className="relative">
           <input
             type="checkbox"
-            id="toggle2"
+            id={labelId}
             className="sr-only"
             onChange={(e) => onToggle(e.target.checked) }
           />
