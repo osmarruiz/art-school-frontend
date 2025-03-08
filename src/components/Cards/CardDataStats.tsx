@@ -8,7 +8,7 @@ interface CardDataStatsProps {
   rate?: string;
   levelUp?: boolean;
   levelDown?: boolean;
-  children: ReactNode;
+  children?: ReactNode;
   color?: 'violet' | 'white' | 'red' | 'orange' | 'green'; // Prop para el color
 }
 
@@ -31,7 +31,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   };
 
   return (
-    <div className={clsx("rounded-sm border border-stroke bg- dark:border-strokedark py-6 px-7.5 shadow-default", colorVariants[color].bg)}>
+    <div className={clsx("rounded-sm border border-stroke bg- dark:border-strokedark py-6 px-7.5 shadow-default ", colorVariants[color].bg)}>
       <div className={clsx("flex h-11.5 w-11.5 items-center justify-center rounded-full", colorVariants[color].icon )}>
         {children}
       </div>

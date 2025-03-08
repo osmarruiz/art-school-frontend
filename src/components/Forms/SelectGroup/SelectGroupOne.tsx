@@ -3,7 +3,7 @@ import { course } from '../../../types/course';
 import { shift } from '../../../types/shift';
 
 interface SelectProps {
-  title: string;
+  title?: string;
   placeholder: string;
   course?: course[]; 
   shift?: shift[];
@@ -23,17 +23,17 @@ const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shi
   };
 
   return (
-    <div className="mb-4.5">
-      <label className="mb-2.5 block text-black dark:text-white">
+    <div className="">
+      {title &&( <label className="mb-2.5 block text-black dark:text-white">
         {title}
-      </label>
+      </label>)}
 
-      <div className="relative z-20 bg-transparent dark:bg-form-input">
+      <div className="relative z-20  bg-transparent dark:bg-form-input">
         <select
           value={selectedOption}
           required
           onChange={handleSelectChange}
-          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-white py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
+          className={`relative z-20 w-full  appearance-none rounded border border-stroke bg-white py-3 pl-4 pr-8 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
             selectedOption ? 'text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'
           }`}
         >
@@ -56,7 +56,7 @@ const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shi
             }
         </select>
 
-        <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
+        <span className="absolute top-1/2 right-2 z-30 -translate-y-1/2">
           <svg
             className="fill-current"
             width="24"
