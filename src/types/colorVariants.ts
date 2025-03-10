@@ -12,9 +12,9 @@ export const colorVariants = {
     bg: 'bg-white dark:bg-boxdark',
     bgSub: '',
     icon: 'bg-meta-2 dark:bg-boxdark-2',
-    btnSc: 'text-boxdark-2 hover:text-graydark dark:text-white dark:hover:text-gray',
+    btnSc: 'text-boxdark-2 hover:text-graydark dark:text-white dark:hover:text-graydark',
     text: 'text-[#05004E] dark:text-white',
-    btn: '',
+    btn: 'bg-boxdark hover:bg-graydark text-white',
     inp: 'dark:bg-boxdark dark:text-white text-[#05004E]',
   },
   red: {

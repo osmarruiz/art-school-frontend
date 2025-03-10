@@ -14,7 +14,8 @@ import Forbidden from './pages/Error/Forbidden';
 import Payment from './pages/Operator/Payment';
 import Enrollment from './pages/Operator/Enrollment';
 import Renew from './pages/Operator/Renew';
-import Student from './pages/Admin/Student';
+import Students from './pages/Admin/Students';
+import Disciplines from './pages/Admin/Disciplines';
 
 
 function App() {
@@ -46,12 +47,23 @@ function App() {
         }
       />
       <Route
-        path="/student"
+        path="/students"
         element={
           <DefaultLayout>
             <>
               <PageTitle title="Estudiantes | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-              <Student />
+              <Students />
+            </>
+          </DefaultLayout>
+        }
+      />
+       <Route
+        path="/disciplines"
+        element={
+          <DefaultLayout>
+            <>
+              <PageTitle title="Estudiantes | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <Disciplines />
             </>
           </DefaultLayout>
         }

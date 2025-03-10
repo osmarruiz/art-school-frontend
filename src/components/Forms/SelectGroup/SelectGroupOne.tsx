@@ -33,7 +33,7 @@ const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shi
           value={selectedOption}
           required
           onChange={handleSelectChange}
-          className={`relative z-20 w-full  appearance-none rounded border border-stroke bg-white py-3 pl-4 pr-8 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
+          className={`relative z-20 w-full  appearance-none rounded border border-stroke bg-white py-2.5 pl-4 pr-8 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
             selectedOption ? 'text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'
           }`}
         >
