@@ -8,12 +8,13 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import { FaMinus, FaPencil, FaPlus, FaStar } from 'react-icons/fa6';
+import { FaMinus, FaMoneyBillWave, FaPencil, FaPlus, FaStar } from 'react-icons/fa6';
 import { Student } from '../../types/student';
 import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
 import CardDataStats from '../../components/Cards/CardDataStats';
 import { colorVariants } from '../../types/colorVariants';
+import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -91,55 +92,18 @@ const Disciplines: React.FC = () => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
 
-  // Renderer para la columna de estado
-  const estadoRenderer = (params: { value: boolean }) => {
-    return (
-      <span
-        className={`text-sm py-1 px-2  rounded ${
-          params.value
-            ? 'bg-green-200 dark:bg-green-900'
-            : 'bg-red-200 dark:bg-red-900'
-        }`}
-      >
-        {params.value ? 'Activo' : 'Inactivo'}
-      </span>
-    );
-  };
-
-  // Renderer para la columna de acciones
-  const opcionesRenderer = (params: { data: { is_active: boolean 
-} }) => {
-    return (
-      <div className="flex gap-4 mt-1 justify-center ">
-
-        <button className={clsx(colorVariants['white'].btnSc)}>
-          <FaPencil size={20} />
-        </button>
-
-        <button className={clsx(colorVariants['white'].btnSc)}>
-        {params.data.is_active ? <FaMinus size={20} /> : <FaPlus size={20} />}
-      </button>
-      </div>
-    );
-  };
+  
 
   // Definición de columnas con tipado correcto
 
   const columnDefs = useMemo(
     () => [
-      { field: 'id', headerName: 'Numero' },
-      { field: 'name', headerName: 'Disciplina' },
-      { field: 'id_card', headerName: 'Turno' },
-      {
-        field: 'is_active',
-        headerName: 'Estado',
-        cellRenderer: estadoRenderer,
-      },
-      {
-        field: 'opciones',
-        headerName: 'Opciones',
-        cellRenderer: opcionesRenderer,
-      },
+
+      { field: 'id', headerName: 'ID' },
+      { field: 'name', headerName: 'Estudiante' },
+      { field: 'id_card', headerName: 'Tarifa' },
+      { field: 'id_card', headerName: 'Fecha' },
+      { field: 'id_card', headerName: 'Total' },
     ],
     [],
   );
@@ -160,7 +124,7 @@ const Disciplines: React.FC = () => {
       <div className="block sm:flex justify-between items-center gap-4 text">
         <div className="flex justify-center sm:justify-start  sm:w-1/5 mb-4 sm:mb-6">
           <h1 className="text-title-md xl:text-title-md2 font-bold text-black dark:text-white">
-            Disciplinas
+           Transacciones
           </h1>
         </div>
 
@@ -173,7 +137,7 @@ const Disciplines: React.FC = () => {
             </span>
             <input
               type="text"
-              placeholder="Buscar disciplina"
+              placeholder="Buscar transaccion"
               className={clsx(
                 'w-full h-12 bg-white pl-9 pr-4 text-black focus:outline-none rounded-lg shadow-default',
                 colorVariants['white'].inp,
@@ -184,9 +148,7 @@ const Disciplines: React.FC = () => {
           
         </div>
         <div className='flex justify-center sm:justify-end gap-4 sm:w-1/5  mb-6'>
-            <button className={clsx("inline-flex items-center justify-center py-2.5 px-3", colorVariants["white"].btn)}>
-                    Comenzar Transacción
-                  </button>
+            <SelectGroupOne placeholder='Seleccionar un mes'/>
           </div>
       </div>
       <div className="h-125 w-full">
@@ -201,13 +163,8 @@ const Disciplines: React.FC = () => {
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">
         <div className="sm:w-1/2 xl:w-1/4 mb-4">
-          <CardDataStats title="Total de inactivos" total="50">
-            <FaStar className="fill-primary dark:fill-white" size={20} />
-          </CardDataStats>
-        </div>
-        <div className="sm:w-1/2 xl:w-1/4">
-          <CardDataStats title="Total de activos" total="50">
-            <FaStar className="fill-primary dark:fill-white" size={20} />
+          <CardDataStats title="Total de transacciones" total="50">
+            <FaMoneyBillWave className="fill-primary dark:fill-white" size={20} />
           </CardDataStats>
         </div>
       </div>

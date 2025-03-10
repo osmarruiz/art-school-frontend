@@ -16,7 +16,7 @@ import Enrollment from './pages/Operator/Enrollment';
 import Renew from './pages/Operator/Renew';
 import Students from './pages/Admin/Students';
 import Disciplines from './pages/Admin/Disciplines';
-
+import Transactions from './pages/Admin/Transactions';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -62,8 +62,19 @@ function App() {
         element={
           <DefaultLayout>
             <>
-              <PageTitle title="Estudiantes | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <PageTitle title="Disciplinas | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
               <Disciplines />
+            </>
+          </DefaultLayout>
+        }
+      />
+      <Route
+        path="/transactions"
+        element={
+          <DefaultLayout>
+            <>
+              <PageTitle title="Transacciones | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <Transactions />
             </>
           </DefaultLayout>
         }
