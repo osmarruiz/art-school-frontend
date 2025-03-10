@@ -113,9 +113,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 {/* <!-- Menu Item Pendientes --> */}
                 <li>
                   <NavLink
-                    to="/#"
+                    to="/pendings"
                     className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-boxdark-2  ${
-                      pathname.includes('profile') && 'bg-boxdark-2'
+                      pathname.includes('pendings') && 'bg-boxdark-2'
                     }`}
                   >
                     <FaPencil/>

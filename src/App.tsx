@@ -17,6 +17,7 @@ import Renew from './pages/Operator/Renew';
 import Students from './pages/Admin/Students';
 import Disciplines from './pages/Admin/Disciplines';
 import Transactions from './pages/Admin/Transactions';
+import Pendings from './pages/Admin/Pendings';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -75,6 +76,17 @@ function App() {
             <>
               <PageTitle title="Transacciones | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
               <Transactions />
+            </>
+          </DefaultLayout>
+        }
+      />
+      <Route
+        path="/pendings"
+        element={
+          <DefaultLayout>
+            <>
+              <PageTitle title="Pendientes | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <Pendings />
             </>
           </DefaultLayout>
         }
