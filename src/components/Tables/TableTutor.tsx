@@ -20,7 +20,7 @@ interface StudentSearchProps {
   onSelect: (student: Student) => void;
 }
 
-const TutorSearch: React.FC<StudentSearchProps> = ({ onSelect }) => {
+const TabletTutor: React.FC<StudentSearchProps> = ({ onSelect }) => {
   const [studentData, setStudentData] = useState<Student[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -111,4 +111,4 @@ const TutorSearch: React.FC<StudentSearchProps> = ({ onSelect }) => {
   );
 };
 
-export default TutorSearch;
+export default TabletTutor;

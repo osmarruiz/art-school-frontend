@@ -200,13 +200,9 @@ const Disciplines: React.FC = () => {
         />
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">
-        <div className="sm:w-1/2 xl:w-1/4 mb-4">
-          <CardDataStats title="Total de inactivos" total="50">
-            <FaStar className="fill-primary dark:fill-white" size={20} />
-          </CardDataStats>
-        </div>
+        
         <div className="sm:w-1/2 xl:w-1/4">
-          <CardDataStats title="Total de activos" total="50">
+          <CardDataStats title="Total de disciplinas" total="50">
             <FaStar className="fill-primary dark:fill-white" size={20} />
           </CardDataStats>
         </div>

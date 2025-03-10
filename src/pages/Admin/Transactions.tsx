@@ -8,7 +8,7 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import { FaMinus, FaMoneyBillWave, FaPencil, FaPlus, FaStar } from 'react-icons/fa6';
+import { FaMoneyBillWave } from 'react-icons/fa6';
 import { Student } from '../../types/student';
 import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
@@ -20,7 +20,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
 const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
-const Disciplines: React.FC = () => {
+const Transactions: React.FC = () => {
   const [colorMode] = useColorMode();
   const gridRef = useRef<AgGridReact<any> | null>(null);
   const [theme, setTheme] = useState(themeLightCold);
@@ -172,4 +172,4 @@ const Disciplines: React.FC = () => {
   );
 };
 
-export default Disciplines;
+export default Transactions;

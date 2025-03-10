@@ -6,7 +6,7 @@ import { FaMinus } from "react-icons/fa6";
 
 const FormCourse = ({onRemove, isFirst}:{onRemove: () => void; isFirst: boolean}) => {
   const [courseData, setCourseData] = useState<course[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
+  const [_, setSelectedCourse] = useState<number | null>(null);
   const [shiftOptions, setShiftOptions] = useState<shift[]>([]); 
 
   useEffect(() => {

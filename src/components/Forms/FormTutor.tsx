@@ -1,7 +1,7 @@
 import DatePickerOne from './DatePicker/DatePickerOne';
 import SelectGroupOne from './SelectGroup/SelectGroupOne';
 
-const FormStudent = () => {
+const FormTutor = () => {
   return (
     <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="p-6.5">
@@ -151,4 +151,4 @@ const FormStudent = () => {
   );
 };
 
-export default FormStudent;
+export default FormTutor;

@@ -1,6 +1,4 @@
-import { label } from "framer-motion/client";
-
-const SwitcherTutor = ({ enabled, onToggle, labelId }: { enabled: boolean; onToggle: (value: boolean) => void; labelId: string}) => {
+const Switcher = ({ enabled, onToggle, labelId }: { enabled: boolean; onToggle: (value: boolean) => void; labelId: string}) => {
 
   return (
     <div>
@@ -27,4 +25,4 @@ const SwitcherTutor = ({ enabled, onToggle, labelId }: { enabled: boolean; onTog
   );
 };
 
-export default SwitcherTutor;
+export default Switcher;

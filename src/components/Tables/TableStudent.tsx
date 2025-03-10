@@ -23,7 +23,7 @@ interface StudentSearchProps {
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }
 
-const StudentSearch: React.FC<StudentSearchProps> = ({ onSelect, color}) => {
+const TabletStudent: React.FC<StudentSearchProps> = ({ onSelect, color}) => {
   const [studentData, setStudentData] = useState<Student[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -114,4 +114,4 @@ const StudentSearch: React.FC<StudentSearchProps> = ({ onSelect, color}) => {
   );
 };
 
-export default StudentSearch;
+export default TabletStudent;
