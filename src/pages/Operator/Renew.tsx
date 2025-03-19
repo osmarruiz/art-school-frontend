@@ -1,10 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, } from 'react';
 import {  FaRepeat } from 'react-icons/fa6';
 import CardOperator from '../../components/Cards/CardOperator';
 import CardTransaction from '../../components/Cards/CardTransaction';
 import StudentSearch from '../../components/Tables/TableStudent';
 import { Student } from '../../types/student';
-import { Transaction } from '../../types/transaction';
 import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
 import CardStudent from '../../components/Cards/CardStudent';
@@ -15,26 +14,9 @@ const Renew = ({
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 })  => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  //const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  const fetchTransactions = useCallback(async () => {
-    if (!selectedStudent) return;
-    try {
-      const response = await fetch(
-        `/transactions.list?student_id=${selectedStudent.id}`,
-      );
-      const data = await response.json();
-      setTransactions(
-        data.filter((transaction: Transaction) => !transaction.is_finished),
-      );
-    } catch (error) {
-      console.error('Error al obtener datos:', error);
-    }
-  }, [selectedStudent]);
-
-  useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
+  
 
   return (
     <CardOperator

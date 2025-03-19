@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FaWallet, FaX } from 'react-icons/fa6';
 import CardOperator from '../../components/Cards/CardOperator';
-import { Student } from '../../types/student';
-import { Transaction } from '../../types/transaction';
+import { Tutor } from '../../types/tutor';
 import FormStudent from '../../components/Forms/FormStudent';
 import FormCourse from '../../components/Forms/FormCourse';
 import FormTutor from '../../components/Forms/FormTutor';
@@ -10,15 +9,15 @@ import TableTutor from '../../components/Tables/TableTutor';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import clsx from 'clsx';
 import { colorVariants } from '../../types/colorVariants';
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus } from 'react-icons/fa6';
+import CardTutor from '../../components/Cards/CardTutor';
 
 const Enrollment = ({
   color,
 }: {
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }) => {
-  const [selectedTutor, setSelectedTutor] = useState<Student | null>(null);
-  const [_, setTransactions] = useState<Transaction[]>([]);
+  const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
   const [selectedOption, setSelectedOption] = useState<
     null | 'search' | 'form'
@@ -32,25 +31,6 @@ const Enrollment = ({
   const removeCourseForm = (id: number) => {
     setCourses(courses.filter((courseId) => courseId !== id));
   };
-
-  const fetchTransactions = useCallback(async () => {
-    if (!selectedTutor) return;
-    try {
-      const response = await fetch(
-        `/transactions.list?student_id=${selectedTutor.id}`,
-      );
-      const data = await response.json();
-      setTransactions(
-        data.filter((transaction: Transaction) => !transaction.is_finished),
-      );
-    } catch (error) {
-      console.error('Error al obtener datos:', error);
-    }
-  }, [selectedTutor]);
-
-  useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
 
   return (
     <form>
@@ -71,7 +51,11 @@ const Enrollment = ({
           </p>
 
           {courses.map((id, index) => (
-            <FormCourse key={id} onRemove={() => removeCourseForm(id)} isFirst={index === 0}/>
+            <FormCourse
+              key={id}
+              onRemove={() => removeCourseForm(id)}
+              isFirst={index === 0}
+            />
           ))}
           <div className="flex justify-center">
             <button
@@ -82,7 +66,7 @@ const Enrollment = ({
                 colorVariants,
               )}
             >
-              <FaPlus/>
+              <FaPlus />
             </button>
           </div>
           <br />
@@ -139,12 +123,17 @@ const Enrollment = ({
                     </button>
                   </div>
                   <div
-                    className={clsx(
-                      '  rounded-lg',
-                      colorVariants[color].inp,
-                    )}
+                    className={clsx('  rounded-lg', colorVariants[color].inp)}
                   >
-                    <TableTutor onSelect={setSelectedTutor} />
+                    {!selectedTutor ? (
+                      <TableTutor onSelect={setSelectedTutor} />
+                    ) : (
+                      <CardTutor
+                        tutor={selectedTutor}
+                        onReset={() => setSelectedTutor(null)}
+                        color="violet"
+                      />
+                    )}
                     <SelectGroupOne
                       title="Parentezco"
                       placeholder="Selecciona un parentezco"

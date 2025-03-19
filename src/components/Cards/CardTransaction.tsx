@@ -19,7 +19,6 @@ import {
   FaPlus,
   FaAnglesUp,
 } from 'react-icons/fa6';
-import { Toaster } from 'react-hot-toast';
 import useToast from '../../hooks/useToast';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { finishTransaction } from '../../utils/transactionAction';
@@ -55,7 +54,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     Record<string, boolean>
   >({});
 
-  //botones de acción
+  // Botones de acción
   const ActionButton: React.FC<{
     onClick?: () => void;
     children: React.ReactNode;
@@ -72,25 +71,12 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     }));
   };
 
-  //Ordena las transacciones por tipo
-  const groupedTransactions = useMemo(() => {
-    return transactions.reduce<{ [key: string]: Transaction[] }>(
-      (acc, transaction) => {
-        if (!acc[transaction.fee.type]) acc[transaction.fee.type] = [];
-        acc[transaction.fee.type].push(transaction);
-        return acc;
-      },
-      {},
-    );
-  }, [transactions]);
-
-  //cambio de tema de aggrid
+  // Cambio de tema de aggrid
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
 
   // Columnas de la tabla
-
   interface ColumnDef {
     field: string;
     headerName: string;
@@ -140,131 +126,127 @@ const CardTransaction: React.FC<TransactionListProps> = ({
 
   return (
     <div className="w-full">
-      <Toaster position="bottom-right" />
-      {Object.entries(groupedTransactions).map(([type, transactions]) => (
-        <motion.div
-          key={type}
-          animate={{ scale: [0.9, 1] }}
-          transition={{ duration: 0.3 }}
-          className={clsx("p-4 my-2 rounded-lg w-full",colorVariants[color].bg)}
-        >
-          {/* Encabezado de tipo de transacción */}
-          <h3 className={clsx(" text-lg font-semibold", colorVariants[color].text)}>
-            {type}
-          </h3>
-
-          {transactions.map((transaction) => {
-            const rowData =
-              transaction.receipts?.map((receipt) => ({
-                ...receipt,
-                transaction_id: transaction.id,
-                issued_at: moment(receipt.issued_at).format('LLL'),
-                amount: formatCurrency(receipt.amount),
-              })) || [];
-
-            return (
-              <div key={transaction.id} className=" py-2">
-                {/* Información de la transacción */}
-                <div className="flex justify-between items-center">
-                  <div className={clsx("text-black dark:text-white", colorVariants[color].text)}>
-                    <p>{moment(transaction.started_at).format('LL')}</p>
-                    <p className="font-bold block xl:inline-flex">
-                      Total: {formatCurrency(transaction.total)}
-                    </p>
-                    <p className="font-bold text-orange-500">
-                      Saldo: {formatCurrency(transaction.balance)}
-                    </p>
-                  </div>
-
-                  {/* Botones de acción */}
-                  <div className="flex gap-2">
-                    <ActionButton
-                      onClick={() =>
-                        addReceiptButton(
-                          transaction.id,
-                          reloadTransactions,
-                          showError,
-                          showSuccess,
-                        )
-                      }
-                    >
-                      <FaPlus size={20} />
-                    </ActionButton>
-
-                    <ActionButton
-                      onClick={() => toggleVisibility(transaction.id)}
-                    >
-                      {visibleReceipts[transaction.id] ? (
-                        <FaAnglesUp size={20} />
-                      ) : (
-                        <FaAnglesDown size={20} />
-                      )}
-                    </ActionButton>
-
-                    <ActionButton
-                      onClick={() =>
-                        finishTransaction(
-                          transaction.id,
-                          reloadTransactions,
-                          showError,
-                          showSuccess,
-                        )
-                      }
-                    >
-                      <FaCheck size={20} />
-                    </ActionButton>
-
-                    <ActionButton>
-                      <FaRegTrashCan
-                        size={20}
-                        onClick={() =>
-                          revokeTransactionButton(
-                            transaction.id,
-                            reloadTransactions,
-                            showError,
-                            showSuccess,
-                          )
-                        }
-                      />
-                    </ActionButton>
-                  </div>
+      {transactions.length === 0 ? (
+        <p className="">No hay transacciones disponibles.</p>
+      ) : (
+        transactions.map((transaction) => {
+          const rowData =
+            transaction.receipts?.map((receipt) => ({
+              ...receipt,
+              transaction_id: transaction.id,
+              issued_at: moment(receipt.issued_at).format('LLL'),
+              amount: formatCurrency(receipt.amount),
+            })) || [];
+  
+          return (
+            <motion.div
+              key={transaction.id}
+              animate={{ scale: [0.9, 1] }}
+              transition={{ duration: 0.3 }}
+              className={clsx(
+                'p-4 my-2 rounded-lg w-full',
+                colorVariants[color].bg,
+              )}
+            >
+              {/* Información de la transacción */}
+              <div className="flex justify-between items-center">
+                <div className={clsx(colorVariants[color].text)}>
+                  <p className="font-bold block xl:inline-flex">{transaction.fee.label}</p>
+                  <p>{moment(transaction.started_at).format('LL')}</p>
+                  <p className="font-bold block xl:inline-flex">
+                    Total: {formatCurrency(transaction.total)}
+                  </p>
+                  <p className="font-bold text-orange-500">
+                    Saldo: {formatCurrency(transaction.balance)}
+                  </p>
                 </div>
-
-                {/* Tabla de recibos */}
-                <AnimatePresence initial={false}>
-                  {visibleReceipts[transaction.id] && (
-                    <motion.div
-                      key={`receipts-${transaction.id}`}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className="mt-2"
-                      style={{ height: 250, width: '100%' }}
-                    >
-                      {rowData.length > 0 ? (
-                        <AgGridReact
-                          ref={gridRef}
-                          theme={theme}
-                          rowData={rowData}
-                          columnDefs={columnDefs}
-                          defaultColDef={defaultColDef}
-                        />
-                      ) : (
-                        <p className="text-gray-500 text-sm">
-                          No hay recibos disponibles.
-                        </p>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+  
+                {/* Botones de acción */}
+                <div className="flex gap-2">
+                  <ActionButton
+                    onClick={() =>
+                      addReceiptButton(
+                        transaction.id,
+                        reloadTransactions,
+                        showError,
+                        showSuccess,
+                      )
+                    }
+                  >
+                    <FaPlus size={20} />
+                  </ActionButton>
+  
+                  <ActionButton onClick={() => toggleVisibility(transaction.id)}>
+                    {visibleReceipts[transaction.id] ? (
+                      <FaAnglesUp size={20} />
+                    ) : (
+                      <FaAnglesDown size={20} />
+                    )}
+                  </ActionButton>
+  
+                  <ActionButton
+                    onClick={() =>
+                      finishTransaction(
+                        transaction.id,
+                        reloadTransactions,
+                        showError,
+                        showSuccess,
+                      )
+                    }
+                  >
+                    <FaCheck size={20} />
+                  </ActionButton>
+  
+                  <ActionButton>
+                    <FaRegTrashCan
+                      size={20}
+                      onClick={() =>
+                        revokeTransactionButton(
+                          transaction.id,
+                          reloadTransactions,
+                          showError,
+                          showSuccess,
+                        )
+                      }
+                    />
+                  </ActionButton>
+                </div>
               </div>
-            );
-          })}
-        </motion.div>
-      ))}
+  
+              {/* Tabla de recibos */}
+              <AnimatePresence initial={false}>
+                {visibleReceipts[transaction.id] && (
+                  <motion.div
+                    key={`receipts-${transaction.id}`}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="mt-2"
+                    style={{ height: 250, width: '100%' }}
+                  >
+                    {rowData.length > 0 ? (
+                      <AgGridReact
+                        ref={gridRef}
+                        theme={theme}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                      />
+                    ) : (
+                      <p className="text-gray-500 text-sm">
+                        No hay recibos disponibles.
+                      </p>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })
+      )}
     </div>
-  );
+  );  
 };
 
 export default CardTransaction;

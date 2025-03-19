@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
-import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import Admin from './pages/Dashboard/Admin';
@@ -18,37 +17,55 @@ import Students from './pages/Admin/Students';
 import Disciplines from './pages/Admin/Disciplines';
 import Transactions from './pages/Admin/Transactions';
 import Pendings from './pages/Admin/Pendings';
+import PrivateRoute from './utils/PrivateRoute';
+import ProtectedRoute from './utils/ProtectedRoute';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
-  const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 600);
-  }, []);
-
-  return loading ? (
-    <Loader />
-  ) : (
+  return (
+<>
+    <Toaster position="bottom-right" />
     <Routes>
-      {/* Rutas con DefaultLayout */}
       <Route
         path="/"
         element={
-          <DefaultLayout>
+          <ProtectedRoute>
+          <PublicLayout>
             <>
-              <PageTitle title="Dashboard | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-              <Admin />
+              <PageTitle title="Iniciar sesión | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <SignIn />
             </>
-          </DefaultLayout>
+          </PublicLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Rutas con DefaultLayout */}
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute
+            element={
+              <DefaultLayout>
+                <>
+                  <PageTitle title="Dashboard | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+                  <Admin />
+                </>
+              </DefaultLayout>
+            }
+           allowedRoles={['admin']}/>
         }
       />
       <Route
         path="/students"
+        element={
+          <PrivateRoute
         element={
           <DefaultLayout>
             <>
@@ -56,10 +73,15 @@ function App() {
               <Students />
             </>
           </DefaultLayout>
+          
         }
+        allowedRoles={['admin']}/>
+      }
       />
-       <Route
+      <Route
         path="/disciplines"
+        element={
+          <PrivateRoute
         element={
           <DefaultLayout>
             <>
@@ -68,9 +90,13 @@ function App() {
             </>
           </DefaultLayout>
         }
+        allowedRoles={['admin']}/>
+      }
       />
       <Route
         path="/transactions"
+        element={
+          <PrivateRoute
         element={
           <DefaultLayout>
             <>
@@ -79,9 +105,13 @@ function App() {
             </>
           </DefaultLayout>
         }
+        allowedRoles={['admin']}/>
+      }
       />
       <Route
         path="/pendings"
+        element={
+          <PrivateRoute
         element={
           <DefaultLayout>
             <>
@@ -90,10 +120,14 @@ function App() {
             </>
           </DefaultLayout>
         }
+        allowedRoles={['admin']}/>
+      }
       />
       {/* Rutas con OperatorLayout */}
       <Route
         path="/operator"
+        element={
+          <PrivateRoute
         element={
           <OperatorLayout>
             <>
@@ -102,52 +136,55 @@ function App() {
             </>
           </OperatorLayout>
         }
+        allowedRoles={['operator']}/>
+      }
       />
       <Route
         path="/payment"
         element={
+          <PrivateRoute
+        element={
           <OperatorLayout>
             <>
               <PageTitle title="Registrar Pago | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-              <Payment color='red'/>
+              <Payment color="red" />
             </>
           </OperatorLayout>
         }
+        allowedRoles={['operator']}/>
+      }
       />
       <Route
         path="/enrollment"
         element={
+          <PrivateRoute
+        element={
           <OperatorLayout>
             <>
               <PageTitle title="Matricular Estudiante | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-              <Enrollment color='violet'/>
+              <Enrollment color="violet" />
             </>
           </OperatorLayout>
         }
+        allowedRoles={['operator']}/>
+      }
       />
       <Route
         path="/renew"
         element={
+          <PrivateRoute
+        element={
           <OperatorLayout>
             <>
               <PageTitle title="Renovar Matr&iacute;cula | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-              <Renew color='orange'/>
+              <Renew color="orange" />
             </>
           </OperatorLayout>
         }
+        allowedRoles={['operator']}/>
+      }
       />
-      {/* Rutas con PublicLayout */}
-      <Route
-        path="/auth/signin"
-        element={
-          <PublicLayout>
-            <>
-              <PageTitle title="Iniciar sesi&oacute;n | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-              <SignIn />
-            </>
-          </PublicLayout>
-        }
-      />
+
       <Route
         path="*"
         element={
@@ -170,8 +207,8 @@ function App() {
           </PublicLayout>
         }
       />
-
     </Routes>
+    </>
   );
 }
 export default App;

@@ -1,20 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FaWallet } from 'react-icons/fa6';
-import { motion } from 'framer-motion';
 import CardOperator from '../../components/Cards/CardOperator';
 import CardTransaction from '../../components/Cards/CardTransaction';
-import StudentSearch from '../../components/Tables/TableStudent';
+import TabletStudent from '../../components/Tables/TableStudent';
 import { Student } from '../../types/student';
 import { Transaction } from '../../types/transaction';
 import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
 import CardStudent from '../../components/Cards/CardStudent';
+import { API_URL, API_KEY } from '../../utils/apiConfig';
 
 const Payment = ({
   color,
 }: {
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
-})  => {
+}) => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -22,7 +22,13 @@ const Payment = ({
     if (!selectedStudent) return;
     try {
       const response = await fetch(
-        `/transactions.list?student_id=${selectedStudent.id}`,
+        `${API_URL}/transactions.list?student_id=${selectedStudent.id}`,
+        {
+          headers: {
+            Authorization: API_KEY,
+          },
+          credentials: 'include',
+        },
       );
       const data = await response.json();
       setTransactions(
@@ -45,20 +51,28 @@ const Payment = ({
     >
       <FaWallet size={20} className="text-white" />
       <div>
-        <p className={ clsx("text-3xl font-bold mb-2", colorVariants[color].text)}>Estudiante</p>
+        <p
+          className={clsx('text-3xl font-bold mb-2', colorVariants[color].text)}
+        >
+          Estudiante
+        </p>
         {!selectedStudent ? (
-          <StudentSearch onSelect={setSelectedStudent} color="red"/>
+          <TabletStudent onSelect={setSelectedStudent} color="red" />
         ) : (
           <CardStudent
             student={selectedStudent}
-            onReset={() => setSelectedStudent(null)}
+            onReset={() => {setSelectedStudent(null); setTransactions([]);}}
             color="red"
           />
         )}
       </div>
 
       <div>
-        <p className={ clsx("text-3xl font-bold mb-2", colorVariants[color].text)}>Transacciones</p>
+        <p
+          className={clsx('text-3xl font-bold mb-2', colorVariants[color].text)}
+        >
+          Transacciones
+        </p>
         {selectedStudent ? (
           selectedStudent && (
             <CardTransaction
@@ -68,12 +82,21 @@ const Payment = ({
             />
           )
         ) : (
-          <p className={ clsx("text-l py-5 font-medium ", colorVariants[color].text)}>
+          <p
+            className={clsx(
+              'text-l py-5  ',
+            )}
+          >
             Seleccione un estudiante para ver sus transacciones
           </p>
         )}
       </div>
-      <button className={clsx("inline-flex items-center justify-center py-4 px-10", colorVariants[color].btn)}>
+      <button
+        className={clsx(
+          'inline-flex items-center justify-center py-4 px-10',
+          colorVariants[color].btn,
+        )}
+      >
         Comenzar Transacción
       </button>
     </CardOperator>

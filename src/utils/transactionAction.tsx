@@ -1,3 +1,5 @@
+import { API_URL, API_KEY } from "./apiConfig";
+
 // Función para revocar un recibo
 export const revokeReceipt = async (
   receipt_id: number,
@@ -6,21 +8,34 @@ export const revokeReceipt = async (
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
 ) => {
-  // ❌ Eliminamos la función anónima
   try {
-    const response = await fetch(`/transactions.revoke_receipt`, {
+    const response = await fetch(`${API_URL}/transactions.revoke_receipt`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: API_KEY,
       },
+      credentials: 'include',
       body: JSON.stringify({
         transaction_id,
         receipt_id,
       }),
     });
 
+    let data = null;
+    if (response.headers.get('Content-Type')?.includes('application/json')) {
+      data = await response.json();
+    }
+
+    if (response.status === 409 ) {
+      showError(data?.detail);
+      return;
+    }
+
     if (!response.ok) {
+      
       throw new Error(`Error HTTP: ${response.status}`);
+      
     }
 
     showSuccess('Recibo revocado con éxito');
@@ -41,14 +56,14 @@ export const addReceipt = async (
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
 ) => {
-  // ❌ Eliminamos la función anónima
   try {
-    console.log(transaction_id, no, amount, payer, remarks);
-    const response = await fetch(`/transactions.add_receipt`, {
+    const response = await fetch(`${API_URL}/transactions.add_receipt`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: API_KEY,
       },
+      credentials: 'include',
       body: JSON.stringify({
         transaction_id,
         receipt: {
@@ -89,11 +104,13 @@ export const finishTransaction = async (
   showSuccess: (message: string) => void,
 ) => {
   try {
-    const response = await fetch(`/transactions.finish`, {
+    const response = await fetch(`${API_URL}/transactions.finish`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: API_KEY,
       },
+      credentials: 'include',
       body: JSON.stringify({
         transaction_id,
       }),
@@ -127,14 +144,15 @@ export const revokeTransaction = async (
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
 ) => {
-  // ❌ Eliminamos la función anónima
   console.log('Ejecutando revokeTransaction con:', { transaction_id });
   try {
-    const response = await fetch(`/transactions.revoke`, {
+    const response = await fetch(`${API_URL}/transactions.revoke`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: API_KEY,
       },
+      credentials: 'include',
       body: JSON.stringify({
         transaction_id,
       }),

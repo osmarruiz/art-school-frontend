@@ -2,15 +2,15 @@ import { colorVariants } from "../../types/colorVariants";
 import { clsx } from "clsx";
 import { FaArrowLeft } from "react-icons/fa";
 import { motion } from 'framer-motion';
-import { Student } from "../../types/student";
+import { Tutor } from "../../types/tutor";
 
 
-const CardStudent = ({
-  student,
+const CardTutor = ({
+  tutor,
   onReset,
   color,
 }: {
-  student: Student;
+  tutor: Tutor;
   onReset: () => void;
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }) => {
@@ -22,9 +22,8 @@ const CardStudent = ({
     >
       <div className="flex justify-between">
         <div className={clsx(colorVariants[color].text)}>
-          <h3 className="text-lg font-bold">{student.name}</h3>
-          <p>ID: {student.id_card}</p>
-          <p>Disciplina: {student.coursesString}</p>
+          <h3 className="text-lg font-bold">{tutor.name}</h3>
+          <p>Cedula: {tutor.id_card}</p>
         </div>
         <button onClick={onReset} className={clsx(colorVariants[color].btnSc)}>
           <FaArrowLeft size={24} />
@@ -34,4 +33,4 @@ const CardStudent = ({
   );
 };
 
-export default CardStudent;
+export default CardTutor;

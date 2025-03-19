@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Student } from '../../types/student';
+import { Tutor } from '../../types/tutor';
 import {
   AllCommunityModule,
   ModuleRegistry,
@@ -11,43 +11,37 @@ import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
 import { motion } from 'framer-motion';
 import { FaSearch } from 'react-icons/fa';
+import { API_URL, API_KEY } from '../../utils/apiConfig';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
 const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
-interface StudentSearchProps {
-  onSelect: (student: Student) => void;
+interface TabletTutorProps {
+  onSelect: (tutor: Tutor) => void;
 }
 
-const TabletTutor: React.FC<StudentSearchProps> = ({ onSelect }) => {
-  const [studentData, setStudentData] = useState<Student[]>([]);
+const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
+  const [tutorData, setTutorData] = useState<Tutor[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const gridRef = useRef<AgGridReact<any> | null>(null);
   const [colorMode] = useColorMode();
   const [theme, setTheme] = useState(themeLightCold);
 
-  //permite filtrar los estudiantes de la barra de busqueda
-  const filteredStudents = studentData.filter(
-    (student) =>
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.id_card.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.course.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  //cambia el tema del aggrid segun el estado de colorMode
-  useEffect(() => {
-    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
-  }, [colorMode]);
-
-  //obtiene los estudiantes
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/students.list?rpp=999&status=active');
+        const response = await fetch(`${API_URL}/students.tutors.list?rpp=999`,
+                  {
+                    headers: {
+                      Authorization: API_KEY,
+                    },
+                    credentials: 'include',
+                  },);
         const data = await response.json();
-        setStudentData(data.students);
+        setTutorData(data);
       } catch (error) {
         console.error('Error al obtener datos:', error);
       } finally {
@@ -57,12 +51,25 @@ const TabletTutor: React.FC<StudentSearchProps> = ({ onSelect }) => {
     fetchData();
   }, []);
 
+  
+  const filteredStudents = tutorData.filter(
+    (tutor) =>
+      tutor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tutor.id_card.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  //cambia el tema del aggrid segun el estado de colorMode
+  useEffect(() => {
+    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
+  }, [colorMode]);
+
+  
+
   //definiciones del aggrid
   const columnDefs = useMemo(
     () => [
       { field: 'name', headerName: 'Nombre' },
       { field: 'id_card', headerName: 'Cedula' },
-      { field: 'course', headerName: 'Curso' },
     ],
     [],
   );

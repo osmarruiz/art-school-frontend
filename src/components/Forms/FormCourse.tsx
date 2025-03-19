@@ -1,22 +1,34 @@
-import { useEffect, useState } from "react";
-import SelectGroupOne from "./SelectGroup/SelectGroupOne";
-import { course } from "../../types/course";
-import { shift } from "../../types/shift";
-import { FaMinus } from "react-icons/fa6";
+import { useEffect, useState } from 'react';
+import SelectGroupOne from './SelectGroup/SelectGroupOne';
+import { Course } from '../../types/course';
+import { Shift } from '../../types/shift';
+import { FaMinus } from 'react-icons/fa6';
+import { API_URL, API_KEY } from '../../utils/apiConfig';
 
-const FormCourse = ({onRemove, isFirst}:{onRemove: () => void; isFirst: boolean}) => {
-  const [courseData, setCourseData] = useState<course[]>([]);
+const FormCourse = ({
+  onRemove,
+  isFirst,
+}: {
+  onRemove: () => void;
+  isFirst: boolean;
+}) => {
+  const [courseData, setCourseData] = useState<Course[]>([]);
   const [_, setSelectedCourse] = useState<number | null>(null);
-  const [shiftOptions, setShiftOptions] = useState<shift[]>([]); 
+  const [shiftOptions, setShiftOptions] = useState<Shift[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/courses.list");
-        const data: course[] = await response.json();
+        const response = await fetch(`${API_URL}/courses.list`, {
+          headers: {
+            Authorization: API_KEY,
+          },
+          credentials: 'include',
+        });
+        const data: Course[] = await response.json();
         setCourseData(data);
       } catch (error) {
-        console.error("Error al obtener los datos", error);
+        console.error('Error al obtener los datos', error);
       }
     };
     fetchData();
@@ -26,38 +38,30 @@ const FormCourse = ({onRemove, isFirst}:{onRemove: () => void; isFirst: boolean}
   const handleCourseChange = (courseId: number) => {
     setSelectedCourse(courseId);
     const selected = courseData.find((course) => course.id === courseId);
-    
-    console.log("Curso seleccionado:", selected); 
-    
+
+    console.log('Curso seleccionado:', selected);
+
     setShiftOptions(selected ? selected.shifts : []);
   };
 
   return (
     <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark my-2">
-      
       <div className="p-6.5">
-      <div className="flex justify-end">
-        {!isFirst &&
-        (
-          <button 
-        onClick={onRemove} 
-        className="absolute"
-      >
-        <FaMinus/>
-      </button>
-        )
-        }
-      
-      </div>
+        <div className="flex justify-end">
+          {!isFirst && (
+            <button onClick={onRemove} className="absolute">
+              <FaMinus />
+            </button>
+          )}
+        </div>
         <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
           {/* Select de Cursos */}
           <div className="w-full xl:w-1/2">
-          
             <SelectGroupOne
               title="Curso"
               placeholder="Selecciona un curso"
               course={courseData}
-              onChange={handleCourseChange} 
+              onChange={handleCourseChange}
             />
           </div>
 

@@ -1,6 +1,6 @@
-import { shift } from "./shift"
+import { Shift } from "./shift"
 
-export interface course{
+export interface Course{
     id: number,
     name: string,
     type: string,
@@ -8,5 +8,5 @@ export interface course{
     is_closed: boolean,
     registered_date: Date,
     total_of_students: number
-    shifts: shift[]
+    shifts: Shift[]
 }

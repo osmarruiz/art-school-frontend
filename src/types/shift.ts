@@ -1,4 +1,4 @@
-export interface shift{
+export interface Shift{
     id: number,
     name: string,
     is_closed: boolean,
