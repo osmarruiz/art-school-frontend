@@ -4,6 +4,9 @@ import {
   addReceipt,
   revokeTransaction,
 } from '../utils/transactionAction';
+import { API_KEY, API_URL } from './apiConfig';
+import { Fee } from '../types/fee';
+import { Course } from '../types/course';
 
 export const revokeReceiptButton = async (
   receipt_id: number,
@@ -20,9 +23,9 @@ export const revokeReceiptButton = async (
       icon: 'warning',
       showCancelButton: true,
       customClass: {
-        popup: "bg-white text-black dark:bg-boxdark-2 dark:text-white",
-        confirmButton: "bg-blue-500 text-white dark:bg-boxdark dark:text-white",
-        cancelButton: "bg-gray-300 text-black dark:bg-gray-700 dark:text-white"
+        popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+        confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+        cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
       },
       confirmButtonText: 'Si, revocar',
       cancelButtonText: 'No, cancelar',
@@ -56,9 +59,9 @@ export const revokeTransactionButton = async (
       icon: 'warning',
       showCancelButton: true,
       customClass: {
-        popup: "bg-white text-black dark:bg-boxdark-2 dark:text-white",
-        confirmButton: "bg-blue-500 text-white dark:bg-boxdark dark:text-white",
-        cancelButton: "bg-gray-300 text-black dark:bg-gray-700 dark:text-white"
+        popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+        confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+        cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
       },
       confirmButtonText: 'Si, revocar',
       cancelButtonText: 'No, cancelar',
@@ -95,9 +98,9 @@ export const addReceiptButton = async (
       focusConfirm: false,
       showCancelButton: true,
       customClass: {
-        popup: "bg-white text-black dark:bg-boxdark-2 dark:text-white",
-        confirmButton: "bg-blue-500 text-white dark:bg-boxdark dark:text-white",
-        cancelButton: "bg-gray-300 text-black dark:bg-gray-700 dark:text-white"
+        popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+        confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+        cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
       },
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
@@ -145,6 +148,233 @@ export const addReceiptButton = async (
           showError,
           showSuccess,
         );
+      }
+    });
+  } catch (error) {
+    showError(error instanceof Error ? error.message : String(error));
+  }
+};
+
+export const addTransactionButton = async (
+  student_id: number,
+  reloadTransactions: () => void,
+  showError: (message: string) => void,
+  showSuccess: (message: string) => void,
+) => {
+  try {
+    let fees: Fee[] = [];
+    let courses: Course[] = [];
+
+    // Intentar obtener datos de sessionStorage
+    const cachedFees = sessionStorage.getItem('fees');
+    const cachedCourses = sessionStorage.getItem('courses');
+
+    if (cachedFees) {
+      fees = JSON.parse(cachedFees);
+    } else {
+      const feeList = await fetch(`${API_URL}/transactions.fees.list`, {
+        headers: { Authorization: API_KEY },
+        credentials: 'include',
+      });
+      fees = await feeList.json();
+      sessionStorage.setItem('fees', JSON.stringify(fees)); // Guardar en cache
+    }
+
+    if (cachedCourses) {
+      courses = JSON.parse(cachedCourses);
+    } else {
+      const courseList = await fetch(`${API_URL}/courses.list`, {
+        headers: { Authorization: API_KEY },
+        credentials: 'include',
+      });
+      courses = await courseList.json();
+      sessionStorage.setItem('courses', JSON.stringify(courses)); // Guardar en cache
+    }
+    // Crear opciones para tarifas
+    const feeOptions = fees
+      .map(
+        (fee: Fee) =>
+          `<option value="${fee.id}" data-type="${fee.type}">${fee.label}</option>`,
+      )
+      .join('');
+
+    // Crear opciones para cursos
+    const courseOptions = courses
+      .map(
+        (course: Course) =>
+          `<option value="${course.id}" data-price="${course.price}">${course.name}</option>`,
+      )
+      .join('');
+
+    // Mostrar el popup con los selects y inputs
+    await Swal.fire({
+      title: 'Agregar Transacción',
+      html: `
+        <select id="swal-fee" class="bg-white text-black dark:bg-boxdark-2 dark:text-white  w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1">
+          <option value="" disabled selected>Selecciona una tarifa</option>
+          ${feeOptions}
+        </select>
+        <select id="swal-course" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" disabled>
+          <option value="" disabled selected>Selecciona un curso</option>
+          ${courseOptions}
+        </select>
+
+        <input id="swal-amount" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="number" min="0" placeholder="Monto del recibo">
+        <input id="swal-remarks" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="text" placeholder="Concepto">
+        <input id="swal-date" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="date" placeholder="Fecha objetivo">
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      customClass: {
+        popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+        confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+        cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
+      },
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      didOpen: () => {
+        const feeSelect = document.getElementById(
+          'swal-fee',
+        ) as HTMLSelectElement;
+        const courseSelect = document.getElementById(
+          'swal-course',
+        ) as HTMLSelectElement;
+        const amountInput = document.getElementById(
+          'swal-amount',
+        ) as HTMLInputElement;
+
+        function updateCourseAndAmount() {
+          const selectedFee = feeSelect.options[feeSelect.selectedIndex];
+          const selectedFeeType = selectedFee
+            ? selectedFee.getAttribute('data-type')
+            : '';
+
+          if (selectedFeeType === 'month') {
+            courseSelect.disabled = false; // Habilitar cursos si es mensualidad
+          } else {
+            courseSelect.disabled = true;
+            courseSelect.value = ''; // Limpiar selección de curso
+            amountInput.value = ''; // También limpiar el monto si no es mensualidad
+          }
+        }
+
+        function updateAmountFromCourse() {
+          if (courseSelect.disabled) return; // Evitar errores si el select está deshabilitado
+
+          const selectedCourse =
+            courseSelect.options[courseSelect.selectedIndex];
+          const coursePrice = selectedCourse
+            ? parseFloat(selectedCourse.getAttribute('data-price') || '0')
+            : 0;
+          amountInput.value = coursePrice.toString();
+        }
+
+        // Ejecutar al inicio por si ya hay valores preseleccionados
+        updateCourseAndAmount();
+
+        feeSelect.addEventListener('change', updateCourseAndAmount);
+        courseSelect.addEventListener('change', updateAmountFromCourse);
+      },
+
+      preConfirm: () => {
+        const fee_id = (
+          document.getElementById('swal-fee') as HTMLSelectElement
+        )?.value;
+        const course_id = (
+          document.getElementById('swal-course') as HTMLSelectElement
+        )?.value;
+        const feeSelect = document.getElementById(
+          'swal-fee',
+        ) as HTMLSelectElement;
+        const amountInput = document.getElementById(
+          'swal-amount',
+        ) as HTMLInputElement;
+        const amount = amountInput?.value.trim();
+        const remarks = (
+          document.getElementById('swal-remarks') as HTMLInputElement
+        )?.value.trim();
+        const target_date = (
+          document.getElementById('swal-date') as HTMLInputElement
+        )?.value.trim();
+
+        if (!fee_id) {
+          Swal.showValidationMessage('Debe seleccionar una tarifa');
+          return false;
+        }
+
+        const selectedFee = feeSelect.options[feeSelect.selectedIndex];
+        const feeType = selectedFee
+          ? selectedFee.getAttribute('data-type')
+          : '';
+
+        if (feeType === 'month' && !course_id) {
+          Swal.showValidationMessage(
+            'Debe seleccionar un curso para la mensualidad',
+          );
+          return false;
+        }
+
+        const amountNumber = parseFloat(amount);
+        if (isNaN(amountNumber) || amountNumber < 0) {
+          Swal.showValidationMessage(
+            'El monto debe ser un número válido mayor o igual que 0',
+          );
+          return false;
+        }
+
+        return {
+          student_id,
+          fee_id: parseInt(fee_id, 10),
+          course_id: feeType === 'month' ? parseInt(course_id, 10) : null, // Solo incluir si es mensualidad
+          amount: amountNumber,
+          remarks,
+          target_date,
+        };
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const { fee_id, amount, remarks, target_date } = result.value;
+
+        // Datos de la transacción
+        const transactionData: Record<string, any> = {
+          student_id,
+          fee_id: parseInt(fee_id, 10),
+          target_date: target_date || null,
+          remarks: remarks || 'Sin concepto',
+          total: amount || 0,
+        };
+
+        try {
+          const response = await fetch(`${API_URL}/transactions.begin`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: API_KEY,
+            },
+            credentials: 'include',
+            body: JSON.stringify(transactionData),
+          });
+
+          let data = null;
+          try {
+            if (
+              response.headers.get('Content-Type')?.includes('application/json')
+            ) {
+              data = await response.json();
+            }
+          } catch (error) {
+            console.error('Error al analizar JSON:', error);
+          }
+
+          if (!response.ok) {
+            showError(data?.detail || 'Error inesperado');
+            return;
+          }
+          showSuccess('Transacción agregada con éxito');
+          reloadTransactions();
+        } catch (error) {
+          showError(error instanceof Error ? error.message : String(error));
+        }
       }
     });
   } catch (error) {

@@ -9,12 +9,17 @@ import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
 import CardStudent from '../../components/Cards/CardStudent';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
+import {
+  addTransactionButton,
+} from '../../utils/actionButton';
+import useToast from '../../hooks/useToast';
 
 const Payment = ({
   color,
 }: {
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }) => {
+  const { showSuccess, showError } = useToast();
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -91,14 +96,19 @@ const Payment = ({
           </p>
         )}
       </div>
+
+      {selectedStudent ? (
+          selectedStudent && (
       <button
         className={clsx(
           'inline-flex items-center justify-center py-4 px-10',
           colorVariants[color].btn,
         )}
+        onClick={async () => await addTransactionButton(selectedStudent.id, fetchTransactions, showError, showSuccess)}
       >
         Comenzar Transacción
-      </button>
+      </button>)):(<></>)}
+
     </CardOperator>
   );
 };

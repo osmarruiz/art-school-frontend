@@ -42,11 +42,7 @@ const Renew = ({
         <p className={ clsx("text-3xl font-bold mb-2", colorVariants[color].text)}>Renovaciones de matr&iacute;cula</p>
         {selectedStudent ? (
           selectedStudent && (
-            <CardTransaction
-              transactions={transactions}
-              reloadTransactions={fetchTransactions}
-              color="orange"
-            />
+            <></>
           )
         ) : (
           <p className={ clsx("text-l py-5 font-medium ", colorVariants[color].text)}>

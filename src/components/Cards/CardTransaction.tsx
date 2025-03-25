@@ -37,7 +37,7 @@ const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
 interface TransactionListProps {
   transactions: Transaction[];
-  reloadTransactions: () => void;
+  reloadTransactions: () => Promise<void>; // Aseguramos que reloadTransactions devuelva una promesa
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }
 
@@ -53,16 +53,27 @@ const CardTransaction: React.FC<TransactionListProps> = ({
   const [visibleReceipts, setVisibleReceipts] = useState<
     Record<string, boolean>
   >({});
+  const [loading, setLoading] = useState(true); // Estado de carga
 
-  // Botones de acción
-  const ActionButton: React.FC<{
-    onClick?: () => void;
-    children: React.ReactNode;
-  }> = ({ onClick, children }) => (
-    <button className={clsx(colorVariants[color].btnSc)} onClick={onClick}>
-      {children}
-    </button>
-  );
+  useEffect(() => {
+    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
+  }, [colorMode]);
+
+  // Cargar transacciones con estado de carga
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      setLoading(true);
+      try {
+        await reloadTransactions(); // Llamar a la función para recargar transacciones
+      } catch (error) {
+        showError('Error al cargar las transacciones');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, [reloadTransactions]);
 
   const toggleVisibility = (id: number) => {
     setVisibleReceipts((prev) => ({
@@ -71,22 +82,10 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     }));
   };
 
-  // Cambio de tema de aggrid
-  useEffect(() => {
-    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
-  }, [colorMode]);
-
-  // Columnas de la tabla
-  interface ColumnDef {
-    field: string;
-    headerName: string;
-    cellRenderer?: (params: any) => JSX.Element;
-  }
-
-  const columnDefs: ColumnDef[] = useMemo(
+  const columnDefs = useMemo(
     () => [
       { field: 'issued_at', headerName: 'Fecha' },
-      { field: 'no', headerName: 'Numero' },
+      { field: 'no', headerName: 'Número' },
       { field: 'amount', headerName: 'Monto' },
       { field: 'payer', headerName: 'Pagado Por' },
       { field: 'remarks', headerName: 'Concepto' },
@@ -126,8 +125,12 @@ const CardTransaction: React.FC<TransactionListProps> = ({
 
   return (
     <div className="w-full">
-      {transactions.length === 0 ? (
-        <p className="">No hay transacciones disponibles.</p>
+      {loading ? (
+        <div className="flex justify-center items-center p-4">
+          <p className="text-lg font-semibold text-gray-500">Cargando transacciones...</p>
+        </div>
+      ) : transactions.length === 0 ? (
+        <p className="text-center text-gray-500">No hay transacciones disponibles.</p>
       ) : (
         transactions.map((transaction) => {
           const rowData =
@@ -137,7 +140,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
               issued_at: moment(receipt.issued_at).format('LLL'),
               amount: formatCurrency(receipt.amount),
             })) || [];
-  
+
           return (
             <motion.div
               key={transaction.id}
@@ -148,7 +151,6 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                 colorVariants[color].bg,
               )}
             >
-              {/* Información de la transacción */}
               <div className="flex justify-between items-center">
                 <div className={clsx(colorVariants[color].text)}>
                   <p className="font-bold block xl:inline-flex">{transaction.fee.label}</p>
@@ -160,10 +162,11 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                     Saldo: {formatCurrency(transaction.balance)}
                   </p>
                 </div>
-  
+
                 {/* Botones de acción */}
                 <div className="flex gap-2">
-                  <ActionButton
+                  <button
+                    className={clsx(colorVariants[color].btnSc)}
                     onClick={() =>
                       addReceiptButton(
                         transaction.id,
@@ -174,17 +177,21 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                     }
                   >
                     <FaPlus size={20} />
-                  </ActionButton>
-  
-                  <ActionButton onClick={() => toggleVisibility(transaction.id)}>
+                  </button>
+
+                  <button
+                    className={clsx(colorVariants[color].btnSc)}
+                    onClick={() => toggleVisibility(transaction.id)}
+                  >
                     {visibleReceipts[transaction.id] ? (
                       <FaAnglesUp size={20} />
                     ) : (
                       <FaAnglesDown size={20} />
                     )}
-                  </ActionButton>
-  
-                  <ActionButton
+                  </button>
+
+                  <button
+                    className={clsx(colorVariants[color].btnSc)}
                     onClick={() =>
                       finishTransaction(
                         transaction.id,
@@ -195,24 +202,24 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                     }
                   >
                     <FaCheck size={20} />
-                  </ActionButton>
-  
-                  <ActionButton>
-                    <FaRegTrashCan
-                      size={20}
-                      onClick={() =>
-                        revokeTransactionButton(
-                          transaction.id,
-                          reloadTransactions,
-                          showError,
-                          showSuccess,
-                        )
-                      }
-                    />
-                  </ActionButton>
+                  </button>
+
+                  <button
+                    className={clsx(colorVariants[color].btnSc)}
+                    onClick={() =>
+                      revokeTransactionButton(
+                        transaction.id,
+                        reloadTransactions,
+                        showError,
+                        showSuccess,
+                      )
+                    }
+                  >
+                    <FaRegTrashCan size={20} />
+                  </button>
                 </div>
               </div>
-  
+
               {/* Tabla de recibos */}
               <AnimatePresence initial={false}>
                 {visibleReceipts[transaction.id] && (
@@ -246,7 +253,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
         })
       )}
     </div>
-  );  
+  );
 };
 
 export default CardTransaction;
