@@ -162,7 +162,7 @@ function App() {
           <OperatorLayout>
             <>
               <PageTitle title="Matricular Estudiante | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-              <Enrollment color="violet" />
+              <Enrollment color="violet" key={Date.now()}/>
             </>
           </OperatorLayout>
         }

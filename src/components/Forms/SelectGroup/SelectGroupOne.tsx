@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { course } from '../../../types/course';
-import { shift } from '../../../types/shift';
+import { Course } from '../../../types/course';
+import { Shift } from '../../../types/shift';
+import { Kinship } from '../../../types/kinship';
 
 interface SelectProps {
   title?: string;
   placeholder: string;
-  course?: course[]; 
-  shift?: shift[];
+  course?: Course[]; 
+  shift?: Shift[];
+  kinship?: Kinship[];
   onChange?: (value: number) => void;
   
 }
 
-const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shift, onChange }) => {
+const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shift, kinship, onChange }) => {
   const [selectedOption, setSelectedOption] = useState<string | number>('');
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -25,7 +27,7 @@ const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shi
   return (
     <div className="">
       {title &&( <label className="mb-2.5 block text-black dark:text-white">
-        {title}
+        {title} <span className="text-meta-1">*</span>
       </label>)}
 
       <div className="relative z-20  bg-transparent dark:bg-form-input">
@@ -49,6 +51,13 @@ const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shi
             }
             {Array.isArray(shift) &&
             shift.map((item) => (
+              <option key={item.id} value={item.id} className="text-black dark:text-white">
+                {item.name}
+              </option>
+            ) )
+            }
+            {Array.isArray(kinship) &&
+            kinship.map((item) => (
               <option key={item.id} value={item.id} className="text-black dark:text-white">
                 {item.name}
               </option>

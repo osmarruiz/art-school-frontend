@@ -1,53 +1,128 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Switcher from './Switcher/Switcher';
 import DatePickerOne from './DatePicker/DatePickerOne';
 
-const FormStudent = ({ onToggle }: { onToggle: (value: boolean) => void }) => {
+const FormStudent = ({
+  onToggle,
+  onStudentChange,
+}: {
+  onToggle: (value: boolean) => void;
+  onStudentChange: (studentData: any) => void;
+}) => {
   const [enabled, setEnabled] = useState(false);
   const [switcherSchoolEnabled, setSwitcherSchoolEnabled] = useState(false);
+  const [studentData, setStudentData] = useState({
+    id_card: '',
+    name: '',
+    date_of_birth: '',
+    email: '',
+    city: '',
+    address: '',
+    phone_number: '',
+    school_name: '',
+    school_year: 0,
+    emergency_number: ''
+  });
+
   const handleToggle = (value: boolean) => {
     setEnabled(value);
     onToggle(value);
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setStudentData((prevState) => {
+      const updatedData = { ...prevState, [name]: value };
+      return updatedData;
+    });
+  };
+
+  const handleSchoolYearChange = ( schoolYear : number) => {
+    setStudentData((prevState) => ({
+      ...prevState,
+      school_year: schoolYear, // Actualizamos el valor de kinship con el id seleccionado
+    }));
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    setStudentData((prevState) => ({
+      ...prevState,
+      date_of_birth: date ? date.toISOString().split('T')[0] : '', // ISO format (YYYY-MM-DD)
+    }));
+  };
+
+  function formatInput(input: string) {
+    // Eliminamos cualquier carácter que no sea número o letra
+    let cleaned = input.replace(/[^0-9a-zA-Z]/g, '');
+  
+    // Convertimos la última letra a mayúsculas
+    if (cleaned.length > 0 && /[a-zA-Z]/.test(cleaned[cleaned.length - 1])) {
+      cleaned = cleaned.slice(0, -1) + cleaned[cleaned.length - 1].toUpperCase();
+    }
+  
+    // Si ya tenemos los 13 primeros caracteres y la letra
+    if (cleaned.length >= 13) {
+      // Aplicamos el formato con guiones solo cuando tengamos la última letra
+      return cleaned.replace(/^(\d{3})(\d{6})(\d{4})([a-zA-Z])$/, '$1-$2-$3$4');
+    }
+  
+    // Si aún no tenemos la letra final, mostramos los números sin los guiones
+    return cleaned.replace(/^(\d{3})(\d{6})(\d{4})$/, '$1$2$3');
+  }
+  
+  const formatPhoneNumber = (input: string) => {
+    let cleaned = input.replace(/\D/g, '');
+  
+    if (cleaned.startsWith("505")) {
+      cleaned = cleaned.slice(3); 
+    }
+  
+    if (cleaned.length < 8) {
+      return cleaned;
+    }
+    return `+505 ${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
+  };
+  
+
+  // Use useEffect to pass data to parent
+  useEffect(() => {
+    onStudentChange(studentData);
+  }, [studentData, onStudentChange]);
+
   return (
     <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="p-6.5">
-        <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-          <div className="w-full xl:w-1/2">
-            <label className="mb-2.5 block text-black dark:text-white">
-              Nombres <span className="text-meta-1">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="Ingresa los nombres"
-              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            />
-          </div>
-
-          <div className="w-full xl:w-1/2">
-            <label className="mb-2.5 block text-black dark:text-white">
-              Apellidos <span className="text-meta-1">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="Ingresa los apellidos"
-              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            />
-          </div>
+        <div className="mb-4.5">
+          <label className="mb-2.5 block text-black dark:text-white">
+            Nombres y apellidos <span className="text-meta-1">*</span>
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={studentData.name}
+            onChange={handleInputChange}
+            required
+            placeholder="Ingresa los nombres y apellidos"
+            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+          />
         </div>
 
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            C&eacute;dula <span className="text-meta-1">*</span>
+            Cédula <span className="text-meta-1">*</span>
           </label>
           <input
             type="text"
+            name="id_card"
+            value={studentData.id_card}
+            onChange={(e) => {
+              const formattedValue = formatInput(e.target.value);
+              setStudentData({ ...studentData, id_card: formattedValue }); // Actualiza el estado
+            }}
             required
-            maxLength={14}
-            placeholder="Ingresa la c&eacute;dula Ej: 0001111112222A"
+            minLength={16}
+            maxLength={16}
+            placeholder="Ingresa la cédula Ej: 0001111112222A"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
           />
         </div>
@@ -56,7 +131,7 @@ const FormStudent = ({ onToggle }: { onToggle: (value: boolean) => void }) => {
           <label className="mb-2.5 block text-black dark:text-white">
             Fecha de nacimiento <span className="text-meta-1">*</span>
           </label>
-          <DatePickerOne />
+          <DatePickerOne onDateChange={handleDateChange} name="date_of_birth" value={studentData.date_of_birth}/>
         </div>
 
         <div className="mb-4.5">
@@ -65,6 +140,9 @@ const FormStudent = ({ onToggle }: { onToggle: (value: boolean) => void }) => {
           </label>
           <input
             type="text"
+            name="city"
+            value={studentData.city}
+            onChange={handleInputChange}
             required
             placeholder="Ingresa el departamento"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -73,129 +151,135 @@ const FormStudent = ({ onToggle }: { onToggle: (value: boolean) => void }) => {
 
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            Direcci&oacute;n <span className="text-meta-1">*</span>
+            Dirección <span className="text-meta-1">*</span>
           </label>
           <textarea
+            name="address"
+            value={studentData.address}
+            onChange={handleInputChange}
             rows={6}
             required
-            placeholder="Ingresa la direcci&oacute;n"
+            placeholder="Ingresa la dirección"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
           ></textarea>
         </div>
+
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            Correo Electr&oacute;nico <span className="text-meta-1">*</span>
+            Correo Electrónico <span className="text-meta-1">*</span>
           </label>
           <input
             type="email"
+            name="email"
+            value={studentData.email}
+            onChange={handleInputChange}
             required
-            placeholder="Ingresa el correo electr&oacute;nico"
+            placeholder="Ingresa el correo electrónico"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
           />
         </div>
+
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            N&uacute;mero tel&eacute;fonico <span className="text-meta-1">*</span>
+            Número telefónico <span className="text-meta-1">*</span>
           </label>
           <input
             type="tel"
-            placeholder="Ej: 87656859"
-            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition 
-  focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter 
-  dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            inputMode="numeric"
-            pattern="\+505\d{8}"
-            maxLength={12}
-            onInput={(e) => {
-              const input = e.target as HTMLInputElement;
-              // Asegura que el valor comience con "+505" y limita la longitud a 13 caracteres
-              if (!input.value.startsWith('+505')) {
-                input.value = '';
-                input.value = '+505' + input.value.replace(/^(\+505)?/, '');
-              }
-              if (input.value.length > 13) {
-                input.value = input.value.substring(0, 13); // Limitar a 13 caracteres
-              }
-              input.setCustomValidity('');
+            name="phone_number"
+            value={studentData.phone_number}
+            onChange={(e) => {
+              const formattedValue = formatPhoneNumber(e.target.value);
+              setStudentData({ ...studentData, phone_number: formattedValue }); // Actualiza el estado
             }}
+            placeholder="Ej: 87656859"
+            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            minLength={8}
+            maxLength={13}
             required
             title="Ingrese un número de 8 dígitos"
           />
         </div>
+
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            N&uacute;mero de emergencia <span className="text-meta-1">*</span>
+            Número de emergencia <span className="text-meta-1">*</span>
           </label>
           <input
             type="tel"
-            placeholder="Ej: 87656859"
-            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition 
-  focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter 
-  dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            inputMode="numeric"
-            maxLength={12}
-            minLength={12}
-            pattern="\+505\d{8}"
-            onInput={(e) => {
-              const input = e.target as HTMLInputElement;
-              // Asegura que el valor comience con "+505" y limita la longitud a 13 caracteres
-              if (!input.value.startsWith('+505')) {
-                input.value = '';
-                input.value = '+505' + input.value.replace(/^(\+505)?/, '');
-              }
-              if (input.value.length > 13) {
-                input.value = input.value.substring(0, 13); // Limitar a 13 caracteres
-              }
-              input.setCustomValidity('');
+            name="emergency_number"
+            value={studentData.emergency_number}
+            onChange={(e) => {
+              const formattedValue = formatPhoneNumber(e.target.value);
+              setStudentData({ ...studentData, emergency_number: formattedValue }); // Actualiza el estado
             }}
+            placeholder="Ej: 87656859"
+            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            
+            minLength={8}
+            maxLength={13}
             required
             title="Ingrese un número de 8 dígitos"
           />
         </div>
+
         <div className="mb-4.5 flex gap-7">
           <div>
-        <label className="mb-2.5 block text-black dark:text-white ">
-            Asignar o registrar tutor 
-          </label>
-          <Switcher enabled={enabled} onToggle={handleToggle} labelId='toggleTutor'/>
+            <label className="mb-2.5 block text-black dark:text-white ">
+              Asignar o registrar tutor
+            </label>
+            <Switcher
+              enabled={enabled}
+              onToggle={handleToggle}
+              labelId="toggleTutor"
+            />
           </div>
           <div>
-        <label className="mb-2.5 block text-black dark:text-white ">
-            Registrar datos de escuela 
-          </label>
-          <Switcher enabled={switcherSchoolEnabled} onToggle={setSwitcherSchoolEnabled} labelId='toggleSchool'/>
+            <label className="mb-2.5 block text-black dark:text-white ">
+              Registrar datos de escuela
+            </label>
+            <Switcher
+              enabled={switcherSchoolEnabled}
+              onToggle={setSwitcherSchoolEnabled}
+              labelId="toggleSchool"
+            />
           </div>
         </div>
-        
-        {switcherSchoolEnabled &&(
-        <div className="mb-4.5">
-          <label className="mb-2.5 block text-black dark:text-white">
-            Nombre de la escuela 
-          </label>
-          <input
-            type="text"
-            required
-            placeholder="Ingresa el nombre de la escuela"
-            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-          />
-        </div>
-        )}
-        {switcherSchoolEnabled &&(
-        <div className="mb-4.5">
-          <label className="mb-2.5 block text-black dark:text-white">
-            a&ntilde;o acad&eacute;mico
-          </label>
-          <input
-            type="number"
-            required
-            placeholder="Ingresa el a&ntilde;o acad&eacute;mico"
-            min={1}
-            max={11}
-            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-          />
-        </div>
+
+        {switcherSchoolEnabled && (
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">
+              Nombre de la escuela <span className="text-meta-1">*</span>
+            </label>
+            <input
+              type="text"
+              name="school_name"
+              value={studentData.school_name}
+              onChange={handleInputChange}
+              required
+              placeholder="Nombre de la escuela"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+          </div>
         )}
 
+        {switcherSchoolEnabled && (
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">
+              Año de escolaridad <span className="text-meta-1">*</span>
+            </label>
+            <input
+              type="number"
+              name="school_year"
+              min={1}
+              max={11}
+              value={studentData.school_year || ''}
+              onChange={(e) => handleSchoolYearChange(Number(e.target.value))}
+              required
+              placeholder="Año de escolaridad"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

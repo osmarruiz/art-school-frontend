@@ -7,4 +7,5 @@ export interface Tutor{
     city: string;
     address: string;
     registered_at: Date;
+    tutor_kinship: number;
 }
