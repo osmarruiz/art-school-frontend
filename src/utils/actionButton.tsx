@@ -163,11 +163,9 @@ export const addTransactionButton = async (
 ) => {
   try {
     let fees: Fee[] = [];
-    let courses: Course[] = [];
 
     // Intentar obtener datos de sessionStorage
     const cachedFees = sessionStorage.getItem('fees');
-    const cachedCourses = sessionStorage.getItem('courses');
 
     if (cachedFees) {
       fees = JSON.parse(cachedFees);
@@ -179,32 +177,16 @@ export const addTransactionButton = async (
       fees = await feeList.json();
       sessionStorage.setItem('fees', JSON.stringify(fees)); // Guardar en cache
     }
-
-    if (cachedCourses) {
-      courses = JSON.parse(cachedCourses);
-    } else {
-      const courseList = await fetch(`${API_URL}/courses.list`, {
-        headers: { Authorization: API_KEY },
-        credentials: 'include',
-      });
-      courses = await courseList.json();
-      sessionStorage.setItem('courses', JSON.stringify(courses)); // Guardar en cache
-    }
     // Crear opciones para tarifas
     const feeOptions = fees
+      .filter((fee: Fee) => fee.type !== 'renewal')
       .map(
         (fee: Fee) =>
           `<option value="${fee.id}" data-type="${fee.type}">${fee.label}</option>`,
       )
       .join('');
 
-    // Crear opciones para cursos
-    const courseOptions = courses
-      .map(
-        (course: Course) =>
-          `<option value="${course.id}" data-price="${course.price}">${course.name}</option>`,
-      )
-      .join('');
+    
 
     // Mostrar el popup con los selects y inputs
     await Swal.fire({
@@ -214,13 +196,9 @@ export const addTransactionButton = async (
           <option value="" disabled selected>Selecciona una tarifa</option>
           ${feeOptions}
         </select>
-        <select id="swal-course" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" disabled>
-          <option value="" disabled selected>Selecciona un curso</option>
-          ${courseOptions}
-        </select>
 
-        <input id="swal-amount" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="number" min="0" placeholder="Monto del recibo">
-        <input id="swal-remarks" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="text" placeholder="Concepto">
+        <input id="swal-amount" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="number" min="0" placeholder="Monto (opcional)">
+        <input id="swal-remarks" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="text" placeholder="Concepto (opcional)">
         <input id="swal-date" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="date" placeholder="Fecha objetivo">
       `,
       focusConfirm: false,
@@ -233,63 +211,18 @@ export const addTransactionButton = async (
       confirmButtonText: 'Aceptar',
       cancelButtonText: 'Cancelar',
       didOpen: () => {
-        const feeSelect = document.getElementById(
-          'swal-fee',
-        ) as HTMLSelectElement;
-        const courseSelect = document.getElementById(
-          'swal-course',
-        ) as HTMLSelectElement;
-        const amountInput = document.getElementById(
-          'swal-amount',
-        ) as HTMLInputElement;
-
-        function updateCourseAndAmount() {
-          const selectedFee = feeSelect.options[feeSelect.selectedIndex];
-          const selectedFeeType = selectedFee
-            ? selectedFee.getAttribute('data-type')
-            : '';
-
-          if (selectedFeeType === 'month') {
-            courseSelect.disabled = false; // Habilitar cursos si es mensualidad
-          } else {
-            courseSelect.disabled = true;
-            courseSelect.value = ''; // Limpiar selección de curso
-            amountInput.value = ''; // También limpiar el monto si no es mensualidad
-          }
-        }
-
-        function updateAmountFromCourse() {
-          if (courseSelect.disabled) return; // Evitar errores si el select está deshabilitado
-
-          const selectedCourse =
-            courseSelect.options[courseSelect.selectedIndex];
-          const coursePrice = selectedCourse
-            ? parseFloat(selectedCourse.getAttribute('data-price') || '0')
-            : 0;
-          amountInput.value = coursePrice.toString();
-        }
-
-        // Ejecutar al inicio por si ya hay valores preseleccionados
-        updateCourseAndAmount();
-
-        feeSelect.addEventListener('change', updateCourseAndAmount);
-        courseSelect.addEventListener('change', updateAmountFromCourse);
+        document.getElementById('swal-fee')?.focus();
+        Swal.showValidationMessage(
+          'Al omitir el monto se extrae de la tarifa',
+        );
       },
-
       preConfirm: () => {
-        const fee_id = (
-          document.getElementById('swal-fee') as HTMLSelectElement
-        )?.value;
-        const course_id = (
-          document.getElementById('swal-course') as HTMLSelectElement
-        )?.value;
-        const feeSelect = document.getElementById(
-          'swal-fee',
-        ) as HTMLSelectElement;
-        const amountInput = document.getElementById(
-          'swal-amount',
-        ) as HTMLInputElement;
-        const amount = amountInput?.value.trim();
+        const fee = (
+          document.getElementById('swal-fee') as HTMLInputElement
+        )?.value.trim();
+        const amount = (
+          document.getElementById('swal-amount') as HTMLInputElement
+        )?.value.trim();
         const remarks = (
           document.getElementById('swal-remarks') as HTMLInputElement
         )?.value.trim();
@@ -297,52 +230,42 @@ export const addTransactionButton = async (
           document.getElementById('swal-date') as HTMLInputElement
         )?.value.trim();
 
-        if (!fee_id) {
-          Swal.showValidationMessage('Debe seleccionar una tarifa');
+        let seed_total = false;
+        if(!amount){
+          seed_total = true;
+        }
+  
+        if (!fee) {
+          Swal.showValidationMessage('Debes seleccionar una tarifa');
           return false;
         }
 
-        const selectedFee = feeSelect.options[feeSelect.selectedIndex];
-        const feeType = selectedFee
-          ? selectedFee.getAttribute('data-type')
-          : '';
-
-        if (feeType === 'month' && !course_id) {
+        if (!target_date) {
           Swal.showValidationMessage(
-            'Debe seleccionar un curso para la mensualidad',
+            'Debe seleccionar una fecha objetivo',
           );
           return false;
         }
 
-        const amountNumber = parseFloat(amount);
-        if (isNaN(amountNumber) || amountNumber < 0) {
-          Swal.showValidationMessage(
-            'El monto debe ser un número válido mayor o igual que 0',
-          );
-          return false;
-        }
-
-        return {
-          student_id,
-          fee_id: parseInt(fee_id, 10),
-          course_id: feeType === 'month' ? parseInt(course_id, 10) : null, // Solo incluir si es mensualidad
-          amount: amountNumber,
-          remarks,
-          target_date,
-        };
+        return { fee, amount, remarks, target_date, seed_total };
       },
+
+      
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const { fee_id, amount, remarks, target_date } = result.value;
+        const { fee, amount, remarks, target_date, seed_total } = result.value;
 
         // Datos de la transacción
         const transactionData: Record<string, any> = {
           student_id,
-          fee_id: parseInt(fee_id, 10),
-          target_date: target_date || null,
-          remarks: remarks || 'Sin concepto',
-          total: amount || 0,
+          fee_id: parseInt(fee, 10),
+          target_date: target_date ,
+          remarks: remarks ,
+          total: parseFloat(amount),
+          seed_total: seed_total
         };
+
+        console.log(transactionData);
 
         try {
           const response = await fetch(`${API_URL}/transactions.begin`, {

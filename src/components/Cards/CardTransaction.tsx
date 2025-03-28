@@ -154,7 +154,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
               <div className="flex justify-between items-center">
                 <div className={clsx(colorVariants[color].text)}>
                   <p className="font-bold block xl:inline-flex">{transaction.fee.label}</p>
-                  <p>{moment(transaction.started_at).format('LL')}</p>
+                  <p>{moment(transaction.target_date).format('LL')}</p>
                   <p className="font-bold block xl:inline-flex">
                     Total: {formatCurrency(transaction.total)}
                   </p>
