@@ -1,114 +1,77 @@
 import { ApexOptions } from 'apexcharts';
-import React, { useState } from 'react';
+import React from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { formatCurrency } from '../../utils/formatCurrency';
 
-const options: ApexOptions = {
-  colors: ['#3C50E0', '#80CAEE'],
-  chart: {
-    fontFamily: 'Satoshi, sans-serif',
-    type: 'bar',
-    height: 335,
-    stacked: true,
-    toolbar: {
-      show: false,
-    },
-    zoom: {
-      enabled: false,
-    },
-  },
-
-  responsive: [
-    {
-      breakpoint: 1536,
-      options: {
-        plotOptions: {
-          bar: {
-            borderRadius: 0,
-            columnWidth: '25%',
-          },
-        },
-      },
-    },
-  ],
-  plotOptions: {
-    bar: {
-      horizontal: false,
-      borderRadius: 0,
-      columnWidth: '25%',
-      borderRadiusApplication: 'end',
-      borderRadiusWhenStacked: 'last',
-    },
-  },
-  dataLabels: {
-    enabled: false,
-  },
-
-  xaxis: {
-    categories: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-  },
-  legend: {
-    position: 'top',
-    horizontalAlign: 'left',
-    fontFamily: 'Satoshi',
-    fontWeight: 500,
-    fontSize: '14px',
-
-    markers: {
-      radius: 99,
-    },
-  },
-  fill: {
-    opacity: 1,
-  },
-};
-
-interface ChartTwoState {
-  series: {
-    name: string;
-    data: number[];
-  }[];
+interface IncomeData {
+  date: string;
+  income: number;
 }
 
-const ChartTwo: React.FC = () => {
-  const [state, setState] = useState<ChartTwoState>({
-    series: [
-      {
-        name: 'Sales',
-        data: [44, 55, 41, 67, 22, 43, 100, 200, 280, 120, 200, 300],
-      }
-    ],
+interface ChartTwoProps {
+  data: IncomeData[];
+}
+
+const ChartTwo: React.FC<ChartTwoProps> = ({ data }) => {
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  // Extraer mes y año de las fechas
+  const categories = sortedData.map(item => {
+    const date = new Date(item.date);
+    return date.toLocaleString('es-ES', { month: 'short', year: 'numeric' }); // Ej: "ene. 2024"
   });
-  
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-    }));
+
+  const incomeValues = sortedData.map(item => item.income);
+
+  const options: ApexOptions = {
+    colors: ['#3C50E0'],
+    chart: {
+      type: 'bar',
+      height: 335,
+      toolbar: { show: false },
+      zoom: { enabled: false },
+    },
+    xaxis: {
+      categories,
+      labels: {
+        rotate: -45,
+      },
+    },
+    yaxis: {
+      labels: {
+        formatter: (value) => formatCurrency(value), // Formatear los valores en el eje Y
+      },
+    },
+    tooltip: {
+      y: {
+        formatter: (value) => formatCurrency(value), // Formatear valores en el tooltip
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '25%',
+        borderRadius: 4,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    fill: {
+      opacity: 1,
+    },
   };
-  handleReset;  
+
+  const series = [{ name: 'Ingresos', data: incomeValues }];
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
-      <div className="mb-4 justify-between gap-4 sm:flex">
-        <div>
-          <h4 className="text-xl font-semibold text-black dark:text-white">
-            Ingresos del 2025
-          </h4>
-        </div>
-        <div>
-          
-        </div>
-      </div>
-
-      <div>
-        <div id="chartTwo" className="-ml-5 -mb-9">
-          <ReactApexChart
-            options={options}
-            series={state.series}
-            type="bar"
-            height={280}
-          />
-        </div>
-      </div>
+    <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+      <h4 className="text-xl font-semibold text-black dark:text-white">Ingresos del Último Año</h4>
+      <ReactApexChart options={options} series={series} type="bar" height={280} />
     </div>
   );
 };

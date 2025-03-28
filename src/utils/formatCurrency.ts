@@ -1,10 +1,9 @@
 export const formatCurrency = (
-    amount: number,
-    currency: string = 'USD',
-    locale: string = 'en-US'
-  ): string => {
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency,
-    }).format(amount);
-  };
+  amount: number,
+  locale: string = 'es-NI' // Nicaragua locale for Cordoba
+): string => {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: 'NIO', // Cordoba currency code
+  }).format(amount);
+};

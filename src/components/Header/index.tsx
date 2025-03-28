@@ -3,8 +3,8 @@ import DropdownNotification from './DropdownNotification';
 import DropdownUser from './DropdownUser';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import logo from '../../images/logo/logo.svg';
-import DatePickerOne from '../Forms/DatePicker/DatePickerOne';
-import SelectGroupOne from '../Forms/SelectGroup/SelectGroupOne';
+import MonthPicker from '../Forms/DatePicker/MonthPicker';
+import WeekPicker from '../Forms/DatePicker/WeekPicker';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -74,8 +74,8 @@ const Header = (props: {
           <ul className="flex items-center gap-2 2xsm:gap-4">
             {(pathname === '/' || pathname.includes('dashboard')) &&(<div className='hidden md:flex md: gap-2'>
 
-            <DatePickerOne/>
-            <SelectGroupOne placeholder='selecionar semana'/>
+            <MonthPicker />
+            <WeekPicker/>
             </div>)}
             {/* <!-- Dark Mode Toggler --> */}
             <DarkModeSwitcher />
