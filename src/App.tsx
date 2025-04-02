@@ -20,6 +20,7 @@ import Pendings from './pages/Admin/Pendings';
 import PrivateRoute from './utils/PrivateRoute';
 import ProtectedRoute from './utils/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
+import StudentProfile from './pages/StudentProfile';
 
 function App() {
   const { pathname } = useLocation();
@@ -184,7 +185,29 @@ function App() {
         allowedRoles={['operator']}/>
       }
       />
-
+      <Route
+        path="/student/:id"
+        element={
+          <OperatorLayout>
+            <>
+              <PageTitle title="Perfil de Estudiante | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <StudentProfile />
+            </>
+          </OperatorLayout>
+        }
+      />
+      {/* Rutas con PublicLayout */}
+      <Route
+        path="/auth/signin"
+        element={
+          <PublicLayout>
+            <>
+              <PageTitle title="Iniciar sesi&oacute;n | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <SignIn />
+            </>
+          </PublicLayout>
+        }
+      />
       <Route
         path="*"
         element={
