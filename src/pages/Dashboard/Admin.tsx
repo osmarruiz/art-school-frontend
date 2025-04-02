@@ -64,10 +64,8 @@ const Admin: React.FC = () => {
       }
     };
 
-    // Intervalo para revisar cada 500 ms si los valores de sessionStorage han cambiado
     const intervalId = setInterval(checkSessionStorage, 500);
 
-    // Cleanup: Limpiar el intervalo cuando el componente se desmonte
     return () => clearInterval(intervalId);
   }, [month, week]);
 

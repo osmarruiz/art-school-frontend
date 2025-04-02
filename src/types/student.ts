@@ -5,6 +5,6 @@ export interface Student {
     id_card: string;
     name: string;
     courses: Course[];
-    coursesString: string; //
+    coursesString: string; 
     "is_active": boolean;
   }

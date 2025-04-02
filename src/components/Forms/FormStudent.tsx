@@ -42,33 +42,28 @@ const FormStudent = ({
   const handleSchoolYearChange = ( schoolYear : number) => {
     setStudentData((prevState) => ({
       ...prevState,
-      school_year: schoolYear, // Actualizamos el valor de kinship con el id seleccionado
+      school_year: schoolYear, 
     }));
   };
 
   const handleDateChange = (date: Date | null) => {
     setStudentData((prevState) => ({
       ...prevState,
-      date_of_birth: date ? date.toISOString().split('T')[0] : '', // ISO format (YYYY-MM-DD)
+      date_of_birth: date ? date.toISOString().split('T')[0] : '', 
     }));
   };
 
   function formatInput(input: string) {
-    // Eliminamos cualquier carácter que no sea número o letra
     let cleaned = input.replace(/[^0-9a-zA-Z]/g, '');
   
-    // Convertimos la última letra a mayúsculas
     if (cleaned.length > 0 && /[a-zA-Z]/.test(cleaned[cleaned.length - 1])) {
       cleaned = cleaned.slice(0, -1) + cleaned[cleaned.length - 1].toUpperCase();
     }
   
-    // Si ya tenemos los 13 primeros caracteres y la letra
     if (cleaned.length >= 13) {
-      // Aplicamos el formato con guiones solo cuando tengamos la última letra
       return cleaned.replace(/^(\d{3})(\d{6})(\d{4})([a-zA-Z])$/, '$1-$2-$3$4');
     }
   
-    // Si aún no tenemos la letra final, mostramos los números sin los guiones
     return cleaned.replace(/^(\d{3})(\d{6})(\d{4})$/, '$1$2$3');
   }
   
@@ -92,7 +87,6 @@ const FormStudent = ({
     }));
   }, [switcherExonerateEnabled]);
 
-  // Use useEffect to pass data to parent
   useEffect(() => {
     onStudentChange(studentData);
   }, [studentData, onStudentChange]);
@@ -125,7 +119,7 @@ const FormStudent = ({
             value={studentData.id_card}
             onChange={(e) => {
               const formattedValue = formatInput(e.target.value);
-              setStudentData({ ...studentData, id_card: formattedValue }); // Actualiza el estado
+              setStudentData({ ...studentData, id_card: formattedValue }); 
             }}
             minLength={16}
             maxLength={16}
@@ -195,7 +189,7 @@ const FormStudent = ({
             value={studentData.phone_number}
             onChange={(e) => {
               const formattedValue = formatPhoneNumber(e.target.value);
-              setStudentData({ ...studentData, phone_number: formattedValue }); // Actualiza el estado
+              setStudentData({ ...studentData, phone_number: formattedValue });
             }}
             placeholder="Ej: 87656859"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -216,7 +210,7 @@ const FormStudent = ({
             value={studentData.emergency_number}
             onChange={(e) => {
               const formattedValue = formatPhoneNumber(e.target.value);
-              setStudentData({ ...studentData, emergency_number: formattedValue }); // Actualiza el estado
+              setStudentData({ ...studentData, emergency_number: formattedValue });
             }}
             placeholder="Ej: 87656859"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"

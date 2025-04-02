@@ -1,6 +1,6 @@
 import flatpickr from "flatpickr";
 import { useState, useEffect, useRef } from "react";
-import { Spanish } from "flatpickr/dist/l10n/es.js"; // Si necesitas soporte en español
+import { Spanish } from "flatpickr/dist/l10n/es.js"; 
 
 const MonthPicker = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -10,7 +10,6 @@ const MonthPicker = () => {
   useEffect(() => {
     if (!inputRef.current) return;
 
-    // Si ya hay un mes guardado en sessionStorage, lo cargamos
     const storedMonth = sessionStorage.getItem("selectedMonth");
     if (storedMonth) {
       setSelectedMonth(storedMonth);
@@ -20,14 +19,13 @@ const MonthPicker = () => {
       mode: "single",
       static: true,
       disableMobile: true,
-      dateFormat: "Y-m", // Asegúrate de que el formato sea YYYY-MM
-      locale: Spanish, // Configuración regional para español (opcional)
+      dateFormat: "Y-m", 
+      locale: Spanish, 
       onChange: (selectedDates) => {
         if (selectedDates.length > 0) {
           const selectedDate = selectedDates[0];
           const formattedDate = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
           setSelectedMonth(formattedDate);
-          // Al seleccionar un mes, guardamos solo ese valor
           sessionStorage.setItem("selectedMonth", formattedDate);
         }
       },

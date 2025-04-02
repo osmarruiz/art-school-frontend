@@ -19,7 +19,6 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: SetValue<
       setStoredValue(newValue);
       window.localStorage.setItem(key, JSON.stringify(newValue));
 
-      // 🔥 Disparar manualmente el evento 'storage' para que otros listeners lo detecten en la misma pestaña
       window.dispatchEvent(new StorageEvent('storage', { key, newValue: JSON.stringify(newValue) }));
     } catch (error) {
       console.log(error);

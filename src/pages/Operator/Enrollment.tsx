@@ -81,27 +81,25 @@ const Enrollment = ({
   const handleKinshipChange = (kinshipId: number) => {
     setSelectTutorData((prevState) => ({
       ...prevState,
-      tutor_kinship: kinshipId, // Actualizamos el valor de kinship con el id seleccionado
+      tutor_kinship: kinshipId, 
     }));
   };
 
   const handleTutorSelection = (tutor: Tutor) => {
-    // Solo se guarda el ID del tutor
+    
     setSelectTutorData((prevState) => ({
       ...prevState,
-      tutor_id: tutor.id, // Aquí guardas solo el ID
+      tutor_id: tutor.id,
     }));
-    setSelectedTutor(tutor); // Si necesitas guardar el objeto completo
+    setSelectedTutor(tutor); 
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Determinar si hay que registrar un tutor o no
     let tutorInfo = {};
 
     if (tutorData.id_card) {
-      // Registrar un nuevo tutor
       tutorInfo = {
         tutor_kinship: tutorData.tutor_kinship,
         tutor: {
@@ -114,14 +112,12 @@ const Enrollment = ({
         },
       };
     } else if (selectTutorData.tutor_id) {
-      // Asignar un tutor existente
       tutorInfo = {
         tutor_id: selectTutorData.tutor_id,
         tutor_kinship: selectTutorData.tutor_kinship,
       };
     }
 
-    // Construcción del JSON a enviar
     const payload = {
       emergency_number: studentData.emergency_number || '',
       exonerate: studentData.exonerate || false,
@@ -140,7 +136,7 @@ const Enrollment = ({
         course_id: course.courseId,
         shift_id: course.shiftId,
       })),
-      ...tutorInfo, // Agregar tutor solo si aplica
+      ...tutorInfo, 
     };
 
 

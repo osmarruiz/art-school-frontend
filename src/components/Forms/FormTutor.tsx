@@ -27,26 +27,21 @@ const FormTutor: React.FC<{
   const handleKinshipChange = ( kinshipId: number) => {
     setTutorData((prevState) => ({
       ...prevState,
-      tutor_kinship: kinshipId, // Actualizamos el valor de kinship con el id seleccionado
+      tutor_kinship: kinshipId, 
     }));
   };
 
   function formatInput(input: string) {
-    // Eliminamos cualquier carácter que no sea número o letra
     let cleaned = input.replace(/[^0-9a-zA-Z]/g, '');
   
-    // Convertimos la última letra a mayúsculas
     if (cleaned.length > 0 && /[a-zA-Z]/.test(cleaned[cleaned.length - 1])) {
       cleaned = cleaned.slice(0, -1) + cleaned[cleaned.length - 1].toUpperCase();
     }
   
-    // Si ya tenemos los 13 primeros caracteres y la letra
     if (cleaned.length >= 13) {
-      // Aplicamos el formato con guiones solo cuando tengamos la última letra
       return cleaned.replace(/^(\d{3})(\d{6})(\d{4})([a-zA-Z])$/, '$1-$2-$3$4');
     }
   
-    // Si aún no tenemos la letra final, mostramos los números sin los guiones
     return cleaned.replace(/^(\d{3})(\d{6})(\d{4})$/, '$1$2$3');
   }
   
@@ -95,7 +90,7 @@ const FormTutor: React.FC<{
             value={tutorData.id_card}
             onChange={(e) => {
               const formattedValue = formatInput(e.target.value);
-              setTutorData({ ...tutorData, id_card: formattedValue }); // Actualiza el estado
+              setTutorData({ ...tutorData, id_card: formattedValue });
             }}
             placeholder="Ingresa la cédula Ej: 0001111112222A"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -156,7 +151,7 @@ const FormTutor: React.FC<{
             value={tutorData.phone_number}
             onChange={(e) => {
               const formattedValue = formatPhoneNumber(e.target.value);
-              setTutorData({ ...tutorData, phone_number: formattedValue }); // Actualiza el estado
+              setTutorData({ ...tutorData, phone_number: formattedValue }); 
             }}
             required
             placeholder="Ej: 87656859"

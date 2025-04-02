@@ -14,8 +14,7 @@ const Renew = ({
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 })  => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  //const [transactions, setTransactions] = useState<Transaction[]>([]);
-
+  
   
 
   return (

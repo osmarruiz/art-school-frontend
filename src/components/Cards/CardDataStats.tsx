@@ -9,7 +9,7 @@ interface CardDataStatsProps {
   levelUp?: boolean;
   levelDown?: boolean;
   children?: ReactNode;
-  color?: 'violet' | 'white' | 'red' | 'orange' | 'green'; // Prop para el color
+  color?: 'violet' | 'white' | 'red' | 'orange' | 'green'; 
 }
 
 const CardDataStats: React.FC<CardDataStatsProps> = ({

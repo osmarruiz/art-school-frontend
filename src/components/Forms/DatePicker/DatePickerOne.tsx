@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 const DatePickerOne = ({ onDateChange, name, value }: { onDateChange?: (date: Date | null) => void; name: string; value: string }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const flatpickrInstance = useRef<flatpickr.Instance | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(value); // Estado para almacenar la fecha seleccionada
+  const [selectedDate, setSelectedDate] = useState<string>(value); 
 
   useEffect(() => {
     if (!inputRef.current) return;
@@ -21,22 +21,22 @@ const DatePickerOne = ({ onDateChange, name, value }: { onDateChange?: (date: Da
       onChange: (selectedDates) => {
         const date = selectedDates[0];
         if (onDateChange) {
-          onDateChange(date); // Enviar la fecha seleccionada al componente padre
+          onDateChange(date); 
         }
-        setSelectedDate(date ? date.toLocaleDateString() : ''); // Actualizar el estado con la fecha seleccionada
+        setSelectedDate(date ? date.toLocaleDateString() : ''); 
       },
     });
 
     return () => {
-      flatpickrInstance.current?.destroy(); // Limpiar la instancia de flatpickr cuando el componente se desmonte
+      flatpickrInstance.current?.destroy(); 
     };
   }, [onDateChange]);
 
   useEffect(() => {
     if (flatpickrInstance.current) {
-      flatpickrInstance.current.setDate(selectedDate, false); // Sin disparar eventos al actualizar el valor
+      flatpickrInstance.current.setDate(selectedDate, false); 
     }
-  }, [selectedDate]); // El efecto se ejecuta cuando el estado 'selectedDate' cambia
+  }, [selectedDate]); 
 
   return (
     <div className="relative">
@@ -46,8 +46,8 @@ const DatePickerOne = ({ onDateChange, name, value }: { onDateChange?: (date: Da
         name={name}
         className="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-2.5 py-2.5 font-normal outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
         placeholder="mm/dd/yyyy"
-        value={selectedDate} // Aquí usamos el valor del estado 'selectedDate'
-        onChange={(e) => setSelectedDate(e.target.value)} // Actualizamos el estado si el usuario cambia la fecha manualmente
+        value={selectedDate} 
+        onChange={(e) => setSelectedDate(e.target.value)} 
       />
 
       <div className="pointer-events-none absolute inset-0 left-auto right-5 flex items-center">

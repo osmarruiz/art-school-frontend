@@ -15,7 +15,6 @@ export const revokeReceiptButton = async (
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
 ) => {
-  // Usamos async/await para manejar la promesa
   try {
     const result = await Swal.fire({
       title: 'Esta seguro de revocar?',
@@ -50,8 +49,6 @@ export const revokeTransactionButton = async (
   reloadTransactions: () => void,
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
-) => {
-  // Usamos async/await para manejar la promesa
   try {
     const result = await Swal.fire({
       title: 'Esta seguro de revocar?',
@@ -164,7 +161,6 @@ export const addTransactionButton = async (
   try {
     let fees: Fee[] = [];
 
-    // Intentar obtener datos de sessionStorage
     const cachedFees = sessionStorage.getItem('fees');
 
     if (cachedFees) {
@@ -175,9 +171,8 @@ export const addTransactionButton = async (
         credentials: 'include',
       });
       fees = await feeList.json();
-      sessionStorage.setItem('fees', JSON.stringify(fees)); // Guardar en cache
+      sessionStorage.setItem('fees', JSON.stringify(fees)); 
     }
-    // Crear opciones para tarifas
     const feeOptions = fees
       .filter((fee: Fee) => fee.type !== 'renewal')
       .map(
@@ -188,7 +183,6 @@ export const addTransactionButton = async (
 
     
 
-    // Mostrar el popup con los selects y inputs
     await Swal.fire({
       title: 'Agregar Transacción',
       html: `
@@ -255,7 +249,6 @@ export const addTransactionButton = async (
       if (result.isConfirmed && result.value ) {
         const { fee, amount, remarks, target_date, seed_total } = result.value;
 
-        // Datos de la transacción
         const transactionData: Record<string, any> = {
           student_id,
           fee_id: parseInt(fee, 10),

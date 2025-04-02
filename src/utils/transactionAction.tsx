@@ -1,6 +1,5 @@
 import { API_URL, API_KEY } from "./apiConfig";
 
-// Función para revocar un recibo
 export const revokeReceipt = async (
   receipt_id: number,
   transaction_id: number,
@@ -45,7 +44,6 @@ export const revokeReceipt = async (
   }
 };
 
-// Función para agregar un recibo
 export const addReceipt = async (
   transaction_id: number,
   no: number,
@@ -96,7 +94,6 @@ export const addReceipt = async (
   }
 };
 
-// Función para finalizar los recibos
 export const finishTransaction = async (
   transaction_id: number,
   reloadTransactions: () => void,
@@ -137,7 +134,6 @@ export const finishTransaction = async (
   }
 };
 
-// Función para revocar una transacción
 export const revokeTransaction = async (
   transaction_id: number,
   reloadTransactions: () => void,

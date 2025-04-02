@@ -37,7 +37,7 @@ const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
 interface TransactionListProps {
   transactions: Transaction[];
-  reloadTransactions: () => Promise<void>; // Aseguramos que reloadTransactions devuelva una promesa
+  reloadTransactions: () => Promise<void>; 
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }
 
@@ -53,18 +53,17 @@ const CardTransaction: React.FC<TransactionListProps> = ({
   const [visibleReceipts, setVisibleReceipts] = useState<
     Record<string, boolean>
   >({});
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
 
-  // Cargar transacciones con estado de carga
   useEffect(() => {
     const fetchTransactions = async () => {
       setLoading(true);
       try {
-        await reloadTransactions(); // Llamar a la función para recargar transacciones
+        await reloadTransactions(); 
       } catch (error) {
         showError('Error al cargar las transacciones');
       } finally {

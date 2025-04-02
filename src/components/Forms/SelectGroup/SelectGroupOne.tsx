@@ -20,7 +20,7 @@ const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shi
     const value = Number(event.target.value);
     setSelectedOption(value);
     if (onChange) {
-      onChange(value); // Llamar a `handleCourseChange`
+      onChange(value); 
     }
   };
 

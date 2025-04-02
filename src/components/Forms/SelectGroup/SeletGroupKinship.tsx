@@ -9,15 +9,15 @@ interface SelectProps {
   course?: Course[];
   shift?: Shift[];
   kinship?: Kinship[];
-  value?: string | number; // Añadir el valor que se selecciona
-  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;  // Cambiar para que acepte un evento
+  value?: string | number; 
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;  
 }
 
 const SelectGroupKinship: React.FC<SelectProps> = ({ title, course, placeholder, shift, kinship, value, onChange }) => {
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = Number(event.target.value);
     if (onChange) {
-      onChange(event); // Llamar a `onChange` con el evento completo
+      onChange(event); 
     }
   };
 
@@ -56,9 +56,9 @@ const SelectGroupKinship: React.FC<SelectProps> = ({ title, course, placeholder,
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
-          value={value} // Usar el valor que se pasa como prop
+          value={value} 
           required
-          onChange={handleSelectChange} // Pasar el evento a `onChange`
+          onChange={handleSelectChange} 
           className={`relative z-20 w-full appearance-none rounded border border-stroke bg-white py-2.5 pl-4 pr-8 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
             value ? 'text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'
           }`}

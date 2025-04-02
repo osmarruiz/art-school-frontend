@@ -47,6 +47,4 @@ export const colorVariants = {
   },
 };
 
-//bg-boxdark bg-boxdark-2
 
-//

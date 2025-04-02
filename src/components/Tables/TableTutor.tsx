@@ -58,14 +58,12 @@ const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
       tutor.id_card.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  //cambia el tema del aggrid segun el estado de colorMode
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
 
   
 
-  //definiciones del aggrid
   const columnDefs = useMemo(
     () => [
       { field: 'name', headerName: 'Nombre' },

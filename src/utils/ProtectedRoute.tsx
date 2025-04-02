@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from './AuthContext'; // Asumiendo que el hook useAuth está definido en tu aplicación
+import { useAuth } from './AuthContext'; 
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user } = useAuth();
 
   if (user?.role === 'admin') {
-    return <Navigate to="/dashboard" replace />; // Si es admin, redirigir al dashboard
+    return <Navigate to="/dashboard" replace />; 
   }
 
   if (user?.role === 'operator') {

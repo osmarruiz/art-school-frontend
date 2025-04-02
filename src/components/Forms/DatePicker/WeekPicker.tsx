@@ -4,12 +4,11 @@ import { useState, useEffect, useRef } from "react";
 const WeekPicker = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const flatpickrInstance = useRef<flatpickr.Instance | null>(null);
-  const [selectedWeek, setSelectedWeek] = useState<string>(""); // Inicializar como cadena vacía
+  const [selectedWeek, setSelectedWeek] = useState<string>(""); 
 
   useEffect(() => {
     if (!inputRef.current) return;
 
-    // Si ya hay una semana guardada en sessionStorage, la cargamos
     const storedWeek = sessionStorage.getItem("selectedWeek");
     if (storedWeek) {
       setSelectedWeek(storedWeek);
@@ -25,7 +24,6 @@ const WeekPicker = () => {
           const selectedDate = selectedDates[0];
           const formattedDate = `${selectedDate.getFullYear()}-W${getISOWeek(selectedDate)}`;
           setSelectedWeek(formattedDate);
-          // Al seleccionar una semana, guardamos solo ese valor
           sessionStorage.setItem("selectedWeek", formattedDate);
         }
       },
@@ -36,11 +34,10 @@ const WeekPicker = () => {
     };
   }, []);
 
-  // Función para obtener la semana ISO correcta
   const getISOWeek = (date: Date) => {
     const tempDate = new Date(date.getTime());
     tempDate.setHours(0, 0, 0, 0);
-    tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7)); // Ajuste a jueves
+    tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7)); 
     const yearStart = new Date(tempDate.getFullYear(), 0, 1);
     return Math.ceil(((tempDate.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
   };

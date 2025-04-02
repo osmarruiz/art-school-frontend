@@ -47,7 +47,7 @@ const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: 
               ...form,
               selectedCourse: courseId,
               shiftOptions: courseData.find((course) => course.id === courseId)?.shifts || [],
-              selectedShift: null, // Resetear el turno cuando cambia el curso
+              selectedShift: null, 
             }
           : form
       )

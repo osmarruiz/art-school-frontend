@@ -33,7 +33,6 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
   const [colorMode] = useColorMode();
   const [theme, setTheme] = useState(themeLightCold);
 
-  //obtiene los estudiantes
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,7 +63,6 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
     fetchData();
   }, []);
 
-  //permite filtrar los estudiantes de la barra de busqueda
   const filteredStudents = studentData.filter(
     (student) =>
       student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -72,12 +70,10 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
       student.coursesString.toLowerCase().includes(searchTerm.toLowerCase()) 
   );
 
-  //cambia el tema del aggrid segun el estado de colorMode
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
 
-  //definiciones del aggrid
   const columnDefs = useMemo(
     () => [
       { field: 'name', headerName: 'Nombre' },

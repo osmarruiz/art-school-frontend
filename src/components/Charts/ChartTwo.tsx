@@ -19,10 +19,9 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ data }) => {
 
   const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  // Extraer mes y año de las fechas
   const categories = sortedData.map(item => {
     const date = new Date(item.date);
-    return date.toLocaleString('es-ES', { month: 'short', year: 'numeric' }); // Ej: "ene. 2024"
+    return date.toLocaleString('es-ES', { month: 'short', year: 'numeric' }); 
   });
 
   const incomeValues = sortedData.map(item => item.income);
@@ -43,12 +42,12 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ data }) => {
     },
     yaxis: {
       labels: {
-        formatter: (value) => formatCurrency(value), // Formatear los valores en el eje Y
+        formatter: (value) => formatCurrency(value), 
       },
     },
     tooltip: {
       y: {
-        formatter: (value) => formatCurrency(value), // Formatear valores en el tooltip
+        formatter: (value) => formatCurrency(value), 
       },
     },
     plotOptions: {
