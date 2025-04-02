@@ -188,13 +188,17 @@ function App() {
       <Route
         path="/student/:id"
         element={
+          <PrivateRoute
+        element={
           <OperatorLayout>
             <>
               <PageTitle title="Perfil de Estudiante | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-              <StudentProfile />
+              <StudentProfile key={Date.now()}/>
             </>
           </OperatorLayout>
         }
+        allowedRoles={['operator','admin']}/>
+      }
       />
       {/* Rutas con PublicLayout */}
       <Route

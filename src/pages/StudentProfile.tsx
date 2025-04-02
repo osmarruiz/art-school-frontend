@@ -9,15 +9,12 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../hooks/useColorMode';
-import { FaEye, FaMinus, FaPencil, FaPlus, FaUserGroup } from 'react-icons/fa6';
-import { Student } from '../types/student';
-import clsx from 'clsx';
-import { FaSearch } from 'react-icons/fa';
-import CardDataStats from '../components/Cards/CardDataStats';
-import { colorVariants } from '../types/colorVariants';
-import SelectGroupOne from '../components/Forms/SelectGroup/SelectGroupOne';
 import { useParams } from 'react-router-dom';
-// import { API_URL, API_KEY } from '../utils/';
+import { API_KEY, API_URL } from '../utils/apiConfig';
+import Loader from '../common/Loader';
+import Swal from 'sweetalert2';
+import { useAuth } from '../utils/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -36,104 +33,214 @@ interface Transaction {
   total: string;
 }
 
-interface StudentProfileData {
-  personalData: { label: string; value: string }[];
-  tutorData: { label: string; value: string }[];
-  academicData: { label: string; value: string }[];
-  enrollmentData: { label: string; value: string }[];
-  pendingTransactions: Transaction[];
-  finalizedTransactions: Transaction[];
-  name: string;
-  isActive: boolean;
-  registrationDate: string;
+interface Course {
+  course: {
+    id: number;
+    name: string;
+  };
+  shift: {
+    id: number;
+    name: string;
+  };
 }
 
+interface Fee {
+  id: number;
+  type: string;
+  description: string;
+  amount: number;
+}
+
+interface PendingTransactionDetails {
+  status: string;
+  balance: number;
+  year: number;
+  month: string;
+  date: string;
+  fee: Fee;
+}
+
+interface TransactionDetails {
+  id: number;
+  fee: Fee;
+  target_date: string;
+  total: number;
+  balance: number;
+  is_paid: boolean;
+  is_revoked: boolean;
+  is_finished: boolean;
+  started_at: string;
+  finished_at: string;
+  remarks: string;
+}
+
+interface EnrollmentData {
+  id: number;
+  is_paid: boolean;
+  is_exonerated: boolean;
+  courses: Course[];
+  transaction: TransactionDetails;
+  registered_at: string;
+}
+
+interface TutorData {
+  id: number;
+  id_card: string;
+  name: string;
+  email: string;
+  phone_number: string;
+  city: string;
+  address: string;
+  registered_at: string;
+}
+
+interface StatusHistory {
+  removed_at: Date;
+  reason: string | null,
+  recovered_at: Date | null;
+}
+
+interface StudentProfileData {
+  id: number;
+  id_card: string;
+  name: string;
+  date_of_birth: string;
+  age: number;
+  email: string;
+  phone_number: string;
+  city: string;
+  address: string;
+  school_name: string;
+  school_year: number;
+  is_enrolled: boolean;
+  is_active: boolean;
+  registered_at: Date;
+  updated_at: string;
+  tutor: TutorData;
+  tutor_kinship: string;
+  enrollment: EnrollmentData;
+  status_history: StatusHistory[];
+}
 
 const StudentProfile: React.FC = () => {
   const { id } = useParams();
   const [colorMode] = useColorMode();
   const [theme, setTheme] = useState(themeLightCold);
   const [studentData, setStudentData] = useState<StudentProfileData | null>(null);
+  const [finishedTransactionsData, setFinishedTransactionsData] = useState<TransactionDetails[] | null>(null);
+  const [statusHistoryData, setStatusHistoryData] = useState<StatusHistory[]>([]);
+  const [pendingTransactionsData, setpendingTransactionsData] = useState<PendingTransactionDetails[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>("");
+  const [studentFound, setStudentFound] = useState<boolean>(true);
+  const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
 
-  //temporal----------------------------------
+  useEffect(() => {
+    const fetchStudentInfo = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        let response = await fetch(`${API_URL}/students.get?student_id=${id}`,
+          {
+            credentials: 'include',
+            headers: { 'Authorization': `${API_KEY}`, 'Content-Type': 'application/json' }
+          }
+        );
+        if (!response.ok) {
+          if (response.status === 404) {
+            setStudentFound(false);
+            return;
+          }
+
+          console.log("Comes here!");
+          setError('Error al cargar la información del estudiante.');
+          return;
+        }
+
+        const studentProfileData: StudentProfileData = await response.json();
+
+        response = await fetch(`${API_URL}/transactions.list?student_id=${id}`,
+          {
+            credentials: 'include',
+            headers: { 'Authorization': `${API_KEY}`, 'Content-Type': 'application/json' }
+          }
+        );
+
+        if (!response.ok) {
+          setError('Error al cargar la información del estudiante.');
+          return;
+        }
+
+        const studentTransactionsData = await response.json();
+
+        response = await fetch(`${API_URL}/transactions.pending.list?student_id=${id}`,
+          {
+            credentials: 'include',
+            headers: { 'Authorization': `${API_KEY}`, 'Content-Type': 'application/json' }
+          }
+        );
+
+        if (!response.ok) {
+          setError('Error al cargar la información del estudiante.');
+          return;
+        }
+
+        const studentPendingTransactionsData = await response.json();
+        setStudentData(studentProfileData);
+        setStatusHistoryData(studentProfileData.status_history ?? []);
+        setFinishedTransactionsData(studentTransactionsData);
+        setpendingTransactionsData(studentPendingTransactionsData);
+      } catch (e: any) {
+        setError(e);
+        console.error('Error fetching student data:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudentInfo();
+  }, [id]);
 
   const personalData: DataItem[] = [
-    { label: 'Cédula', value: '282-120003-32400' },
-    { label: 'Nacimiento', value: 'Enero 02, 2000 (11 año' },
-    { label: 'Correo', value: 'Jarvis hermann4@gmail.com' },
-    { label: 'Teléfono', value: '+ 5058609-9193' },
-    { label: 'Ciudad', value: 'Rumallsdottirhaven' },
-    { label: 'Dirección', value: '55887 Considine Square' },
+    { label: 'Cédula', value: studentData?.id_card },
+    { label: 'Nacimiento', value: `${new Date(studentData?.date_of_birth).toLocaleDateString('es-NI', { year: 'numeric', month: 'long', day: 'numeric', })} (${studentData?.age} años)` },
+    { label: 'Correo', value: studentData?.email },
+    { label: 'Teléfono', value: studentData?.phone_number },
+    { label: 'Ciudad', value: studentData?.city },
+    { label: 'Dirección', value: studentData?.address },
   ];
 
-  const tutorData: DataItem[] = [
-    { label: 'Parentesco', value: 'Padre / madre' },
-    { label: 'Nombre', value: 'Jason Turcotte' },
-    { label: 'Cédula', value: '282-010203-20010' },
-    { label: 'Correo', value: 'domenica99@yahoo.com' },
-    { label: 'Teléfono', value: '-505 8060-5100' },
-    { label: 'Ciudad', value: 'East Eliza' },
-    { label: 'Dirección', value: '488 Wash Pines' },
-  ];
-
+  let tutorData: DataItem[] = [];
+  if (!!studentData) {
+    const tutor = studentData.tutor;
+    tutorData = [
+      { label: 'Parentesco', value: !!studentData?.tutor_kinship ? studentData.tutor_kinship.name : '—' },
+      { label: 'Nombre', value: !!tutor ? tutor.name : '—' },
+      { label: 'Cédula', value: !!tutor ? tutor.id_card : '—' },
+      { label: 'Correo', value: !!tutor ? tutor.email : '—' },
+      { label: 'Teléfono', value: !!tutor ? tutor.phone_number : '—' },
+      { label: 'Ciudad', value: !!tutor ? tutor.city : '—' },
+      { label: 'Dirección', value: !!tutor ? tutor.address : '—' },
+    ];
+  }
 
   const enrollmentData: DataItem[] = [
-    { label: 'Curso', value: 'Violín' },
-    { label: 'Turno', value: 'Sabatino' },
-    { label: '¿Pago finalizado?', value: 'No' },
-    { label: 'Registro', value: 'viernes, 24 de enero 2025, 14:54:30' }
+    { label: 'Curso(s)', value: `${studentData?.enrollment?.courses?.map(item => item.course.name).join(', ') || '—'}` },
+    { label: '¿Exonerada?', value: `${studentData?.enrollment?.is_exonerated ? 'Sí' : 'No'}` },
+    { label: '¿Pago finalizado?', value: `${studentData?.enrollment.is_paid ? 'Sí' : 'No'}` },
+    { label: 'Registro', value: new Date(studentData?.enrollment.registered_at).toLocaleDateString('es-NI', { year: 'numeric', month: 'long', day: 'numeric', }) }
   ];
 
   const academicData: DataItem[] = [
-    { label: 'Colegio de procedencia', value: 'Rubén Darío' },
-    { label: 'Año escolar', value: '11' }
+    { label: 'Colegio de procedencia', value: !!studentData?.school_name ? studentData?.school_name : '—' },
+    { label: 'Año escolar', value: !!studentData?.school_name ? studentData?.school_year : '—' }
   ];
-
-  //temporal----------------------------------
 
   //cambia el tema del aggrid segun el estado de colorMode
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
-
-  // Renderer para la columna de estado
-  const estadoRenderer = (params: { value: boolean }) => {
-    return (
-      <span
-        className={`text-sm py-1 px-2  rounded ${params.value
-            ? 'bg-green-200 dark:bg-green-900'
-            : 'bg-red-200 dark:bg-red-900'
-          }`}
-      >
-        {params.value ? 'Activo' : 'Inactivo'}
-      </span>
-    );
-  };
-
-  // Renderer para la columna de acciones
-  const opcionesRenderer = (params: {
-    data: {
-      is_active: boolean
-    }
-  }) => {
-    return (
-      <div className="flex gap-4 mt-1 justify-center ">
-        <button className={clsx(colorVariants['white'].btnSc)}>
-          <FaEye size={20} />
-        </button>
-
-        <button className={clsx(colorVariants['white'].btnSc)}>
-          <FaPencil size={20} />
-        </button>
-
-        <button className={clsx(colorVariants['white'].btnSc)}>
-          {params.data.is_active ? <FaMinus size={20} /> : <FaPlus size={20} />}
-        </button>
-      </div>
-    );
-  };
 
   const defaultColDef = useMemo(
     () => ({
@@ -148,67 +255,313 @@ const StudentProfile: React.FC = () => {
 
   const pendingGridRef = useRef<AgGridReact<Transaction>>(null);
   const finalizedGridRef = useRef<AgGridReact<Transaction>>(null);
-  const [pendingRowData, setPendingRowData] = useState<Transaction[]>([]);
-  const [finalizedRowData, setFinalizedRowData] = useState<Transaction[]>([]);
-
-
-  useEffect(() => {
-    setPendingRowData([
-      { id: '0001', alumno: 'Juan Perez', tarifa: 'Reingreso', fecha: '28/11/2024', total: '$ 05' },
-      { id: '0002', alumno: 'Sofa Gonzales', tarifa: 'Min', fecha: '28/11/2024', total: '$ 40' },
-      // ... your pending transactions
-    ]);
-
-    setFinalizedRowData([
-      { id: '0001', alumno: 'Juan Perez', tarifa: 'Reingreso', fecha: '38/11/2024', total: '$ 65' },
-      { id: '0002', alumno: 'Sofia Gonzalez', tarifa: '', fecha: '28/11/2004', total: '$ 40' },
-      // ... your finalized transactions
-    ]);
-  }, []);
-
-  const pendingColumnDefs: ColDef<Transaction>[] = useMemo(
-    () => [
-      { field: 'id', headerName: '#' },
-      { field: 'alumno', headerName: 'Alumno', flex: 1 },
-      { field: 'tarifa', headerName: 'Tarifa', flex: 1 },
-      { field: 'fecha', headerName: 'Fecha', flex: 1 },
-      { field: 'total', headerName: 'Total', flex: 1 },
-    ],
-    []
-  );
+  const statusHistoryGridRef = useRef<AgGridReact<Transaction>>(null);
 
   const finalizedColumnDefs: ColDef<Transaction>[] = useMemo(
     () => [
-      { field: 'id', headerName: '#' },
-      { field: 'alumno', headerName: 'Alumno', flex: 1 },
-      { field: 'tarifa', headerName: 'Tarifa', flex: 1 },
-      { field: 'fecha', headerName: 'Fecha', flex: 1 },
-      { field: 'total', headerName: 'Total', flex: 1 },
+      { field: 'id', headerName: 'ID' },
+      { field: 'fee.label', headerName: 'Tipo' },
+      { field: 'target_date', headerName: 'Fecha' },
+      { field: 'total', headerName: 'Total' },
+      { field: 'balance', headerName: 'Saldo' },
+      { field: 'is_paid', headerName: '¿Pagada?' },
+      { field: 'remarks', headerName: 'Concepto' },
+    ],
+    []
+  );
+
+  const pendingColumnDefs: ColDef<Transaction>[] = useMemo(
+    () => [
+      { field: 'status', headerName: 'Estado' },
+      { field: 'fee.label', headerName: 'Tipo', flex: 1 },
+      { field: 'balance', headerName: 'Saldo pendiente', flex: 1 },
+      { field: 'year', headerName: 'Año', flex: 1 },
+      { field: 'date', headerName: 'Fecha', flex: 1 },
+    ],
+    []
+  );
+
+  const formatDateTime = (value) => {
+    if (!value) {
+      return '—';
+    }
+    const date = new Date(value);
+    const dateString = date.toLocaleDateString('es-NI', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    const timeString = date.toLocaleTimeString('es-NI', {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+    });
+    return `${dateString} ${timeString}`;
+  };
+
+
+  const formatReason = (value) => {
+    if (!value) {
+      return '—';
+    }
+    return value;
+  };
+
+  const statusHistoryColumnDefs: ColDef<StatusHistory>[] = useMemo(
+    () => [
+      { field: 'removed_at', headerName: 'Fecha de desactivación', valueFormatter: (params) => formatDateTime(params.value), },
+      { field: 'reason', headerName: 'Razón', flex: 1, valueFormatter: (params) => formatReason(params.value), },
+      { field: 'recovered_at', headerName: 'Fecha de reingreso', flex: 1, valueFormatter: (params) => formatDateTime(params.value), },
     ],
     []
   );
 
 
-  return (
+  if (loading || isLoading) {
+    return <Loader />
+  }
 
+  if (!studentFound) {
+    return (
+      <div className="flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-4xl font-bold text-red-600 mb-4">Estudiante no encontrado</h2>
+          <p className="text-lg text-gray-600">
+            No se encontró ningún estudiante con el ID proporcionado.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error !== "") {
+    return (
+      <div className="flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-4xl font-bold text-red-600 mb-4">{error}</h2>
+          <p className="text-lg text-gray-600">
+            Vuelve a intentar más tarde.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
     <div className="font-sans">
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-1">
           <h2 className="text-4xl sm:text-4xl font-bold mb-2 sm:mb-0">
-            Josh Alexander Upton
+            {studentData?.name}
           </h2>
 
-          <button
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Desactivar
-          </button>
+          {user?.role === "admin" ?
+            <div>
+              {studentData?.enrollment.is_exonerated
+                ?
+                <button
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline me-3"
+                  onClick={() => {
+                    Swal.fire({
+                      title: "¿Está seguro?",
+                      text: "La matrícula del estudiante dejará de ser exonerada.",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonText: "Continuar",
+                      denyButtonText: "Cancelar",
+                      customClass: {
+                        popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                        confirmButton: 'bg-yellow-500 text-white dark:bg-boxdark dark:text-white',
+                        cancelButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                      },
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        (async () => {
+                          try {
+                            const response = await fetch(`${API_URL}/students.charge`, {
+                              method: 'POST',
+                              credentials: "include",
+                              headers: {
+                                'Authorization': `${API_KEY}`,
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({ student_id: Number(id) }),
+                            });
+
+                            if (!response.ok) {
+                              throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+
+                            window.location.reload()
+                            // navigate(`/student/${id}`);
+                          } catch (error) {
+                            console.error('Error al cobrar matrícula:', error);
+                          }
+                        })();
+                      }
+                    });
+
+                  }}
+                >
+                  Cobrar
+                </button>
+                :
+                <button
+                  className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline me-3"
+                  onClick={() => {
+                    Swal.fire({
+                      title: "¿Está seguro?",
+                      text: "Al exonerar este estudiante, no se le cargarán las renovaciones de matrícula.",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonText: "Continuar",
+                      denyButtonText: "Cancelar",
+                      customClass: {
+                        popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                        confirmButton: 'bg-yellow-500 text-white dark:bg-boxdark dark:text-white',
+                        cancelButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                      },
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        (async () => {
+                          try {
+                            const response = await fetch(`${API_URL}/students.exonerate`, {
+                              method: 'POST',
+                              credentials: "include",
+                              headers: {
+                                'Authorization': `${API_KEY}`,
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({ student_id: Number(id) }),
+                            });
+
+                            if (!response.ok) {
+                              throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+
+                            window.location.reload()
+                            // navigate(`/student/${id}`);
+                          } catch (error) {
+                            console.error('Error al exonerar:', error);
+                          }
+                        })();
+                      }
+                    });
+                  }}
+                >
+                  Exonerar
+                </button>}
+
+              {studentData?.is_active
+                ?
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  onClick={() => {
+                    Swal.fire({
+                      title: "¿Está seguro?",
+                      text: "Al desactivar este estudiante, no se le podrán asociar transacciones.",
+                      icon: "warning",
+                      input: "textarea",
+                      inputPlaceholder: "Alguna razón por la cual es desactivado (opcional).",
+                      showCancelButton: true,
+                      confirmButtonText: "Continuar",
+                      denyButtonText: "Cancelar",
+                      customClass: {
+                        popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                        confirmButton: 'bg-red-500 text-white dark:bg-boxdark dark:text-white',
+                        cancelButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                      },
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        (async () => {
+                          try {
+                            const response = await fetch(`${API_URL}/students.remove`, {
+                              method: 'POST',
+                              credentials: "include",
+                              headers: {
+                                'Authorization': `${API_KEY}`,
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({ student_id: Number(id), reason: result.value }),
+                            });
+
+                            if (!response.ok) {
+                              throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+
+                            window.location.reload()
+                            // navigate(`/student/${id}`);
+                          } catch (error) {
+                            console.error('Error al desactivar:', error);
+                          }
+                        })();
+                      }
+                    });
+
+                  }}
+                >
+                  Desactivar
+                </button>
+                :
+                <button
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  onClick={() => {
+                    Swal.fire({
+                      title: "¿Está seguro?",
+                      text: "Todos los cobros del estudiante volverán a la normalidad.",
+                      icon: "question",
+                      showCancelButton: true,
+                      confirmButtonText: "Continuar",
+                      denyButtonText: "Cancelar",
+                      customClass: {
+                        popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                        confirmButton: 'bg-green-500 text-white dark:bg-boxdark dark:text-white',
+                        cancelButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                      },
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        (async () => {
+                          try {
+                            const response = await fetch(`${API_URL}/students.recover`, {
+                              method: 'POST',
+                              credentials: "include",
+                              headers: {
+                                'Authorization': `${API_KEY}`,
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({ student_id: Number(id) }),
+                            });
+
+                            if (!response.ok) {
+                              throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+
+                            window.location.reload()
+                            // navigate(`/student/${id}`);
+                          } catch (error) {
+                            console.error('Error al activar:', error);
+                          }
+                        })();
+                      }
+                    });
+
+                  }}
+                >
+                  Activar
+                </button>
+              }
+            </div>
+
+            : <></>}
+
+
 
         </div>
         <p className="text-md text-gray-600">
-          <span className="font-semibold">Registro:</span> viernes, 24 de enero de 2025, 14:54:30
+          <span className="font-semibold">Registro:</span> {new Date(studentData?.registered_at).toLocaleDateString('es-NI', { year: 'numeric', month: 'long', day: 'numeric', })}
           <span> | </span>
-          <span className="text-green-500">(Activo)</span>
+
+          {studentData?.is_active ? <span className="text-green-500">(Activo)</span> : <span className="text-red-500">(Inactivo)</span>}
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -257,11 +610,11 @@ const StudentProfile: React.FC = () => {
 
 
       <div className="mb-6">
-        <h3 className="text-2xl font-semibold mb-2">Transacciones Pendientes (5)</h3>
+        <h3 className="text-2xl font-semibold mb-2">Transacciones Pendientes ({pendingTransactionsData?.length})</h3>
         <div className="w-full h-75">
           <AgGridReact
             ref={pendingGridRef}
-            rowData={pendingRowData}
+            rowData={pendingTransactionsData}
             theme={theme}
             columnDefs={pendingColumnDefs}
             defaultColDef={defaultColDef}
@@ -271,13 +624,27 @@ const StudentProfile: React.FC = () => {
       </div>
 
       <div className="mb-6">
-        <h3 className="text-2xl font-semibold mb-2">Transacciones Finalizadas (20)</h3>
-        <div className="w-full h-75">
+        <h3 className="text-2xl font-semibold mb-2">Transacciones Finalizadas ({finishedTransactionsData?.length})</h3>
+        <div className="w-full h-125">
           <AgGridReact
             ref={finalizedGridRef}
-            rowData={finalizedRowData}
+            rowData={finishedTransactionsData}
             theme={theme}
             columnDefs={finalizedColumnDefs}
+            defaultColDef={defaultColDef}
+            rowSelection="single"
+          />
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <h3 className="text-2xl font-semibold mb-2">Historial de desactivaciones</h3>
+        <div className="w-full h-50">
+          <AgGridReact
+            ref={statusHistoryGridRef}
+            rowData={statusHistoryData}
+            theme={theme}
+            columnDefs={statusHistoryColumnDefs}
             defaultColDef={defaultColDef}
             rowSelection="single"
           />
