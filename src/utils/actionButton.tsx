@@ -137,7 +137,7 @@ export const addReceiptButton = async (
         return { no, amount, payer, remarks };
       },
     }).then((result) => {
-      if (result.isConfirmed) {
+      if (result.isConfirmed && result.value ) {
         addReceipt(
           transaction_id,
           parseInt(result.value.no),
@@ -252,7 +252,7 @@ export const addTransactionButton = async (
 
       
     }).then(async (result) => {
-      if (result.isConfirmed) {
+      if (result.isConfirmed && result.value ) {
         const { fee, amount, remarks, target_date, seed_total } = result.value;
 
         // Datos de la transacción
@@ -265,7 +265,6 @@ export const addTransactionButton = async (
           seed_total: seed_total
         };
 
-        console.log(transactionData);
 
         try {
           const response = await fetch(`${API_URL}/transactions.begin`, {

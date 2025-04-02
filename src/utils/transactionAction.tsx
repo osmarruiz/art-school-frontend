@@ -144,7 +144,6 @@ export const revokeTransaction = async (
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
 ) => {
-  console.log('Ejecutando revokeTransaction con:', { transaction_id });
   try {
     const response = await fetch(`${API_URL}/transactions.revoke`, {
       method: 'POST',

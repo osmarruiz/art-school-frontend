@@ -11,6 +11,7 @@ const FormStudent = ({
 }) => {
   const [enabled, setEnabled] = useState(false);
   const [switcherSchoolEnabled, setSwitcherSchoolEnabled] = useState(false);
+  const [switcherExonerateEnabled, setSwitcherExonerateEnabled] = useState(false);
   const [studentData, setStudentData] = useState({
     id_card: '',
     name: '',
@@ -21,7 +22,8 @@ const FormStudent = ({
     phone_number: '',
     school_name: '',
     school_year: 0,
-    emergency_number: ''
+    emergency_number: '',
+    exonerate: false,
   });
 
   const handleToggle = (value: boolean) => {
@@ -83,6 +85,12 @@ const FormStudent = ({
     return `+505 ${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
   };
   
+  useEffect(() => {
+    setStudentData((prevState) => ({
+      ...prevState,
+      exonerate: switcherExonerateEnabled,
+    }));
+  }, [switcherExonerateEnabled]);
 
   // Use useEffect to pass data to parent
   useEffect(() => {
@@ -109,7 +117,7 @@ const FormStudent = ({
 
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            Cédula <span className="text-meta-1">*</span>
+            Cédula 
           </label>
           <input
             type="text"
@@ -119,7 +127,6 @@ const FormStudent = ({
               const formattedValue = formatInput(e.target.value);
               setStudentData({ ...studentData, id_card: formattedValue }); // Actualiza el estado
             }}
-            required
             minLength={16}
             maxLength={16}
             placeholder="Ingresa la cédula Ej: 0001111112222A"
@@ -166,14 +173,13 @@ const FormStudent = ({
 
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            Correo Electrónico <span className="text-meta-1">*</span>
+            Correo Electrónico 
           </label>
           <input
             type="email"
             name="email"
             value={studentData.email}
             onChange={handleInputChange}
-            required
             placeholder="Ingresa el correo electrónico"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
           />
@@ -202,7 +208,7 @@ const FormStudent = ({
 
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            Número de emergencia <span className="text-meta-1">*</span>
+            Número de emergencia 
           </label>
           <input
             type="tel"
@@ -217,12 +223,11 @@ const FormStudent = ({
             
             minLength={8}
             maxLength={13}
-            required
             title="Ingrese un número de 8 dígitos"
           />
         </div>
 
-        <div className="mb-4.5 flex gap-7">
+        <div className="mb-4.5 block sm:flex gap-7">
           <div>
             <label className="mb-2.5 block text-black dark:text-white ">
               Asignar o registrar tutor
@@ -241,6 +246,16 @@ const FormStudent = ({
               enabled={switcherSchoolEnabled}
               onToggle={setSwitcherSchoolEnabled}
               labelId="toggleSchool"
+            />
+          </div>
+          <div>
+          <label className="mb-2.5 block text-black dark:text-white ">
+              Exonerar estudiante
+            </label>
+            <Switcher
+              enabled={switcherExonerateEnabled}
+              onToggle={setSwitcherExonerateEnabled}
+              labelId="toggleExonarate"
             />
           </div>
         </div>

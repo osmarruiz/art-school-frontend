@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Kinship } from '../../types/kinship';
-import DatePickerOne from './DatePicker/DatePickerOne';
 import SelectGroupOne from './SelectGroup/SelectGroupOne';
 
 const FormTutor: React.FC<{
@@ -14,8 +13,6 @@ const FormTutor: React.FC<{
     city: '',
     address: '',
     phone_number: '',
-    emergency_number: '',
-    date_of_birth: '',
     tutor_kinship: 0,
   });
 
@@ -26,12 +23,6 @@ const FormTutor: React.FC<{
     setTutorData((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleDateChange = (date: Date | null) => {
-    setTutorData((prevState) => ({
-      ...prevState,
-      date_of_birth: date ? date.toISOString().split('T')[0] : '',
-    }));
-  };
 
   const handleKinshipChange = ( kinshipId: number) => {
     setTutorData((prevState) => ({
@@ -96,7 +87,7 @@ const FormTutor: React.FC<{
 
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            Cédula <span className="text-meta-1">*</span>
+            Cédula
           </label>
           <input
             type="text"
@@ -106,17 +97,9 @@ const FormTutor: React.FC<{
               const formattedValue = formatInput(e.target.value);
               setTutorData({ ...tutorData, id_card: formattedValue }); // Actualiza el estado
             }}
-            required
             placeholder="Ingresa la cédula Ej: 0001111112222A"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
           />
-        </div>
-
-        <div className="mb-4.5">
-          <label className="mb-2.5 block text-black dark:text-white">
-            Fecha de nacimiento <span className="text-meta-1">*</span>
-          </label>
-          <DatePickerOne onDateChange={handleDateChange} name="date_of_birth" value={tutorData.date_of_birth}/>
         </div>
 
         <div className="mb-4.5">
@@ -151,14 +134,13 @@ const FormTutor: React.FC<{
 
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            Correo Electrónico <span className="text-meta-1">*</span>
+            Correo Electrónico
           </label>
           <input
             type="email"
             name="email"
             value={tutorData.email}
             onChange={handleInputChange}
-            required
             placeholder="Ingresa el correo electrónico"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
           />

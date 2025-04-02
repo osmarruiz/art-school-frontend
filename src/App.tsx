@@ -59,7 +59,7 @@ function App() {
                 </>
               </DefaultLayout>
             }
-           allowedRoles={['admin']}/>
+           allowedRoles={['admin', 'viewer']}/>
         }
       />
       <Route
@@ -75,7 +75,7 @@ function App() {
           </DefaultLayout>
           
         }
-        allowedRoles={['admin']}/>
+        allowedRoles={['admin', 'viewer']}/>
       }
       />
       <Route
@@ -90,7 +90,7 @@ function App() {
             </>
           </DefaultLayout>
         }
-        allowedRoles={['admin']}/>
+        allowedRoles={['admin', 'viewer']}/>
       }
       />
       <Route
@@ -105,7 +105,7 @@ function App() {
             </>
           </DefaultLayout>
         }
-        allowedRoles={['admin']}/>
+        allowedRoles={['admin', 'viewer']}/>
       }
       />
       <Route
@@ -120,7 +120,7 @@ function App() {
             </>
           </DefaultLayout>
         }
-        allowedRoles={['admin']}/>
+        allowedRoles={['admin', 'viewer']}/>
       }
       />
       {/* Rutas con OperatorLayout */}

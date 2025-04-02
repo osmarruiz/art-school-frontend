@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import moment from 'moment';
-import 'moment/locale/es';
 import {
   AllCommunityModule,
   ModuleRegistry,
@@ -30,7 +29,8 @@ import {
 import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
 
-moment.locale('es');
+moment.locale('es-us');
+
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
 const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
@@ -92,22 +92,27 @@ const CardTransaction: React.FC<TransactionListProps> = ({
       {
         headerName: 'Acción',
         field: 'action',
-        cellRenderer: (params: any) => (
-          <button
-            className={clsx(colorVariants[color].btnSc)}
-            onClick={() =>
-              revokeReceiptButton(
-                params.data.id,
-                params.data.transaction_id,
-                reloadTransactions,
-                showError,
-                showSuccess,
-              )
-            }
-          >
-            <FaRegTrashCan />
-          </button>
-        ),
+        cellRenderer: (params: any) => {
+          if (!params.data.is_revoked) {
+            return (
+              <button
+                className={clsx(colorVariants[color].btnSc)}
+                onClick={() =>
+                  revokeReceiptButton(
+                    params.data.id,
+                    params.data.transaction_id,
+                    reloadTransactions,
+                    showError,
+                    showSuccess,
+                  )
+                }
+              >
+                <FaRegTrashCan />
+              </button>
+            );
+          }
+          return <p className='text-red-500'>(Revocado)</p>;
+        },
       },
     ],
     [revokeReceiptButton],
@@ -122,6 +127,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     }),
     [],
   );
+  
 
   return (
     <div className="w-full">
@@ -153,14 +159,20 @@ const CardTransaction: React.FC<TransactionListProps> = ({
             >
               <div className="flex justify-between items-center">
                 <div className={clsx(colorVariants[color].text)}>
+                  <div className='block sm:flex gap-2'>
                   <p className="font-bold block xl:inline-flex">{transaction.fee.label}</p>
                   <p>{moment(transaction.target_date).format('LL')}</p>
+                  </div>
+                  <div className='block sm:flex gap-2'>
                   <p className="font-bold block xl:inline-flex">
                     Total: {formatCurrency(transaction.total)}
                   </p>
                   <p className="font-bold text-orange-500">
                     Saldo: {formatCurrency(transaction.balance)}
                   </p>
+                  </div>
+                  <p>{(transaction.remarks) ? transaction.remarks : "—"}</p>
+
                 </div>
 
                 {/* Botones de acción */}
@@ -230,9 +242,10 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                     className="mt-2"
-                    style={{ height: 250, width: '100%' }}
+                    style={{ height: '100%', width: '100%' }}
                   >
                     {rowData.length > 0 ? (
+                      <div style={{ height: 250, width: '100%' }}>
                       <AgGridReact
                         ref={gridRef}
                         theme={theme}
@@ -240,6 +253,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
                       />
+                      </div>
                     ) : (
                       <p className="text-gray-500 text-sm">
                         No hay recibos disponibles.

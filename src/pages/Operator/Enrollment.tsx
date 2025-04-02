@@ -42,18 +42,16 @@ const Enrollment = ({
     school_name: '',
     school_year: 0,
     emergency_number: '',
+    exonerate: false,
   });
 
   const [tutorData, setTutorData] = useState({
     id_card: '',
     name: '',
-    last_name: '',
     email: '',
     city: '',
     address: '',
     phone_number: '',
-    emergency_number: '',
-    date_of_birth: '',
     tutor_kinship: 0,
   });
 
@@ -126,7 +124,7 @@ const Enrollment = ({
     // Construcción del JSON a enviar
     const payload = {
       emergency_number: studentData.emergency_number || '',
-      exonerate: false,
+      exonerate: studentData.exonerate || false,
       student: {
         id_card: studentData.id_card,
         name: studentData.name,
@@ -144,8 +142,6 @@ const Enrollment = ({
       })),
       ...tutorInfo, // Agregar tutor solo si aplica
     };
-
-    console.log('Payload enviado:', JSON.stringify(payload, null, 2));
 
 
     try {
