@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import Logo from '../../images/logo/Logo.svg';
+import Logo from '../../images/logo/logo.svg';
 import { FaChartSimple, FaX, FaMoneyBillWave, FaPencil, FaBook } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa";
 

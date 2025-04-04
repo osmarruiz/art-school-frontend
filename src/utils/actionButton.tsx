@@ -49,7 +49,7 @@ export const revokeTransactionButton = async (
   reloadTransactions: () => void,
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
-  try {
+) => { try {
     const result = await Swal.fire({
       title: 'Esta seguro de revocar?',
       text: 'No podrá revertir esta acción',
