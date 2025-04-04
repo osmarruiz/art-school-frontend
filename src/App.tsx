@@ -36,7 +36,7 @@ function App() {
         path="/"
         element={
           <ProtectedRoute>
-          <PublicLayout>
+          <PublicLayout bgClassName='login-bg'>
             <>
               <PageTitle title="Iniciar sesión | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
               <SignIn />
@@ -52,7 +52,7 @@ function App() {
         element={
           <PrivateRoute
             element={
-              <DefaultLayout>
+              <DefaultLayout bgClassName='admin-dashboard'>
                 <>
                   <PageTitle title="Dashboard | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
                   <Admin />

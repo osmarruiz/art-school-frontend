@@ -2,7 +2,12 @@ import React, { useState, ReactNode } from 'react';
 import Header from '../components/Header/index';
 import Sidebar from '../components/Sidebar/index';
 
-const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+interface DefaultLayoutProps {
+  children: ReactNode;
+  bgClassName?: string;
+}
+
+const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children, bgClassName = '' }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -14,7 +19,7 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
-        <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <div className={`relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden ${bgClassName} ` }>
           {/* <!-- ===== Header Start ===== --> */}
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           {/* <!-- ===== Header End ===== --> */}

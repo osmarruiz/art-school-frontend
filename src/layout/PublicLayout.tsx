@@ -1,9 +1,14 @@
 import React, { useState, ReactNode } from 'react';
 
-const PublicLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+interface DefaultLayoutProps {
+  children: ReactNode;
+  bgClassName?: string;
+}
+
+const PublicLayout: React.FC<DefaultLayoutProps> = ({ children, bgClassName = "" }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
-    <div className="dark:bg-boxdark-2 dark:text-bodydark">
+    <div className={`dark:bg-boxdark-2 dark:text-bodydark ${bgClassName}`}>
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <main>
         <div className="mx-auto max-w-screen-2xl">
