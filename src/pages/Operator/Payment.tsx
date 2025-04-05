@@ -13,6 +13,7 @@ import {
   addTransactionButton,
 } from '../../utils/actionButton';
 import useToast from '../../hooks/useToast';
+import { useNavigate } from 'react-router-dom';
 
 const Payment = ({
   color,
@@ -22,6 +23,7 @@ const Payment = ({
   const { showSuccess, showError } = useToast();
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const navigate = useNavigate();
 
   const fetchTransactions = useCallback(async () => {
     if (!selectedStudent) return;
@@ -66,7 +68,7 @@ const Payment = ({
         ) : (
           <CardStudent
             student={selectedStudent}
-            onReset={() => {setSelectedStudent(null); setTransactions([]);}}
+            onReset={() => { setSelectedStudent(null); setTransactions([]); }}
             color="red"
           />
         )}
@@ -76,7 +78,7 @@ const Payment = ({
         <p
           className={clsx('text-3xl font-bold mb-2', colorVariants[color].text)}
         >
-          Transacciones
+          Transacciones en curso
         </p>
         {selectedStudent ? (
           selectedStudent && (
@@ -92,22 +94,37 @@ const Payment = ({
               'text-l py-5  ',
             )}
           >
-            Selecciona un estudiante para ver sus transacciones.
+            Selecciona un estudiante para ver sus transacciones en curso.
           </p>
         )}
       </div>
 
       {selectedStudent ? (
-          selectedStudent && (
-      <button
-        className={clsx(
-          'inline-flex items-center justify-center py-4 px-10',
-          colorVariants[color].btn,
-        )}
-        onClick={async () => await addTransactionButton(selectedStudent.id, fetchTransactions, showError, showSuccess)}
-      >
-        Comenzar nueva transacción
-      </button>)):(<></>)}
+        selectedStudent && (
+          <>
+            <button
+              className={clsx(
+                'inline-flex items-center justify-center py-4 px-10',
+                colorVariants["green"].btn,
+              )}
+              onClick={() => {
+                navigate(`/student/${selectedStudent.id}`);
+              }}
+            >
+              Ver todas las transacciones
+            </button>
+
+            <button
+              className={clsx(
+                'inline-flex items-center justify-center py-4 px-10',
+                colorVariants[color].btn,
+              )}
+              onClick={async () => await addTransactionButton(selectedStudent.id, fetchTransactions, showError, showSuccess)}
+            >
+              Comenzar nueva transacción
+            </button>
+          </>
+        )) : (<></>)}
 
     </CardOperator>
   );
