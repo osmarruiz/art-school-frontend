@@ -15,6 +15,9 @@ import Loader from '../common/Loader';
 import Swal from 'sweetalert2';
 import { useAuth } from '../utils/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { colorVariants } from '../types/colorVariants';
+import clsx from 'clsx';
+import { FaArrowRight } from 'react-icons/fa6';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -153,7 +156,6 @@ const StudentProfile: React.FC = () => {
             return;
           }
 
-          console.log("Comes here!");
           setError('Error al cargar la información del estudiante.');
           return;
         }
@@ -204,7 +206,7 @@ const StudentProfile: React.FC = () => {
 
   const personalData: DataItem[] = [
     { label: 'Cédula', value: studentData?.id_card },
-    { label: 'Nacimiento', value: `${new Date(studentData?.date_of_birth).toLocaleDateString('es-NI', { year: 'numeric', month: 'long', day: 'numeric', })} (${studentData?.age} años)` },
+    { label: 'Nacimiento', value: `${new Date(studentData?.date_of_birth + "T00:00:00-06:00").toLocaleDateString('es-NI', { year: 'numeric', month: 'long', day: 'numeric', })} (${studentData?.age} años)` },
     { label: 'Correo', value: studentData?.email },
     { label: 'Teléfono', value: studentData?.phone_number },
     { label: 'Ciudad', value: studentData?.city },
@@ -257,31 +259,15 @@ const StudentProfile: React.FC = () => {
   const finalizedGridRef = useRef<AgGridReact<Transaction>>(null);
   const statusHistoryGridRef = useRef<AgGridReact<Transaction>>(null);
 
-  const finalizedColumnDefs: ColDef<Transaction>[] = useMemo(
-    () => [
-      { field: 'id', headerName: 'ID' },
-      { field: 'fee.label', headerName: 'Tipo' },
-      { field: 'target_date', headerName: 'Fecha' },
-      { field: 'total', headerName: 'Total' },
-      { field: 'balance', headerName: 'Saldo' },
-      { field: 'is_paid', headerName: '¿Pagada?' },
-      { field: 'remarks', headerName: 'Concepto' },
-    ],
-    []
-  );
+  const formatText = (value: string) => {
+    if (!value) {
+      return '—';
+    }
 
-  const pendingColumnDefs: ColDef<Transaction>[] = useMemo(
-    () => [
-      { field: 'status', headerName: 'Estado' },
-      { field: 'fee.label', headerName: 'Tipo', flex: 1 },
-      { field: 'balance', headerName: 'Saldo pendiente', flex: 1 },
-      { field: 'year', headerName: 'Año', flex: 1 },
-      { field: 'date', headerName: 'Fecha', flex: 1 },
-    ],
-    []
-  );
+    return value;
+  };
 
-  const formatDateTime = (value) => {
+  const formatDateTime = (value: string) => {
     if (!value) {
       return '—';
     }
@@ -299,18 +285,93 @@ const StudentProfile: React.FC = () => {
     return `${dateString} ${timeString}`;
   };
 
-
-  const formatReason = (value) => {
+  const formatDate = (value: string) => {
     if (!value) {
       return '—';
     }
-    return value;
+    const date = new Date(value + "T0:00:00-06:000");
+    return date.toLocaleDateString('es-NI', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   };
+
+  const nioFormatter = new Intl.NumberFormat('es-NI', {
+    style: 'currency',
+    currency: 'NIO'
+  });
+
+  const formatNIO = (value: number) => {
+    return nioFormatter.format(value);
+  };
+
+  const formatShortDate = (value: number) => {
+    if (!value) {
+      return '—';
+    }
+    const date = new Date(value + "T00:00:00-06:00");
+ return date.toLocaleDateString('es-NI');
+
+  };
+
+  const formatShortDateTime = (value: number) => {
+    if (!value) {
+      return '—';
+    }
+    const date = new Date(value);
+    const dateString = date.toLocaleDateString('es-NI');
+    const timeString = date.toLocaleTimeString('es-NI');
+    return `${dateString} ${timeString}`;
+  };
+
+
+  const finalizedColumnDefs: ColDef<Transaction>[] = useMemo(
+    () => [
+      { field: 'id', headerName: 'ID' },
+      { field: 'fee.label', headerName: 'Tipo' },
+      { field: 'total', headerName: 'Total', valueFormatter: (params) => formatNIO(params.value) },
+      { field: 'balance', headerName: 'Saldo', valueFormatter: (params) => formatNIO(params.value) },
+      { field: 'target_date', headerName: 'Fec. selec.', valueFormatter: (params) => formatShortDate(params.value) },
+      { field: 'started_at', headerName: 'Fec. inic.', valueFormatter: (params) => formatShortDateTime(params.value) },
+      { field: 'finished_at', headerName: 'Fec. fina.', valueFormatter: (params) => formatShortDateTime(params.value) },
+      { field: 'remarks', headerName: 'Concepto', flex: 2, valueFormatter: (params) => formatText(params.value) },
+      { field: 'is_finished', headerName: '¿Finalizada?' },
+      { field: 'is_revoked', headerName: '¿Revocada?' },
+            {
+              headerName: 'Acción',
+              field: 'action',
+              cellRenderer: (params: any) => {
+                  return (
+                      <button
+                        title='Ver transacción'
+                        className={clsx(colorVariants["orange"].btnSc)}
+                        onClick={() => navigate(`/transaction/${params.data.id}`)}
+                      >
+                        <FaArrowRight />
+                      </button>
+                  );
+              },
+            },
+    ],
+    []
+  );
+
+  const pendingColumnDefs: ColDef<Transaction>[] = useMemo(
+    () => [
+      { field: 'status', headerName: 'Estado' },
+      { field: 'fee.label', headerName: 'Tipo', flex: 1 },
+      { field: 'balance', headerName: 'Saldo pendiente', flex: 1, valueFormatter: (params) => formatNIO(params.value) },
+      { field: 'year', headerName: 'Año', flex: 1 },
+      { field: 'date', headerName: 'Fecha', flex: 1, valueFormatter: (params) => formatDate(params.value) },
+    ],
+    []
+  );
 
   const statusHistoryColumnDefs: ColDef<StatusHistory>[] = useMemo(
     () => [
       { field: 'removed_at', headerName: 'Fecha de desactivación', valueFormatter: (params) => formatDateTime(params.value), },
-      { field: 'reason', headerName: 'Razón', flex: 1, valueFormatter: (params) => formatReason(params.value), },
+      { field: 'reason', headerName: 'Razón', flex: 1, valueFormatter: (params) => formatText(params.value), },
       { field: 'recovered_at', headerName: 'Fecha de reingreso', flex: 1, valueFormatter: (params) => formatDateTime(params.value), },
     ],
     []
@@ -348,7 +409,7 @@ const StudentProfile: React.FC = () => {
   }
 
   return (
-    <div className="font-sans">
+    <div className="student-profile-div bg-gray-100 dark:bg-gray-700">
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-1">
           <h2 className="text-4xl sm:text-4xl font-bold mb-2 sm:mb-0">
@@ -557,7 +618,7 @@ const StudentProfile: React.FC = () => {
 
 
         </div>
-        <p className="text-md text-gray-600">
+        <p className="text-md text-gray-600 dark:text-gray-400">
           <span className="font-semibold">Registro:</span> {new Date(studentData?.registered_at).toLocaleDateString('es-NI', { year: 'numeric', month: 'long', day: 'numeric', })}
           <span> | </span>
 
@@ -608,23 +669,8 @@ const StudentProfile: React.FC = () => {
         </div>
       </div>
 
-
       <div className="mb-6">
-        <h3 className="text-2xl font-semibold mb-2">Transacciones Pendientes ({pendingTransactionsData?.length})</h3>
-        <div className="w-full h-75">
-          <AgGridReact
-            ref={pendingGridRef}
-            rowData={pendingTransactionsData}
-            theme={theme}
-            columnDefs={pendingColumnDefs}
-            defaultColDef={defaultColDef}
-            rowSelection="single"
-          />
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <h3 className="text-2xl font-semibold mb-2">Transacciones Finalizadas ({finishedTransactionsData?.length})</h3>
+        <h3 className="text-2xl font-semibold mb-2">Todas las transacciones ({finishedTransactionsData?.length})</h3>
         <div className="w-full h-125">
           <AgGridReact
             ref={finalizedGridRef}
@@ -638,7 +684,22 @@ const StudentProfile: React.FC = () => {
       </div>
 
       <div className="mb-6">
-        <h3 className="text-2xl font-semibold mb-2">Historial de desactivaciones</h3>
+        <h3 className="text-2xl font-semibold mb-2">Transacciones pendientes ({pendingTransactionsData?.length})</h3>
+        <div className="w-full h-75">
+          <AgGridReact
+            ref={pendingGridRef}
+            rowData={pendingTransactionsData}
+            theme={theme}
+            columnDefs={pendingColumnDefs}
+            defaultColDef={defaultColDef}
+            rowSelection="single"
+          />
+        </div>
+      </div>
+
+
+      <div className="mb-6">
+        <h3 className="text-2xl font-semibold mb-2">Historial de desactivaciones ({statusHistoryData.length})</h3>
         <div className="w-full h-50">
           <AgGridReact
             ref={statusHistoryGridRef}

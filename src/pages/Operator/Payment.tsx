@@ -39,7 +39,7 @@ const Payment = ({
       );
       const data = await response.json();
       setTransactions(
-        data.filter((transaction: Transaction) => !transaction.is_finished),
+        data.filter((transaction: Transaction) => !transaction.is_finished && !transaction.is_revoked),
       );
     } catch (error) {
       console.error('Error al obtener datos:', error);

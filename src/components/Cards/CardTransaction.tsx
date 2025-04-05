@@ -86,7 +86,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     if (!value) {
       return '—';
     }
-    const date = new Date(value);
+    const date = new Date(value + "T00:00:00-06:00");
     const dateString = date.toLocaleDateString('es-NI', {
       year: 'numeric',
       month: 'long',
@@ -188,7 +188,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                       transaction.fee.type === "enrollment" ? "#4CAF50" : transaction.fee.type === "month" ? "#FA5A7D" : "#FF947A"
                     }]`}>{transaction.fee.label}</p>
                     <span>•</span>
-                    <p>{new Date(transaction.target_date).toLocaleString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', })}</p>
+                    <p>{new Date(transaction.target_date + "T00:00:00-06:00").toLocaleString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', })}</p>
                   </div>
                   <div className='block sm:flex gap-2'>
                     <p className="font-bold block xl:inline-flex">

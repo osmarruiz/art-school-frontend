@@ -24,7 +24,7 @@ const CardStudent = ({
         <div className={clsx(colorVariants[color].text)}>
           <h3 className="text-lg font-bold">{student.name}</h3>
           <p>Cédula: {student.id_card || "—"}</p>
-          <p>Disciplina: {student.coursesString}</p>
+          <p>Disciplina(s): {student.coursesString}</p>
         </div>
         <button onClick={onReset} className={clsx(colorVariants[color].btnSc)}>
           <FaArrowLeft size={24} />

@@ -65,7 +65,7 @@ const Renew = ({
     if (!value) {
       return '—';
     }
-    const date = new Date(value);
+    const date = new Date(value + "T00:00:00-06:00");
     return date.toLocaleDateString('es-NI', {
       year: 'numeric',
       month: 'long',
@@ -100,7 +100,7 @@ const Renew = ({
     if (!value) {
       return '—';
     }
-    return new Date(value).getFullYear();
+    return new Date(value + "T00:00:00-06:00").getFullYear();
   };
 
   const tableRef = useRef<AgGridReact<RenewalRecord>>(null);
@@ -176,70 +176,92 @@ const Renew = ({
         }
       </div>
 
-      <button
-        className={clsx("inline-flex items-center justify-center py-4 px-10", colorVariants[color].btn)}
-        onClick={async () => {
-          const result = await Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Presiona continuar para renovar la matrícula de este estudiante.',
-            icon: 'warning',
-            showCancelButton: true,
-            customClass: {
-              popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
-              confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
-              cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
-            },
-            confirmButtonText: 'Sí, reonvar',
-            cancelButtonText: 'No, cancelar',
-          });
+      {selectedStudent
+        && (
+          <button
+            className={clsx("inline-flex items-center justify-center py-4 px-10", colorVariants[color].btn)}
+            onClick={async () => {
+              const result = await Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Presiona continuar para renovar la matrícula de este estudiante.',
+                icon: 'warning',
+                showCancelButton: true,
+                customClass: {
+                  popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                  confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                  cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
+                },
+                confirmButtonText: 'Sí, reonvar',
+                cancelButtonText: 'No, cancelar',
+              });
 
-          if (result.isConfirmed) {
-            (async () => {
-              try {
-                const response = await fetch(`${API_URL}/students.renew_enrollment`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: API_KEY,
-                  },
-                  body: JSON.stringify({ student_id: selectedStudent?.id }),
-                  credentials: 'include',
-                });
+              if (result.isConfirmed) {
+                (async () => {
+                  try {
+                    const response = await fetch(`${API_URL}/students.renew_enrollment`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: API_KEY,
+                      },
+                      body: JSON.stringify({ student_id: selectedStudent?.id }),
+                      credentials: 'include',
+                    });
 
-                const data = await response.json();
+                    const data = await response.json();
 
-                if (!response.ok) {
-                  showError(data?.detail || 'Error inesperado');
-                  return;
-                }
+                    if (!response.ok) {
+                      showError(data?.detail || 'Error inesperado');
+                      return;
+                    }
 
-                if (response.status === 202) {
-                  Swal.fire({
-                    title: "Problemas al renovar matrícula",
-                    html: `
+                    if (response.status === 202) {
+                      Swal.fire({
+                        title: "Problemas al renovar matrícula",
+                        html: `
                     <p>${data.detail}</p>
-                    <p>Por favor, intente renovar hasta la fecha: <strong>${new Date(data.with['renovar_hasta']).toLocaleString('es-NI', {month:'long', year: 'numeric', day: 'numeric'})}<strong></p>`,
-                    icon: "error",
-                    customClass: {
-                      popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
-                      confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
-                      cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
-                    },
-                  });
-                  return;
-                }
-                showSuccess('Se renovó la matrícula del estudiante correctamente.');
-                navigate('/renew');
-              } catch (error) {
-                console.error("Error al enviar datos:", error);
+                    <p>Por favor, intente renovar hasta la fecha: <strong>${new Date(data.with['renovar_hasta'] + "T00:00:00-06:00").toLocaleString('es-NI', { month: 'long', year: 'numeric', day: 'numeric' })}<strong></p>`,
+                        icon: "error",
+                        customClass: {
+                          popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                          confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                          cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
+                        },
+                      });
+                      return;
+                    }
+                    const result = await Swal.fire({
+                      title: "Renovación iniciada",
+                      text: "Se ha iniciado correctamente una transacción para pagar la renovar de matrícula de este estudiante.",
+                      icon: "success",
+                      customClass: {
+                        popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                        confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                        cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
+                      },
+                      showConfirmButton: true,
+                      showCancelButton: true,
+                      confirmButtonText: "Ver transacción",
+                    });
+
+                    if (result.isConfirmed) {
+                      navigate(`/transaction/${data["inserted_transaction_id"]}`);
+                    } else {
+                      navigate("/renew");
+                    }
+
+                  } catch (error) {
+                    console.error("Error al enviar datos:", error);
+                  }
+                })();
               }
-            })();
-          }
-        }
-        }
-      >
-        Renovar matricula
-      </button>
+            }
+            }
+          >
+            Renovar matricula
+          </button>
+        )
+      }
     </CardOperator>
   );
 };

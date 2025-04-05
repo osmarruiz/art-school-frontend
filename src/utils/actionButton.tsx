@@ -226,7 +226,7 @@ export const addTransactionButton = async (
           ${feeOptions}
         </select>
         <input id="swal-date" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="date" placeholder="Fecha objetivo">
-        <input id="swal-amount" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="number" min="0" placeholder="Monto (opcional)">
+        <input id="swal-amount" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="number" min="0" placeholder="Monto a pagar (opcional)">
         <input id="swal-remarks" class="bg-white text-black dark:bg-boxdark-2 dark:text-white w-67 h-[2.625em] px-5 py-3  transition-shadow border border-gray-300 rounded  shadow-inner text-inherit text-lg mt-4 mx-8 mb-1" type="text" placeholder="Concepto (opcional)">
       `,
       focusConfirm: false,

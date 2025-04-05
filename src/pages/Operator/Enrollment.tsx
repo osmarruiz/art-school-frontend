@@ -145,8 +145,6 @@ const Enrollment = ({
       ...tutorInfo,
     };
 
-    console.log(payload);
-
     let summary = `
   <div style="text-align: left;">
     <h2 class="text-1xl font-bold mb-1">Curso(s):</h3>
@@ -159,7 +157,7 @@ const Enrollment = ({
     <h3 class="text-1xl font-bold mb-1 mt-3">Resumen de Información del Estudiante:</h3>
     <p>Cédula: ${payload.student.id_card || "—"}</p>
     <p>Nombre: ${payload.student.name}</p>
-    <p>Fecha de Nacimiento: ${new Date(payload.student.date_of_birth).toLocaleDateString()}</p>
+    <p>Fecha de Nacimiento: ${new Date(payload.student.date_of_birth + "T00:00:00-06:00").toLocaleDateString()}</p>
     <p>Email: ${payload.student.email || "—"}</p>
     <p>Ciudad: ${payload.student.city}</p>
     <p>Dirección: ${payload.student.address}</p>
@@ -169,8 +167,6 @@ const Enrollment = ({
     <p>Número de Emergencia: ${payload.emergency_number || "—"}</p>
     <p>Exonerado: ${payload.exonerate ? 'Sí' : 'No'}</p>
 `;
-
-    console.log(tutorData)
 
     if (tutorData.name !== "" && tutorData.phone_number !== "") {
       summary += `
