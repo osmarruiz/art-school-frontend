@@ -180,7 +180,7 @@ const Students: React.FC = () => {
             </span>
             <input
               type="text"
-              placeholder="Buscar estudiante"
+              placeholder="Busca un estudiante para continuar..."
               className={clsx(
                 'w-full h-12 bg-white pl-9 pr-4 text-black focus:outline-none rounded-lg shadow-default',
                 colorVariants['white'].inp,

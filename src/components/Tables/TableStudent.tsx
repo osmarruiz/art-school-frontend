@@ -105,7 +105,7 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
         </span>
         <input
           type="text"
-          placeholder="Buscar estudiante"
+          placeholder="Busca un estudiante para continuar..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className={clsx(

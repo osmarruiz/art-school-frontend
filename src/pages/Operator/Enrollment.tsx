@@ -14,6 +14,7 @@ import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { Kinship } from '../../types/kinship';
 import useToast from '../../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const Enrollment = ({
   color,
@@ -29,7 +30,7 @@ const Enrollment = ({
     null | 'search' | 'form'
   >(null);
   const [courseSelection, setCourseSelection] = useState<
-    { courseId: number | null; shiftId: number | null }[]
+    { courseId: number | null; shiftId: number | null, courseName: string | null, shiftName: string }[]
   >([]);
   const [studentData, setStudentData] = useState({
     id_card: '',
@@ -81,17 +82,17 @@ const Enrollment = ({
   const handleKinshipChange = (kinshipId: number) => {
     setSelectTutorData((prevState) => ({
       ...prevState,
-      tutor_kinship: kinshipId, 
+      tutor_kinship: kinshipId,
     }));
   };
 
   const handleTutorSelection = (tutor: Tutor) => {
-    
+
     setSelectTutorData((prevState) => ({
       ...prevState,
       tutor_id: tutor.id,
     }));
-    setSelectedTutor(tutor); 
+    setSelectedTutor(tutor);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -118,6 +119,8 @@ const Enrollment = ({
       };
     }
 
+    const courses: {name: string; shift: string}[] = [];
+
     const payload = {
       emergency_number: studentData.emergency_number || '',
       exonerate: studentData.exonerate || false,
@@ -132,54 +135,122 @@ const Enrollment = ({
         school_name: studentData.school_name || null,
         school_year: studentData.school_year ?? null,
       },
-      courses: courseSelection.map((course) => ({
-        course_id: course.courseId,
-        shift_id: course.shiftId,
-      })),
-      ...tutorInfo, 
+      courses: courseSelection.map((course) => {
+        courses.push({name: course.courseName ?? "", shift: course.shiftName})
+        return {
+          course_id: course.courseId,
+          shift_id: course.shiftId,
+        };
+      }),
+      ...tutorInfo,
     };
 
+    console.log(payload);
 
-    try {
-      const response = await fetch(`${API_URL}/students.enroll`, {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json",
-              Authorization: API_KEY,
-          },
-          body: JSON.stringify(payload),
-          credentials: 'include',
-      });
+    let summary = `
+  <div style="text-align: left;">
+    <h2 class="text-1xl font-bold mb-1">Curso(s):</h3>
+    <ul>
+      ${courses.map(course => `
+        <li class="ms-1">${course.name} (${course.shift})</li>
+      `).join('')}
+    </ul>
 
-      let data = null;
-      try {
-        if (
-          response.headers.get('Content-Type')?.includes('application/json')
-        ) {
-          data = await response.json();
-        }
-      } catch (error) {
-        console.error('Error al analizar JSON:', error);
+    <h3 class="text-1xl font-bold mb-1 mt-3">Resumen de Información del Estudiante:</h3>
+    <p>Cédula: ${payload.student.id_card || "—"}</p>
+    <p>Nombre: ${payload.student.name}</p>
+    <p>Fecha de Nacimiento: ${new Date(payload.student.date_of_birth).toLocaleDateString()}</p>
+    <p>Email: ${payload.student.email || "—"}</p>
+    <p>Ciudad: ${payload.student.city}</p>
+    <p>Dirección: ${payload.student.address}</p>
+    <p>Teléfono: ${payload.student.phone_number || "—"}</p>
+    <p>Colegio: ${payload.student.school_name || "—"}</p>
+    <p>Año Escolar: ${payload.student.school_year || "—"}</p>
+    <p>Número de Emergencia: ${payload.emergency_number || "—"}</p>
+    <p>Exonerado: ${payload.exonerate ? 'Sí' : 'No'}</p>
+`;
+
+    console.log(tutorData)
+
+    if (tutorData.name !== "" && tutorData.phone_number !== "") {
+      summary += `
+    <h4 class="text-1xl font-bold mb-1 mt-3">Información del Tutor:</h4>
+    <p>Parentesco: ${kinshipData.find(k => k.id === tutorData.tutor_kinship)?.name}</p>
+    <p>Cédula: ${tutorData.id_card || "—"}</p>
+    <p>Nombre: ${tutorData.name}</p>
+    <p>Email: ${tutorData.email || "—"}</p>
+    <p>Teléfono: ${tutorData.phone_number}</p>
+    <p>Ciudad: ${tutorData.city}</p>
+    <p>Dirección: ${tutorData.address}</p>
+  `;
+    } else if (selectTutorData.tutor_id) {
+      summary += `
+    <h4 class="text-1xl font-bold mb-1 mt-3">Información del Tutor:</h4>
+    <p>Nombre: ${selectedTutor?.name}</p>
+    <p>Parentesco: ${kinshipData.find(k => k.id === selectTutorData.tutor_kinship)?.name}</p>
+  `;
+    }
+
+    summary += `</div>`;
+    Swal.fire({
+      title: "¿Estás seguro?",
+      html: summary,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, registrar",
+      customClass: {
+        popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+        confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+        cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        (async () => {
+          try {
+            const response = await fetch(`${API_URL}/students.enroll`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: API_KEY,
+              },
+              body: JSON.stringify(payload),
+              credentials: 'include',
+            });
+
+            let data = null;
+            try {
+              if (
+                response.headers.get('Content-Type')?.includes('application/json')
+              ) {
+                data = await response.json();
+              }
+            } catch (error) {
+              console.error('Error al analizar JSON:', error);
+            }
+
+            if (!response.ok) {
+              showError(data?.detail || 'Error inesperado');
+              return;
+            }
+
+            showSuccess('Se registró el estudiante correctamente.');
+
+            navigate('/enrollment');
+          } catch (error) {
+            console.error("Error al enviar datos:", error);
+          }
+        })();
       }
-
-      if (!response.ok) {
-        showError(data?.detail || 'Error inesperado');
-        return;
-      }
-
-      showSuccess('Se registro el estudiante correctamente');
-
-      navigate('/enrollment');
-  } catch (error) {
-      console.error("Error al enviar datos:", error);
-  }
+    });
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <CardOperator
         title="Matricular Estudiante"
-        subtitle="Asociado a un alumno."
+        subtitle="Agrega un nuevo estudiante al sistema."
         color="violet"
       >
         <FaWallet size={20} className="text-white" />
@@ -190,7 +261,7 @@ const Enrollment = ({
               colorVariants[color].text,
             )}
           >
-            Curso
+            Curso(s)
           </p>
 
           <FormCourse onCourseChange={setCourseSelection} />
@@ -203,10 +274,18 @@ const Enrollment = ({
               colorVariants[color].text,
             )}
           >
-            Estudiante
+            Datos del estudiante
           </p>
           <FormStudent
-            onToggle={setIsSwitchEnabled}
+            onToggle={(e) => { setIsSwitchEnabled(e); setTutorData({
+              id_card: '',
+              name: '',
+              email: '',
+              city: '',
+              address: '',
+              phone_number: '',
+              tutor_kinship: 0,
+            }) }}
             onStudentChange={setStudentData}
           />
           <br />
@@ -219,7 +298,7 @@ const Enrollment = ({
                   colorVariants[color].text,
                 )}
               >
-                Tutor
+                Asociar tutor
               </p>
               {selectedOption === null ? (
                 <div className="flex justify-center gap-2 xl:gap-7 m-7">
@@ -231,14 +310,14 @@ const Enrollment = ({
                     onClick={() => setSelectedOption('search')}
                     className="inline-flex items-center justify-center py-4 px-10 text-black bg-white dark:text-white dark:bg-boxdark dark:hover:bg-black hover:bg-slate-100"
                   >
-                    Asignar Tutor
+                    Asignar un tutor existente
                   </button>
                   <button
                     type="button"
                     onClick={() => setSelectedOption('form')}
                     className="inline-flex items-center justify-center py-4 px-10 text-black bg-white dark:text-white dark:bg-boxdark dark:hover:bg-black hover:bg-slate-100"
                   >
-                    Registrar Tutor
+                    Registrar un nuevo tutor
                   </button>
                 </div>
               ) : selectedOption === 'search' ? (

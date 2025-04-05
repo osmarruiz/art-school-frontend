@@ -28,6 +28,7 @@ import {
 } from '../../utils/actionButton';
 import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
+import Swal from 'sweetalert2';
 
 moment.locale('es-us');
 
@@ -37,7 +38,7 @@ const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
 interface TransactionListProps {
   transactions: Transaction[];
-  reloadTransactions: () => Promise<void>; 
+  reloadTransactions: () => Promise<void>;
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }
 
@@ -53,7 +54,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
   const [visibleReceipts, setVisibleReceipts] = useState<
     Record<string, boolean>
   >({});
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
@@ -63,9 +64,9 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     const fetchTransactions = async () => {
       setLoading(true);
       try {
-        await reloadTransactions(); 
+        await reloadTransactions();
       } catch (error) {
-        showError('Error al cargar las transacciones');
+        showError('Error al cargar las transacciones.');
       } finally {
         setLoading(false);
       }
@@ -81,13 +82,37 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     }));
   };
 
+  const formatDateTime = (value) => {
+    if (!value) {
+      return '—';
+    }
+    const date = new Date(value);
+    const dateString = date.toLocaleDateString('es-NI', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    const timeString = date.toLocaleTimeString('es-NI', {
+      hour: 'numeric',
+      minute: 'numeric',
+    });
+    return `${dateString} ${timeString}`;
+  };
+
+  const formatText = (value) => {
+    if (!value) {
+      return '—';
+    }
+    return value;
+  };
+
   const columnDefs = useMemo(
     () => [
-      { field: 'issued_at', headerName: 'Fecha' },
-      { field: 'no', headerName: 'Número' },
+      { field: 'issued_at', headerName: 'Fecha', valueFormatter: p => formatDateTime(p.value) },
+      { field: 'no', headerName: 'No. Recibo' },
       { field: 'amount', headerName: 'Monto' },
-      { field: 'payer', headerName: 'Pagado Por' },
-      { field: 'remarks', headerName: 'Concepto' },
+      { field: 'payer', headerName: 'Pagado Por', valueFormatter: p => formatText(p.value) },
+      { field: 'remarks', headerName: 'Concepto', valueFormatter: p => formatText(p.value) },
       {
         headerName: 'Acción',
         field: 'action',
@@ -126,7 +151,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     }),
     [],
   );
-  
+
 
   return (
     <div className="w-full">
@@ -159,16 +184,19 @@ const CardTransaction: React.FC<TransactionListProps> = ({
               <div className="flex justify-between items-center">
                 <div className={clsx(colorVariants[color].text)}>
                   <div className='block sm:flex gap-2'>
-                  <p className="font-bold block xl:inline-flex">{transaction.fee.label}</p>
-                  <p>{moment(transaction.target_date).format('LL')}</p>
+                    <p className={`font-bold block xl:inline-flex text-[${
+                      transaction.fee.type === "enrollment" ? "#4CAF50" : transaction.fee.type === "month" ? "#FA5A7D" : "#FF947A"
+                    }]`}>{transaction.fee.label}</p>
+                    <span>•</span>
+                    <p>{new Date(transaction.target_date).toLocaleString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', })}</p>
                   </div>
                   <div className='block sm:flex gap-2'>
-                  <p className="font-bold block xl:inline-flex">
-                    Total: {formatCurrency(transaction.total)}
-                  </p>
-                  <p className="font-bold text-orange-500">
-                    Saldo: {formatCurrency(transaction.balance)}
-                  </p>
+                    <p className="font-bold block xl:inline-flex">
+                      Total: {formatCurrency(transaction.total)}
+                    </p>
+                    <p className="font-bold text-orange-500">
+                      Saldo: {formatCurrency(transaction.balance)}
+                    </p>
                   </div>
                   <p>{(transaction.remarks) ? transaction.remarks : "—"}</p>
 
@@ -177,6 +205,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                 {/* Botones de acción */}
                 <div className="flex gap-2">
                   <button
+                    title='Agregar un recibo a esta transacción'
                     className={clsx(colorVariants[color].btnSc)}
                     onClick={() =>
                       addReceiptButton(
@@ -191,6 +220,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                   </button>
 
                   <button
+                    title='Listar los recibos de esta transacción'
                     className={clsx(colorVariants[color].btnSc)}
                     onClick={() => toggleVisibility(transaction.id)}
                   >
@@ -202,20 +232,39 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                   </button>
 
                   <button
+                    title='Finalizar transacción'
                     className={clsx(colorVariants[color].btnSc)}
-                    onClick={() =>
-                      finishTransaction(
-                        transaction.id,
-                        reloadTransactions,
-                        showError,
-                        showSuccess,
-                      )
+                    onClick={async () => {
+                      const result = await Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: 'Esta acción de finalizar una transacción no se puede revertir. Asegúrese que todos los datos están correctos.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        customClass: {
+                          popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                          confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                          cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
+                        },
+                        confirmButtonText: 'Sí, finalizar',
+                        cancelButtonText: 'No, cancelar',
+                      });
+
+                      if (result.isConfirmed) {
+                        finishTransaction(
+                          transaction.id,
+                          reloadTransactions,
+                          showError,
+                          showSuccess,
+                        );
+                      }
+                    }
                     }
                   >
                     <FaCheck size={20} />
                   </button>
 
                   <button
+                    title='Revocar transacción'
                     className={clsx(colorVariants[color].btnSc)}
                     onClick={() =>
                       revokeTransactionButton(
@@ -245,13 +294,13 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                   >
                     {rowData.length > 0 ? (
                       <div style={{ height: 250, width: '100%' }}>
-                      <AgGridReact
-                        ref={gridRef}
-                        theme={theme}
-                        rowData={rowData}
-                        columnDefs={columnDefs}
-                        defaultColDef={defaultColDef}
-                      />
+                        <AgGridReact
+                          ref={gridRef}
+                          theme={theme}
+                          rowData={rowData}
+                          columnDefs={columnDefs}
+                          defaultColDef={defaultColDef}
+                        />
                       </div>
                     ) : (
                       <p className="text-gray-500 text-sm">

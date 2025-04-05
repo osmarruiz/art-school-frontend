@@ -51,7 +51,7 @@ const Payment = ({
   return (
     <CardOperator
       title="Registrar Pago"
-      subtitle="Asociado a un alumno."
+      subtitle="Registra un nuevo pago para algún alumno."
       color="red"
     >
       <FaWallet size={20} className="text-white" />
@@ -92,7 +92,7 @@ const Payment = ({
               'text-l py-5  ',
             )}
           >
-            Seleccione un estudiante para ver sus transacciones
+            Selecciona un estudiante para ver sus transacciones.
           </p>
         )}
       </div>
@@ -106,7 +106,7 @@ const Payment = ({
         )}
         onClick={async () => await addTransactionButton(selectedStudent.id, fetchTransactions, showError, showSuccess)}
       >
-        Comenzar Transacción
+        Comenzar nueva transacción
       </button>)):(<></>)}
 
     </CardOperator>

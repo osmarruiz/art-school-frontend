@@ -234,7 +234,7 @@ const FormStudent = ({
           </div>
           <div>
             <label className="mb-2.5 block text-black dark:text-white ">
-              Registrar datos de escuela
+              Registrar datos académicos
             </label>
             <Switcher
               enabled={switcherSchoolEnabled}
@@ -244,7 +244,7 @@ const FormStudent = ({
           </div>
           <div>
           <label className="mb-2.5 block text-black dark:text-white ">
-              Exonerar estudiante
+              Exonerar matrícula
             </label>
             <Switcher
               enabled={switcherExonerateEnabled}

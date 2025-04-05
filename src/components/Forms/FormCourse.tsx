@@ -5,23 +5,32 @@ import { Shift } from '../../types/shift';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
 
-const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: number | null; shiftId: number | null }[]) => void }) => {
+const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: number | null; shiftId: number | null; courseName: string | null; shiftName: string }[]) => void }) => {
   const [courseData, setCourseData] = useState<Course[]>([]);
-  const [courseForms, setCourseForms] = useState<{ id: number; selectedCourse: number | null; selectedShift: number | null; shiftOptions: Shift[] }[]>([
-    { id: Date.now(), selectedCourse: null, selectedShift: null, shiftOptions: [] },
+  const [shiftsMap, setShiftsMap] = useState<Map<number, string>>();
+  const [courseForms, setCourseForms] = useState<{ id: number; courseName: string, shiftName: string, selectedCourse: number | null; selectedShift: number | null; shiftOptions: Shift[] }[]>([
+    { id: Date.now(), selectedCourse: null, shiftName: "", courseName: "", selectedShift: null, shiftOptions: [] },
   ]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${API_URL}/courses.list`, {
+        let response = await fetch(`${API_URL}/courses.list`, {
           headers: {
             Authorization: API_KEY,
           },
           credentials: 'include',
         });
-        const data: Course[] = await response.json();
-        setCourseData(data);
+        const courses: Course[] = await response.json();
+        setCourseData(courses);
+
+        const ss = new Map<number, string>();
+        courses.map(c => {
+          if (c.shifts !== null) {
+            c.shifts.map(s => ss.set(s.id, s.name))
+          }
+        })
+        setShiftsMap(ss);
       } catch (error) {
         console.error('Error al obtener los datos', error);
       }
@@ -30,7 +39,7 @@ const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: 
   }, []);
 
   const addCourseForm = () => {
-    setCourseForms([...courseForms, { id: Date.now(), selectedCourse: null, selectedShift: null, shiftOptions: [] }]);
+    setCourseForms([...courseForms, { id: Date.now(), courseName: "", shiftName: "", selectedCourse: null, selectedShift: null, shiftOptions: [] }]);
   };
 
   const removeCourseForm = (id: number) => {
@@ -40,33 +49,52 @@ const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: 
   };
 
   const handleCourseChange = (id: number, courseId: number) => {
+    const shiftSelector: NodeListOf<HTMLSelectElement> | null = document.querySelectorAll(".shifts-container select");
+    if (shiftSelector !== null) {
+      shiftSelector.forEach(s => {
+        s.selectedIndex = 0;
+      });
+    }
+    let selectedShift = 0;
+    let shiftName = "";
+    const found = courseData.find((course) => course.id === courseId);
+    if (found !== null && found?.shifts !== null) {
+      selectedShift = Number(found?.shifts[0].id);
+      shiftName = shiftsMap?.get(selectedShift) ?? "";
+    }
+
     setCourseForms((prevForms) =>
       prevForms.map((form) =>
         form.id === id
           ? {
-              ...form,
-              selectedCourse: courseId,
-              shiftOptions: courseData.find((course) => course.id === courseId)?.shifts || [],
-              selectedShift: null, 
-            }
+            ...form,
+            selectedCourse: courseId,
+            shiftOptions: courseData.find((course) => course.id === courseId)?.shifts || [],
+            selectedShift: selectedShift,
+            courseName: courseData.find((course) => course.id === courseId)?.name || "",
+            shiftName: shiftName,
+          }
           : form
       )
     );
   };
 
   const handleShiftChange = (id: number, shiftId: number) => {
+    const shiftName = shiftsMap?.get(shiftId) ?? "";
     setCourseForms((prevForms) =>
       prevForms.map((form) =>
-        form.id === id ? { ...form, selectedShift: shiftId } : form
+        form.id === id ? { ...form, selectedShift: shiftId, shiftName, } : form
       )
     );
   };
 
   useEffect(() => {
     onCourseChange(
-      courseForms.map(({ selectedCourse, selectedShift }) => ({
+      courseForms.map(({ selectedCourse, selectedShift, courseName, shiftName }) => ({
         courseId: selectedCourse,
         shiftId: selectedShift,
+        courseName: courseName,
+        shiftName: shiftName,
       }))
     );
   }, [courseForms, onCourseChange]);
@@ -89,7 +117,7 @@ const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: 
                 onChange={(courseId) => handleCourseChange(id, courseId)}
               />
             </div>
-            <div className="w-full xl:w-1/2">
+            <div className="w-full xl:w-1/2 shifts-container">
               <SelectGroupOne
                 title="Turno"
                 placeholder="Selecciona un turno"

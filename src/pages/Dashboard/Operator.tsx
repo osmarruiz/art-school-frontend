@@ -47,7 +47,7 @@ const Operator: React.FC = () => {
               </CardDataStats>
             </motion.a>
             <motion.a href='/renew' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
-              <CardDataStats title="Renovar Matricula" color="orange">
+              <CardDataStats title="Renovar Matrícula" color="orange">
                 <FaRepeat size={18} className='fill-white'/>
               </CardDataStats>
             </motion.a>

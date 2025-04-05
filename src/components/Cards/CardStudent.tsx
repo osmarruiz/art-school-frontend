@@ -23,7 +23,7 @@ const CardStudent = ({
       <div className="flex justify-between">
         <div className={clsx(colorVariants[color].text)}>
           <h3 className="text-lg font-bold">{student.name}</h3>
-          <p>ID: {student.id_card}</p>
+          <p>Cédula: {student.id_card || "—"}</p>
           <p>Disciplina: {student.coursesString}</p>
         </div>
         <button onClick={onReset} className={clsx(colorVariants[color].btnSc)}>
