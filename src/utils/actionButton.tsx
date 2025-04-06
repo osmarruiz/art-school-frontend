@@ -6,7 +6,6 @@ import {
 } from '../utils/transactionAction';
 import { API_KEY, API_URL } from './apiConfig';
 import { Fee } from '../types/fee';
-import { Course } from '../types/course';
 
 export const revokeReceiptButton = async (
   receipt_id: number,
@@ -66,8 +65,7 @@ export const revokeTransactionButton = async (
   transaction_id: number,
   reloadTransactions: () => void,
   showError: (message: string) => void,
-  showSuccess: (message: string) => void,
-) => {
+  showSuccess: (message: string) => void,) => {
   try {
     const result = await Swal.fire({
       title: '¿Estás seguro?',

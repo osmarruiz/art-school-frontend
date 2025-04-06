@@ -63,12 +63,17 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
     fetchData();
   }, []);
 
-  const filteredStudents = studentData.filter(
-    (student) =>
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.id_card.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.coursesString.toLowerCase().includes(searchTerm.toLowerCase()) 
-  );
+  const filteredStudents = studentData.filter((student) => {
+    const name = student?.name?.toLowerCase() || '';
+    const idCard = student?.id_card?.toLowerCase() || '';
+    const coursesString = student?.coursesString?.toLowerCase() || '';
+  
+    return (
+      name.includes(searchTerm.toLowerCase()) ||
+      idCard.includes(searchTerm.toLowerCase()) ||
+      coursesString.includes(searchTerm.toLowerCase())
+    );
+  });
 
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
