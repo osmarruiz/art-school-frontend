@@ -36,7 +36,7 @@ const Disciplines: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${API_URL}/courses.list?rpp=999&status=active`,
+        `${API_URL}/courses.list`,
         {
           headers: {
             Authorization: API_KEY,

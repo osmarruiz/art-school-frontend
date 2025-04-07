@@ -1,7 +1,9 @@
 import { Fee } from "./fee";
 import { Receipt } from "./receipt";
+import { Student } from "./student";
 
 export interface Transaction {
+    student: Student
     id: number;
     fee: Fee;
     target_date: Date;
