@@ -14,6 +14,9 @@ import clsx from 'clsx';
 import { FaSearch, FaBell } from 'react-icons/fa';
 import CardDataStats from '../../components/Cards/CardDataStats';
 import { colorVariants } from '../../types/colorVariants';
+import { API_KEY, API_URL } from '../../utils/apiConfig';
+import { PendingAggregate } from '../../types/pendingAggregate';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -23,98 +26,45 @@ const Pendings: React.FC = () => {
   const [colorMode] = useColorMode();
   const gridRef = useRef<AgGridReact<any> | null>(null);
   const [theme, setTheme] = useState(themeLightCold);
+  const [rowData, setRowData] = useState<PendingAggregate>();
+  const [searchText, setSearchText] = useState('');
+  const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`${API_URL}/transactions.pending.aggregate`, {
+        headers: {
+          Authorization: API_KEY,
+        },
+        credentials: 'include',
+      });
 
-  //temporal----------------------------------
-  const [rowData] = useState<Student[]>([
-    {
-      id: 1,
-      id_card: '12345678',
-      name: 'Juan Perez',
-      course: 'Matemáticas',
-      is_active: true,
-    },
-    {
-      id: 2,
-      id_card: '87654321',
-      name: 'Ana López',
-      course: 'Historia',
-      is_active: false,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-  ]);
-  //temporal----------------------------------
+      const data = await response.json();
+      console.log('Data fetched:', data);
+      setRowData({ ...data, payload: [...data.payload] });
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   //cambia el tema del aggrid segun el estado de colorMode
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
 
-  // Renderer para la columna de estado
-  const estadoRenderer = (params: { value: boolean }) => {
-    return (
-      <span
-        className={`text-sm py-1 px-2  rounded ${
-          params.value
-            ? 'bg-green-200 dark:bg-green-900'
-            : 'bg-red-200 dark:bg-red-900'
-        }`}
-      >
-        {params.value ? 'Activo' : 'Inactivo'}
-      </span>
-    );
-  };
-
   // Renderer para la columna de acciones
   const opcionesRenderer = () => {
     return (
       <div className="flex gap-4 mt-1 justify-center ">
-
-    
         <button className={clsx(colorVariants['white'].btnSc)}>
-        <FaBell size={20}/>
-      </button>
+          <FaBell size={20} />
+        </button>
       </div>
     );
   };
@@ -123,14 +73,11 @@ const Pendings: React.FC = () => {
 
   const columnDefs = useMemo(
     () => [
-      { field: 'id', headerName: 'Numero' },
-      { field: 'name', headerName: 'Alumno' },
-      { field: 'id_card', headerName: 'Tarifa' },
-      {
-        field: 'is_active',
-        headerName: 'Estado',
-        cellRenderer: estadoRenderer,
-      },
+      { field: 'student.name', headerName: 'Numero' },
+      { field: 'total_transactions', headerName: 'Total de transacciones' },
+      { field: 'balance_sum', headerName: 'Balance total', valueGetter: (params: any) => formatCurrency(params.data.balance_sum) },
+      { field: 'balance_avg', headerName: 'Balance promedio', valueGetter: (params: any) => formatCurrency(params.data.balance_avg) },
+
       {
         field: 'opciones',
         headerName: 'Opciones',
@@ -176,29 +123,31 @@ const Pendings: React.FC = () => {
               )}
             />
           </div>
-
-          
         </div>
-        <div className='flex justify-center sm:justify-end gap-4 sm:w-1/5  mb-6'>
-            <button className={clsx("inline-flex items-center justify-center py-2.5 px-3", colorVariants["white"].btn)}>
-                    Notificar a todos
-                  </button>
-          </div>
+        <div className="flex justify-center sm:justify-end gap-4 sm:w-1/5  mb-6">
+          <button
+            className={clsx(
+              'inline-flex items-center justify-center py-2.5 px-3 disabled:',
+              colorVariants['white'].btn,
+            )}
+          >
+            Notificar a todos
+          </button>
+        </div>
       </div>
       <div className="h-125 w-full">
         <AgGridReact
           ref={gridRef}
           theme={theme}
-          rowData={rowData}
+          rowData={rowData?.payload}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           rowHeight={75}
         />
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">
-        
         <div className="sm:w-1/2 xl:w-1/4">
-          <CardDataStats title="Total de pendientes" total="50">
+          <CardDataStats title="Total de pendientes" total={rowData?.total_pending.toString()}>
             <FaPencil className="fill-primary dark:fill-white" size={20} />
           </CardDataStats>
         </div>

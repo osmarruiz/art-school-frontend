@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import moment from 'moment';
+import 'moment/locale/es';
 import {
   AllCommunityModule,
   ModuleRegistry,
@@ -30,7 +31,7 @@ import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
 import Swal from 'sweetalert2';
 
-moment.locale('es-us');
+moment.locale('es');
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
