@@ -250,11 +250,11 @@ const Disciplines: React.FC = () => {
       { field: 'name', headerName: 'Disciplina' },
       { field: 'type.name', headerName: 'Tipo' },
       {
-        headerName: 'Turno',
+        headerName: 'Turno(s)',
         valueGetter: (params: any) => getShiftsAsString(params.data.shifts),
       },
       { field: 'price', headerName: 'Precio', valueGetter: (params: any) => formatCurrency(params.data.price),},
-      { field: 'total_of_students', headerName: 'Total de estudiantes' },
+      { field: 'total_of_students', headerName: 'Cant. est. registrados' },
       /*{
         headerName: 'Opciones',
         cellRenderer: opcionesRenderer,

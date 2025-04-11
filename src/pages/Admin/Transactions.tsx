@@ -8,13 +8,11 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import { FaMoneyBillWave } from 'react-icons/fa6';
-import { Student } from '../../types/student';
+import { FaDollarSign, FaMoneyBillWave } from 'react-icons/fa6';
 import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
 import CardDataStats from '../../components/Cards/CardDataStats';
 import { colorVariants } from '../../types/colorVariants';
-import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import { Transaction } from '../../types/transaction';
 import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { Aggregate } from '../../types/aggregate';
@@ -36,7 +34,7 @@ const Transactions: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${API_URL}/transactions.aggregate?rpp=999${filterParam}`,
+        `${API_URL}/transactions.aggregate?rpp=99999999${filterParam}`,
         {
           headers: {
             Authorization: API_KEY,
@@ -46,7 +44,6 @@ const Transactions: React.FC = () => {
       );
 
       const data = await response.json();
-      console.log('Data fetched:', data);
       setRowData({ ...data, payload: [...data.payload] });
     } catch (error) {
       console.error('Error al obtener datos:', error);
@@ -66,25 +63,34 @@ const Transactions: React.FC = () => {
 
   // Definición de columnas con tipado correcto
 
+  const formatShortDate = (value: number) => {
+    if (!value) {
+      return '—';
+    }
+    const date = new Date(value + "T00:00:00-06:00");
+ return date.toLocaleDateString('es-NI');
+  };
+
+
   const columnDefs = useMemo(
     () => [
       { field: 'student.name', headerName: 'Estudiante' },
-      { field: 'target_date', headerName: 'Fecha objetivo' },
       { field: 'fee.label', headerName: 'Tipo' },
-      { field: 'remarks', headerName: 'Concepto' },
       {
         field: 'total',
-        headerName: 'Total',
+        headerName: 'Total a pagar',
         valueGetter: (params: any) => formatCurrency(params.data.total),
       },
       {
         field: 'balance',
-        headerName: 'Balance',
+        headerName: 'Saldo',
         valueGetter: (params: any) => formatCurrency(params.data.balance),
       },
-      { field: 'is_revoked', headerName: 'Revocado' },
-      { field: 'is_paid', headerName: 'Pagado' },
-      { field: 'is_finished', headerName: 'Finalizado' },
+      { field: 'target_date', headerName: 'Fec. selec.', valueFormatter: (params) => formatShortDate(params.value) },
+      { field: 'remarks', headerName: 'Concepto', flex: 2, valueFormatter: (params) => (v => !v ? "—" : v)(params.value) },
+      { field: 'is_finished', headerName: '¿Finalizada?' },
+      { field: 'is_revoked', headerName: '¿Revocada?' },
+      { field: 'is_paid', headerName: '¿Pagada?' },
     ],
     [],
   );
@@ -138,7 +144,7 @@ const Transactions: React.FC = () => {
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               className={clsx(
-                'w-full h-12 bg-white pl-9 pr-4 text-black focus:outline-none rounded-lg shadow-default',
+                'w-125 h-12 bg-white pl-9 pr-4 text-black focus:outline-none rounded-lg shadow-default',
                 colorVariants['white'].inp,
               )}
             />
@@ -164,7 +170,7 @@ const Transactions: React.FC = () => {
               checked={filterParam === '&revoked=true'}
               onChange={() => setFilterParam('&revoked=true')}
             />
-            Revocado
+            Revocadas
           </label>
 
           <label className="flex items-center gap-2">
@@ -175,7 +181,7 @@ const Transactions: React.FC = () => {
               checked={filterParam === '&paid=true'}
               onChange={() => setFilterParam('&paid=true')}
             />
-            Pagado
+            Finalizadas
           </label>
         </div>
       </div>
@@ -196,8 +202,8 @@ const Transactions: React.FC = () => {
             title="Total trasacciones finalizadas"
             total={rowData?.statistics.total_transactions_finished?.toString()}
           >
-            <FaMoneyBillWave
-              className="fill-primary dark:fill-white"
+            <FaDollarSign
+              className="fill-success dark:fill-white"
               size={20}
             />
           </CardDataStats>
@@ -219,7 +225,7 @@ const Transactions: React.FC = () => {
             total={rowData?.statistics.total_transactions_revoked?.toString()}
           >
             <FaMoneyBillWave
-              className="fill-primary dark:fill-white"
+              className="fill-danger dark:fill-white"
               size={20}
             />
           </CardDataStats>

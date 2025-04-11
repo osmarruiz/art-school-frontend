@@ -93,6 +93,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </li>
                 {/* <!-- Menu Item Dashboard --> */}
 
+                {/* <!-- Menu Item Tables --> */}
+                <li>
+                  <NavLink
+                    to="/students"
+                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-boxdark-2  ${
+                      pathname.includes('students') && 'bg-boxdark-2'
+                    }`}
+                  >
+                    <FaBook/>
+                    Estudiantes
+                  </NavLink>
+                </li>
+                {/* <!-- Menu Item Tables --> */}
+
                 {/* <!-- Menu Item Ingresos --> */}
                 <li>
                   <NavLink
@@ -122,19 +136,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </li>
                 {/* <!-- Menu Item Profile --> */}
 
-                {/* <!-- Menu Item Tables --> */}
-                <li>
-                  <NavLink
-                    to="/students"
-                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-boxdark-2  ${
-                      pathname.includes('students') && 'bg-boxdark-2'
-                    }`}
-                  >
-                    <FaBook/>
-                    Estudiantes
-                  </NavLink>
-                </li>
-                {/* <!-- Menu Item Tables --> */}
 
                 {/* <!-- Menu Item Settings --> */}
                 <li>

@@ -8,4 +8,7 @@ export interface Student {
     coursesString: string; 
     is_active: boolean;
     is_enrolled: boolean;
+    date_of_birth: string;
+    email: string;
+    phone_number: string;
   }

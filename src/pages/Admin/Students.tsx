@@ -8,7 +8,7 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import { FaEye, FaMinus, FaPencil, FaPlus, FaUserGroup } from 'react-icons/fa6';
+import { FaArrowRight, FaEye, FaMinus, FaPencil, FaPlus, FaUserGroup } from 'react-icons/fa6';
 import { Student } from '../../types/student';
 import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
@@ -16,6 +16,7 @@ import CardDataStats from '../../components/Cards/CardDataStats';
 import { colorVariants } from '../../types/colorVariants';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import { API_KEY, API_URL } from '../../utils/apiConfig';
+import { useNavigate } from 'react-router-dom';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -35,10 +36,11 @@ const Students: React.FC = () => {
   const [rowData, setRowData] = useState<StudentResponse>();
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
       try {
-        const response = await fetch(`${API_URL}/students.list?rrp=999`, {
+        const response = await fetch(`${API_URL}/students.list?rpp=99999`, {
           headers: {
             Authorization: API_KEY,
           },
@@ -46,7 +48,6 @@ const Students: React.FC = () => {
         });
   
         const data = await response.json();
-        console.log('Data fetched:', data.students);
         setRowData(data);
       } catch (error) {
         console.error('Error al obtener datos:', error);
@@ -79,77 +80,88 @@ const Students: React.FC = () => {
     );
   };
 
-  const deactivateStudent = async (studentId: number) => {
-    try {
-      const response = await fetch(`${API_URL}/students.remove`, {
-        method: 'POST',
-        headers: {
-          Authorization: API_KEY,
-          'Content-Type': 'application/json', // Muy importante
-        },
-        credentials: 'include',
-        body: JSON.stringify({ student_id: studentId }), // Aquí va el JSON correcto
-      });
+//   const deactivateStudent = async (studentId: number) => {
+//     try {
+//       const response = await fetch(`${API_URL}/students.remove`, {
+//         method: 'POST',
+//         headers: {
+//           Authorization: API_KEY,
+//           'Content-Type': 'application/json', // Muy importante
+//         },
+//         credentials: 'include',
+//         body: JSON.stringify({ student_id: studentId }), // Aquí va el JSON correcto
+//       });
   
-      if (!response.ok) {
-        throw new Error('Error al desactivar el estudiante');
-      }
+//       if (!response.ok) {
+//         throw new Error('Error al desactivar el estudiante');
+//       }
   
-      fetchData(); // recarga los datos
-    } catch (error) {
-      console.error('Error al desactivar el estudiante:', error);
-    }
-  };
+//       fetchData(); // recarga los datos
+//     } catch (error) {
+//       console.error('Error al desactivar el estudiante:', error);
+//     }
+//   };
 
-  const activateStudent = async (studentId: number) => {
-  try {
-    const response = await fetch(`${API_URL}/students.recover`, {
-      method: 'POST',
-      headers: {
-        Authorization: API_KEY,
-        'Content-Type': 'application/json', // Muy importante
-      },
-      credentials: 'include',
-      body: JSON.stringify({ student_id: studentId }), // Aquí va el JSON correcto
-    });
+//   const activateStudent = async (studentId: number) => {
+//   try {
+//     const response = await fetch(`${API_URL}/students.recover`, {
+//       method: 'POST',
+//       headers: {
+//         Authorization: API_KEY,
+//         'Content-Type': 'application/json', // Muy importante
+//       },
+//       credentials: 'include',
+//       body: JSON.stringify({ student_id: studentId }), // Aquí va el JSON correcto
+//     });
 
-    if (!response.ok) {
-      throw new Error('Error al desactivar el estudiante');
-    }
+//     if (!response.ok) {
+//       throw new Error('Error al desactivar el estudiante');
+//     }
 
-    fetchData(); // recarga los datos
-  } catch (error) {
-    console.error('Error al desactivar el estudiante:', error);
-  }
-};
+//     fetchData(); // recarga los datos
+//   } catch (error) {
+//     console.error('Error al desactivar el estudiante:', error);
+//   }
+// };
 
   // Renderer para la columna de acciones
   const opcionesRenderer = (params: { data: { id: number, is_active: boolean 
 } }) => {
     return (
       <div className="flex gap-4 mt-1 justify-center ">
-        <button className={clsx(colorVariants['white'].btnSc)}>
-          <FaEye size={20} />
+        <button className={clsx(colorVariants['white'].btnSc)} onClick={() => navigate(`/student/${params.data.id}`)}>
+          <FaArrowRight size={20} />
         </button>
 
-        <button className={clsx(colorVariants['white'].btnSc)}>
+        {/* <button className={clsx(colorVariants['white'].btnSc)}>
           <FaPencil size={20} />
-        </button>
+        </button> */}
 
-        <button className={clsx(colorVariants['white'].btnSc)} onClick={() => {params.data.is_active ? deactivateStudent(params.data.id) : activateStudent(params.data.id)}}>
+        {/* <button className={clsx(colorVariants['white'].btnSc)} onClick={() => {params.data.is_active ? deactivateStudent(params.data.id) : activateStudent(params.data.id)}}>
         {params.data.is_active ? <FaMinus size={20} /> : <FaPlus size={20} />}
-      </button>
+      </button> */}
       </div>
     );
   };
 
   // Definición de columnas con tipado correcto
 
+  const formatDate = (value: string) => {
+    if (!value) {
+      return '—';
+    }
+    const date = new Date(value + "T00:00:00-06:00");
+    return date.toLocaleDateString('es-NI');
+  };
+
   const columnDefs = useMemo(
     () => [
-      { field: 'id', headerName: 'Numero' },
-      { field: 'name', headerName: 'Nombre' },
-      { field: 'id_card', headerName: 'Cedula' },
+      { field: 'id', headerName: 'ID' },
+      { field: 'name', headerName: 'Nombre', flex: 2 },
+      { field: 'id_card', headerName: 'Cédula', valueFormatter: (params) => (v => !v ? "—" : v)(params.value) },
+      { field: 'email', headerName: 'Correo', valueFormatter: (params) => (v => !v ? "—" : v)(params.value) },
+      { field: 'phone_number', headerName: 'Teléfono', valueFormatter: (params) => (v => !v ? "—" : v)(params.value) },
+      { field: 'date_of_birth', headerName: 'Nacimiento', valueFormatter: (params) => formatDate(params.value) },
       { field: 'is_active', headerName: 'Estado', cellRenderer: estadoRenderer },
       { field: 'opciones', headerName: 'Opciones', cellRenderer: opcionesRenderer },
     ],
@@ -223,13 +235,13 @@ const Students: React.FC = () => {
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">
         <div className="sm:w-1/2 xl:w-1/4 mb-4">
-          <CardDataStats title="Total de activos" total="50">
+          <CardDataStats title="Total de activos" total={`${rowData?.total_active}`}>
             <FaUserGroup className="fill-primary dark:fill-white" size={20} />
           </CardDataStats>
         </div>
         <div className="sm:w-1/2 xl:w-1/4">
-          <CardDataStats title="Total de inactivos" total="50">
-            <FaUserGroup className="fill-primary dark:fill-white" size={20} />
+          <CardDataStats title="Total de inactivos" total={`${rowData?.total_inactive}`}>
+            <FaUserGroup className="fill-danger dark:fill-white" size={20} />
           </CardDataStats>
         </div>
       </div>

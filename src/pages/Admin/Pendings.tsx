@@ -8,7 +8,7 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import { FaPencil } from 'react-icons/fa6';
+import { FaArrowRight, FaDollarSign, FaMoneyBillWave, FaPencil } from 'react-icons/fa6';
 import { Student } from '../../types/student';
 import clsx from 'clsx';
 import { FaSearch, FaBell } from 'react-icons/fa';
@@ -17,6 +17,7 @@ import { colorVariants } from '../../types/colorVariants';
 import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { PendingAggregate } from '../../types/pendingAggregate';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { useNavigate } from 'react-router-dom';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -29,10 +30,11 @@ const Pendings: React.FC = () => {
   const [rowData, setRowData] = useState<PendingAggregate>();
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`${API_URL}/transactions.pending.aggregate`, {
+      const response = await fetch(`${API_URL}/transactions.pending.aggregate?rpp=999999`, {
         headers: {
           Authorization: API_KEY,
         },
@@ -59,9 +61,12 @@ const Pendings: React.FC = () => {
   }, [colorMode]);
 
   // Renderer para la columna de acciones
-  const opcionesRenderer = () => {
+  const opcionesRenderer = (params: any) => {
     return (
       <div className="flex gap-4 mt-1 justify-center ">
+        <button className={clsx(colorVariants['white'].btnSc)} onClick={() => navigate(`/student/${params.data.student.id}`)}>
+          <FaArrowRight size={20} />
+        </button>
         <button className={clsx(colorVariants['white'].btnSc)}>
           <FaBell size={20} />
         </button>
@@ -71,13 +76,23 @@ const Pendings: React.FC = () => {
 
   // Definición de columnas con tipado correcto
 
+  const formatShortDate = (value: number) => {
+    if (!value) {
+      return '—';
+    }
+    console.log(value)
+    const date = new Date(value + "T00:00:00-06:00");
+    return date.toLocaleDateString('es-NI', {month: 'long', year: 'numeric'});
+  };
+
   const columnDefs = useMemo(
     () => [
-      { field: 'student.name', headerName: 'Numero' },
-      { field: 'total_transactions', headerName: 'Total de transacciones' },
-      { field: 'balance_sum', headerName: 'Balance total', valueGetter: (params: any) => formatCurrency(params.data.balance_sum) },
-      { field: 'balance_avg', headerName: 'Balance promedio', valueGetter: (params: any) => formatCurrency(params.data.balance_avg) },
-
+      { field: 'student.name', headerName: 'Estudiante' },
+      { field: 'total_transactions', headerName: 'Cant. transacciones pte.' },
+      { field: 'balance_sum', headerName: 'Saldo total pte.', valueGetter: (params: any) => formatCurrency(params.data.balance_sum) },
+      { field: 'balance_avg', headerName: 'Saldo promedio pte.', valueGetter: (params: any) => formatCurrency(params.data.balance_avg) },
+      { field: 'min_due_date', headerName: 'Mes mín. pte.', valueFormatter: (params: any) => formatShortDate(params.value) },
+      { field: 'max_due_date', headerName: 'Mes máx. pte.', valueFormatter: (params: any) => formatShortDate(params.value) },
       {
         field: 'opciones',
         headerName: 'Opciones',
@@ -149,7 +164,7 @@ const Pendings: React.FC = () => {
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">
         <div className="sm:w-1/2 xl:w-1/4">
           <CardDataStats title="Total de pendientes" total={rowData?.total_pending.toString()}>
-            <FaPencil className="fill-primary dark:fill-white" size={20} />
+            <FaMoneyBillWave className="fill-danger dark:fill-white" size={20} />
           </CardDataStats>
         </div>
       </div>
