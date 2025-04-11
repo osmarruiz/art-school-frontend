@@ -15,77 +15,49 @@ import { FaSearch } from 'react-icons/fa';
 import CardDataStats from '../../components/Cards/CardDataStats';
 import { colorVariants } from '../../types/colorVariants';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
+import { API_KEY, API_URL } from '../../utils/apiConfig';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
 const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
+interface StudentResponse {
+  total: number;
+  total_active: number;
+  total_inactive: number;
+  students: Student[];
+}
+
 const Students: React.FC = () => {
   const [colorMode] = useColorMode();
   const gridRef = useRef<AgGridReact<any> | null>(null);
   const [theme, setTheme] = useState(themeLightCold);
+  const [rowData, setRowData] = useState<StudentResponse>();
+  const [searchText, setSearchText] = useState('');
+  const [loading, setLoading] = useState(true);
 
-
-  //temporal----------------------------------
-  const [rowData] = useState<Student[]>([
-    {
-      id: 1,
-      id_card: '12345678',
-      name: 'Juan Perez',
-      course: 'Matemáticas',
-      is_active: true,
-    },
-    {
-      id: 2,
-      id_card: '87654321',
-      name: 'Ana López',
-      course: 'Historia',
-      is_active: false,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-    {
-      id: 3,
-      id_card: '11223344',
-      name: 'Carlos Díaz',
-      course: 'Ciencias',
-      is_active: true,
-    },
-  ]);
-  //temporal----------------------------------
+  const fetchData = async () => {
+      try {
+        const response = await fetch(`${API_URL}/students.list?rrp=999`, {
+          headers: {
+            Authorization: API_KEY,
+          },
+          credentials: 'include',
+        });
+  
+        const data = await response.json();
+        console.log('Data fetched:', data.students);
+        setRowData(data);
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    useEffect(() => {
+      fetchData();
+    }, []);
 
   //cambia el tema del aggrid segun el estado de colorMode
   useEffect(() => {
@@ -107,8 +79,52 @@ const Students: React.FC = () => {
     );
   };
 
+  const deactivateStudent = async (studentId: number) => {
+    try {
+      const response = await fetch(`${API_URL}/students.remove`, {
+        method: 'POST',
+        headers: {
+          Authorization: API_KEY,
+          'Content-Type': 'application/json', // Muy importante
+        },
+        credentials: 'include',
+        body: JSON.stringify({ student_id: studentId }), // Aquí va el JSON correcto
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al desactivar el estudiante');
+      }
+  
+      fetchData(); // recarga los datos
+    } catch (error) {
+      console.error('Error al desactivar el estudiante:', error);
+    }
+  };
+
+  const activateStudent = async (studentId: number) => {
+  try {
+    const response = await fetch(`${API_URL}/students.recover`, {
+      method: 'POST',
+      headers: {
+        Authorization: API_KEY,
+        'Content-Type': 'application/json', // Muy importante
+      },
+      credentials: 'include',
+      body: JSON.stringify({ student_id: studentId }), // Aquí va el JSON correcto
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al desactivar el estudiante');
+    }
+
+    fetchData(); // recarga los datos
+  } catch (error) {
+    console.error('Error al desactivar el estudiante:', error);
+  }
+};
+
   // Renderer para la columna de acciones
-  const opcionesRenderer = (params: { data: { is_active: boolean 
+  const opcionesRenderer = (params: { data: { id: number, is_active: boolean 
 } }) => {
     return (
       <div className="flex gap-4 mt-1 justify-center ">
@@ -120,7 +136,7 @@ const Students: React.FC = () => {
           <FaPencil size={20} />
         </button>
 
-        <button className={clsx(colorVariants['white'].btnSc)}>
+        <button className={clsx(colorVariants['white'].btnSc)} onClick={() => {params.data.is_active ? deactivateStudent(params.data.id) : activateStudent(params.data.id)}}>
         {params.data.is_active ? <FaMinus size={20} /> : <FaPlus size={20} />}
       </button>
       </div>
@@ -134,19 +150,8 @@ const Students: React.FC = () => {
       { field: 'id', headerName: 'Numero' },
       { field: 'name', headerName: 'Nombre' },
       { field: 'id_card', headerName: 'Cedula' },
-      { field: 'id_card', headerName: 'Curso' },
-      { field: 'id_card', headerName: 'Turno' },
-      { field: 'id_card', headerName: 'Edad' },
-      {
-        field: 'is_active',
-        headerName: 'Estado',
-        cellRenderer: estadoRenderer,
-      },
-      {
-        field: 'opciones',
-        headerName: 'Opciones',
-        cellRenderer: opcionesRenderer,
-      },
+      { field: 'is_active', headerName: 'Estado', cellRenderer: estadoRenderer },
+      { field: 'opciones', headerName: 'Opciones', cellRenderer: opcionesRenderer },
     ],
     [],
   );
@@ -209,7 +214,8 @@ const Students: React.FC = () => {
         <AgGridReact
           ref={gridRef}
           theme={theme}
-          rowData={rowData}
+          loading={loading}
+          rowData={rowData?.students}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           rowHeight={75}

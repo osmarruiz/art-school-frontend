@@ -139,6 +139,7 @@ const Pendings: React.FC = () => {
         <AgGridReact
           ref={gridRef}
           theme={theme}
+          loading={loading}
           rowData={rowData?.payload}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}

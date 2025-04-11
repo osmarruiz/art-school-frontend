@@ -6,5 +6,6 @@ export interface Student {
     name: string;
     courses: Course[];
     coursesString: string; 
-    "is_active": boolean;
+    is_active: boolean;
+    is_enrolled: boolean;
   }
