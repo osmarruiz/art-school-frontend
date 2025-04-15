@@ -28,13 +28,6 @@ interface DataItem {
   value: string | number | React.ReactNode;
 }
 
-interface Transaction {
-  id: string;
-  alumno: string;
-  tarifa: string;
-  fecha: string;
-  total: string;
-}
 
 interface Course {
   course: {
@@ -52,6 +45,7 @@ interface Fee {
   type: string;
   description: string;
   amount: number;
+  label: string; 
 }
 
 interface PendingTransactionDetails {
@@ -217,7 +211,7 @@ const StudentProfile: React.FC = () => {
   if (!!studentData) {
     const tutor = studentData.tutor;
     tutorData = [
-      { label: 'Parentesco', value: !!studentData?.tutor_kinship ? studentData.tutor_kinship.name : '—' },
+      { label: 'Parentesco', value: studentData?.tutor_kinship || '—' },
       { label: 'Nombre', value: !!tutor ? tutor.name : '—' },
       { label: 'Cédula', value: !!tutor ? tutor.id_card : '—' },
       { label: 'Correo', value: !!tutor ? tutor.email : '—' },
@@ -231,7 +225,7 @@ const StudentProfile: React.FC = () => {
     { label: 'Curso(s)', value: `${studentData?.enrollment?.courses?.map(item => item.course.name).join(', ') || '—'}` },
     { label: '¿Exonerada?', value: `${studentData?.enrollment?.is_exonerated ? 'Sí' : 'No'}` },
     { label: '¿Pago finalizado?', value: `${studentData?.enrollment.is_paid ? 'Sí' : 'No'}` },
-    { label: 'Registro', value: new Date(studentData?.enrollment.registered_at).toLocaleDateString('es-NI', { year: 'numeric', month: 'long', day: 'numeric', }) }
+    { label: 'Registro', value: studentData?.enrollment.registered_at ? new Date(studentData.enrollment.registered_at).toLocaleDateString('es-NI', { year: 'numeric', month: 'long', day: 'numeric', }) : '—' }
   ];
 
   const academicData: DataItem[] = [
@@ -255,9 +249,9 @@ const StudentProfile: React.FC = () => {
     [],
   );
 
-  const pendingGridRef = useRef<AgGridReact<Transaction>>(null);
-  const finalizedGridRef = useRef<AgGridReact<Transaction>>(null);
-  const statusHistoryGridRef = useRef<AgGridReact<Transaction>>(null);
+  const pendingGridRef = useRef<AgGridReact<PendingTransactionDetails>>(null);
+  const finalizedGridRef = useRef<AgGridReact<TransactionDetails>>(null);
+  const statusHistoryGridRef = useRef<AgGridReact<StatusHistory>>(null);
 
   const formatText = (value: string) => {
     if (!value) {
@@ -326,10 +320,10 @@ const StudentProfile: React.FC = () => {
   };
 
 
-  const finalizedColumnDefs: ColDef<Transaction>[] = useMemo(
+  const finalizedColumnDefs: ColDef<TransactionDetails>[] = useMemo(
     () => [
       { field: 'id', headerName: 'ID' },
-      { field: 'fee.label', headerName: 'Tipo' },
+      { headerName: 'Tipo', valueGetter: (params) => params.data?.fee.label || '—' },
       { field: 'total', headerName: 'Total', valueFormatter: (params) => formatNIO(params.value) },
       { field: 'balance', headerName: 'Saldo', valueFormatter: (params) => formatNIO(params.value) },
       { field: 'target_date', headerName: 'Fec. selec.', valueFormatter: (params) => formatShortDate(params.value) },
@@ -340,7 +334,6 @@ const StudentProfile: React.FC = () => {
       { field: 'is_revoked', headerName: '¿Revocada?' },
             {
               headerName: 'Acción',
-              field: 'action',
               cellRenderer: (params: any) => {
                   return (
                       <button
@@ -357,10 +350,10 @@ const StudentProfile: React.FC = () => {
     []
   );
 
-  const pendingColumnDefs: ColDef<Transaction>[] = useMemo(
+  const pendingColumnDefs: ColDef<PendingTransactionDetails>[] = useMemo(
     () => [
       { field: 'status', headerName: 'Estado' },
-      { field: 'fee.label', headerName: 'Tipo', flex: 1 },
+      { headerName: 'Tipo', flex: 1, valueGetter: (params) => params.data?.fee?.type || '—' },
       { field: 'balance', headerName: 'Saldo pendiente', flex: 1, valueFormatter: (params) => formatNIO(params.value) },
       { field: 'year', headerName: 'Año', flex: 1 },
       { field: 'date', headerName: 'Fecha', flex: 1, valueFormatter: (params) => formatDate(params.value) },
@@ -619,7 +612,7 @@ const StudentProfile: React.FC = () => {
 
         </div>
         <p className="text-md text-gray-600 dark:text-gray-400">
-          <span className="font-semibold">Registro:</span> {new Date(studentData?.registered_at).toLocaleDateString('es-NI', { year: 'numeric', month: 'long', day: 'numeric', })}
+          <span className="font-semibold">Registro:</span> {studentData?.registered_at ? new Date(studentData.registered_at).toLocaleDateString('es-NI', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'}
           <span> | </span>
 
           {studentData?.is_active ? <span className="text-green-500">(Activo)</span> : <span className="text-red-500">(Inactivo)</span>}
@@ -686,9 +679,9 @@ const StudentProfile: React.FC = () => {
       <div className="mb-6">
         <h3 className="text-2xl font-semibold mb-2">Transacciones pendientes ({pendingTransactionsData?.length})</h3>
         <div className="w-full h-75">
-          <AgGridReact
+          <AgGridReact<PendingTransactionDetails>
             ref={pendingGridRef}
-            rowData={pendingTransactionsData}
+            rowData={pendingTransactionsData || []}
             theme={theme}
             columnDefs={pendingColumnDefs}
             defaultColDef={defaultColDef}
@@ -701,7 +694,7 @@ const StudentProfile: React.FC = () => {
       <div className="mb-6">
         <h3 className="text-2xl font-semibold mb-2">Historial de desactivaciones ({statusHistoryData.length})</h3>
         <div className="w-full h-50">
-          <AgGridReact
+          <AgGridReact<StatusHistory>
             ref={statusHistoryGridRef}
             rowData={statusHistoryData}
             theme={theme}
