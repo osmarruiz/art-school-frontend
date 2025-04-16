@@ -220,16 +220,6 @@ span.flatpickr-weekday,
     background-size: cover;
 }
 
-.student-profile-div {
-  padding: 3rem;
-  width: 100%;
-  border-radius: 10px;
-}
-
-.admin-dashboard > header {
-  background-color: rgba(255, 255, 255, 0.7);
-}
-
 .login-bg {
   background-image: url("https://64.media.tumblr.com/3cca844a242b39483e526402618b907f/18202a49589782d3-cb/s2048x3072/46761b5ef041db3c9b4246a6e0bf3f2bb6fc0d72.jpg");
   background-repeat: no-repeat;

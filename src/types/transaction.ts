@@ -16,4 +16,4 @@ export interface Transaction {
     finished_at: Date;
     remarks: string;
     receipts: Receipt[];
-  }
+  } 

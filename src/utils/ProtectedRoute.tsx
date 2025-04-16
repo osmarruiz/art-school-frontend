@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user } = useAuth();
 
-  if (user?.role === 'admin') {
+  if (user?.role === 'admin' || user?.role === 'viewer') {
     return <Navigate to="/dashboard" replace />; 
   }
 

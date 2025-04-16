@@ -8,10 +8,10 @@ interface DefaultLayoutProps {
 const PublicLayout: React.FC<DefaultLayoutProps> = ({ children, bgClassName = "" }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
-    <div className={`dark:bg-boxdark-2 dark:text-bodydark ${bgClassName}`}>
+    <div className={`  ${bgClassName}`}>
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <main>
-        <div className="mx-auto max-w-screen-2xl">
+        <div className="mx-auto max-w-screen-2xl ">
           {children}
         </div>
       </main>

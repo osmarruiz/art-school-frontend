@@ -84,6 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       setUser(null);
+      sessionStorage.clear();
       showSuccess('Cierre de sesión correctamente');
       navigate('/');
     } catch (error) {

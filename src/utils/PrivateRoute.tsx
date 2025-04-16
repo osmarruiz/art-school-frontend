@@ -1,14 +1,11 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../utils/AuthContext';
-import Loader from '../common/Loader';
 
 const PrivateRoute = ({ element, allowedRoles }: { element: JSX.Element, allowedRoles: string[] }) => {
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
 
   
-  if (isLoading) {
-    return <Loader />; 
-  }
+ 
   if (!user) {
     return <Navigate to="/" replace />;
   }

@@ -91,7 +91,7 @@ function App() {
             </>
           </DefaultLayout>
         }
-        allowedRoles={['admin', 'viewer']}/>
+        allowedRoles={['admin']}/>
       }
       />
       <Route
@@ -197,7 +197,7 @@ function App() {
             </>
           </OperatorLayout>
         }
-        allowedRoles={['operator','admin']}/>
+        allowedRoles={['operator','admin','viewer']}/>
       }
       />
       {/* Rutas con PublicLayout */}

@@ -1,10 +1,11 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import DropdownNotification from './DropdownNotification';
 import DropdownUser from './DropdownUser';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import logo from '../../images/logo/logo.svg';
 import MonthPicker from '../Forms/DatePicker/MonthPicker';
 import WeekPicker from '../Forms/DatePicker/WeekPicker';
+import { FaX } from 'react-icons/fa6';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -12,6 +13,7 @@ const Header = (props: {
 }) => {
   const location = useLocation();
     const { pathname } = location;
+    const  navigate = useNavigate();
     
   return (
     <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
@@ -73,7 +75,7 @@ const Header = (props: {
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
             {(pathname === '/' || pathname.includes('dashboard')) &&(<div className='hidden md:flex md: gap-2'>
-
+              <button onClick={() => {sessionStorage.clear(); navigate("/")}}><FaX/></button>
             <MonthPicker />
             <WeekPicker/>
             </div>)}
