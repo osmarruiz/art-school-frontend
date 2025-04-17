@@ -137,7 +137,14 @@ const StudentProfile: React.FC = () => {
     {
       label: 'Curso(s)',
       value: `${
-        studentData?.enrollment?.course?.map((item) => item.name).join(', ') ||
+        studentData?.enrollment?.courses.map((item) => item.course.name).join(', ') ||
+        '—'
+      }`,
+    },
+    {
+      label: 'turno(s)',
+      value: `${
+        studentData?.enrollment?.courses.map((item) => item.shift.name).join(', ') ||
         '—'
       }`,
     },

@@ -17,6 +17,7 @@ import { Transaction } from '../../types/transaction';
 import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { Aggregate } from '../../types/aggregate';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { formatDateFlexible } from '../../utils/formatDateflexible';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -61,15 +62,7 @@ const Transactions: React.FC = () => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
 
-  // Definición de columnas con tipado correcto
-
-  const formatShortDate = (value: number) => {
-    if (!value) {
-      return '—';
-    }
-    const date = new Date(value + "T00:00:00-06:00");
- return date.toLocaleDateString('es-NI');
-  };
+  
 
 
   const columnDefs = useMemo(
@@ -86,8 +79,11 @@ const Transactions: React.FC = () => {
         headerName: 'Saldo',
         valueGetter: (params: any) => formatCurrency(params.data.balance),
       },
-      { field: 'target_date', headerName: 'Fec. selec.', valueFormatter: (params) => formatShortDate(params.value) },
-      { field: 'remarks', headerName: 'Concepto', flex: 2, valueFormatter: (params) => (v => !v ? "—" : v)(params.value) },
+      { field: 'target_date', headerName: 'Fec. selec.',flex: 2, valueFormatter: (params: {value: any}) => formatDateFlexible(params.value, {
+                        type: 'date',
+                        withTimezoneOffset: true,
+                      })  },
+      { field: 'remarks', headerName: 'Concepto', flex: 2, valueFormatter: (params: {value: any}) => (v => !v ? "—" : v)(params.value) },
       { field: 'is_finished', headerName: '¿Finalizada?' },
       { field: 'is_revoked', headerName: '¿Revocada?' },
       { field: 'is_paid', headerName: '¿Pagada?' },
@@ -109,11 +105,8 @@ const Transactions: React.FC = () => {
   const filteredData = useMemo(() => {
     return rowData?.payload?.filter((item: Transaction) => {
       const valuesToSearch = [
-        item.id?.toString() ?? '',
         item.student?.name ?? '',
         item.fee?.label ?? '',
-        item.remarks ?? '',
-        item.target_date?.toString() ?? '',
       ];
   
       return valuesToSearch.some((value) =>
@@ -124,67 +117,76 @@ const Transactions: React.FC = () => {
 
   return (
     <>
-      <div className="block sm:flex justify-between items-center gap-4 text">
-        <div className="flex justify-center sm:justify-start  sm:w-1/5 mb-4 sm:mb-6">
-          <h1 className="text-title-md xl:text-title-md2 font-bold text-black dark:text-white">
-            Transacciones
-          </h1>
-        </div>
+      <div className="w-full flex flex-col xxl:flex-row xxl:items-center xxl:justify-between gap-y-4 gap-x-6 text-sm sm:text-base mb-4 sm:mb-6">
 
-        <div className="flex justify-center sm:w-3/5  mb-4 sm:mb-6">
-          <div
-            className={clsx('relative w-full e', colorVariants['white'].text)}
-          >
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <FaSearch size={16} />
-            </span>
-            <input
-              type="text"
-              placeholder="Buscar transaccion"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className={clsx(
-                'w-125 h-12 bg-white pl-9 pr-4 text-black focus:outline-none rounded-lg shadow-default',
-                colorVariants['white'].inp,
-              )}
-            />
-          </div>
-        </div>
-        <div className="flex justify-center sm:justify-end gap-4 sm:w-1/5  mb-6">
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="filter"
-              value=""
-              checked={filterParam === ''}
-              onChange={() => setFilterParam('')}
-            />
-            Pendientes
-          </label>
+{/* Título */}
+<div className="w-full xxl:w-1/5 flex justify-center xxl:justify-start">
+  <h1 className="text-title-md xxl:text-title-md2 font-bold text-black dark:text-white">
+    Transacciones
+  </h1>
+</div>
 
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="filter"
-              value="&revoked=true"
-              checked={filterParam === '&revoked=true'}
-              onChange={() => setFilterParam('&revoked=true')}
-            />
-            Revocadas
-          </label>
+{/* Barra de búsqueda */}
+<div className="w-full xxl:w-1/2 flex justify-center">
+  <div className="relative w-full">
+    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+      </svg>
+    </span>
+    <input
+      type="text"
+      placeholder="Buscar transacción (nombre, tipo)"
+      value={searchText}
+      onChange={(e) => setSearchText(e.target.value)}
+      className="w-full h-12 bg-white pl-10 pr-4 text-black focus:outline-none rounded-lg shadow-sm dark:bg-gray-800 dark:text-gray-300"
+    />
+  </div>
+</div>
 
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="filter"
-              value="&paid=true"
-              checked={filterParam === '&paid=true'}
-              onChange={() => setFilterParam('&paid=true')}
-            />
-            Finalizadas
-          </label>
-        </div>
-      </div>
+{/* Filtros */}
+<div className="w-full xxl:w-1/5 flex justify-center xxl:justify-end  gap-4 xxl:gap-1">
+  <label className="flex items-center gap-2 text-gray-700 dark:text-gray-400">
+    <input
+      type="radio"
+      name="filter"
+      value=""
+      checked={filterParam === ''}
+      onChange={() => setFilterParam('')}
+      className="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600"
+    />
+    Pendientes
+  </label>
+
+  <label className="flex items-center gap-2 text-gray-700 dark:text-gray-400">
+    <input
+      type="radio"
+      name="filter"
+      value="&revoked=true"
+      checked={filterParam === '&revoked=true'}
+      onChange={() => setFilterParam('&revoked=true')}
+      className="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600"
+    />
+    Revocadas
+  </label>
+
+  <label className="flex items-center gap-2 text-gray-700 dark:text-gray-400">
+    <input
+      type="radio"
+      name="filter"
+      value="&paid=true"
+      checked={filterParam === '&paid=true'}
+      onChange={() => setFilterParam('&paid=true')}
+      className="form-radio h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600"
+    />
+    Finalizadas
+  </label>
+</div>
+</div>
+
+
+
+
       <div className="h-125 w-full">
         <AgGridReact
           ref={gridRef}

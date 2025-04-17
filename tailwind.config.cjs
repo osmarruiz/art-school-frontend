@@ -13,6 +13,7 @@ module.exports = {
       '2xsm': '375px',
       xsm: '425px',
       '3xl': '2000px',
+      xxl: '1617px',
       ...defaultTheme.screens,
     },
     extend: {

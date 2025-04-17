@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 interface CardDataStatsProps {
   title: string;
-  total?: string;
+  total?: number | string;
   rate?: string;
   levelUp?: boolean;
   levelDown?: boolean;
@@ -14,7 +14,7 @@ interface CardDataStatsProps {
 
 const CardDataStats: React.FC<CardDataStatsProps> = ({
   title,
-  total,
+  total = '0',
   rate = null,
   levelUp = null,
   levelDown = null,

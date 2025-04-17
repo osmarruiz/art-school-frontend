@@ -8,7 +8,7 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import { FaArrowRight, FaEye, FaMinus, FaPencil, FaPlus, FaUserGroup } from 'react-icons/fa6';
+import { FaArrowRight, FaEye, FaMinus, FaPencil, FaPlus, FaUserGroup, FaX } from 'react-icons/fa6';
 import { Student } from '../../types/student';
 import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
@@ -17,6 +17,9 @@ import { colorVariants } from '../../types/colorVariants';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { useNavigate } from 'react-router-dom';
+import { formatDateFlexible } from '../../utils/formatDateflexible';
+import { Course } from '../../types/course';
+import { Shift } from '../../types/shift';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -35,30 +38,73 @@ const Students: React.FC = () => {
   const [theme, setTheme] = useState(themeLightCold);
   const [rowData, setRowData] = useState<StudentResponse>();
   const [searchText, setSearchText] = useState('');
+  const [courseData, setCourseData] = useState<Course[]>([]);
+  const [shifts, _] = useState<Shift[]>([
+    {
+      id: 7, name: 'Diario',
+      is_closed: false,
+      capacity_of_students: 0,
+      num_of_students: 0
+    },
+    {
+      id: 8, name: 'Sabatino',
+      is_closed: false,
+      capacity_of_students: 0,
+      num_of_students: 0
+    },
+  ]);
+  const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
+const [selectedShift, setSelectedShift] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const fetchData = async () => {
-      try {
-        const response = await fetch(`${API_URL}/students.list?rpp=99999`, {
-          headers: {
-            Authorization: API_KEY,
-          },
-          credentials: 'include',
-        });
+  const fetchData = async (course?: number, shift?: number) => {
+    try {
+      let url = `${API_URL}/students.list?rpp=99999`;
+      if (course) url += `&course=${course}`;
+      if (shift) url += `&shift=${shift}`;
   
-        const data = await response.json();
-        setRowData(data);
-      } catch (error) {
-        console.error('Error al obtener datos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const response = await fetch(url, {
+        headers: {
+          Authorization: API_KEY,
+        },
+        credentials: 'include',
+      });
   
+      const data = await response.json();
+      setRowData(data);
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    fetchData(selectedCourse ?? undefined, selectedShift ?? undefined);
+  }, [selectedCourse, selectedShift]);
+
     useEffect(() => {
+      const fetchData = async () => {
+        try {
+          let response = await fetch(`${API_URL}/courses.list`, {
+            headers: {
+              Authorization: API_KEY,
+            },
+            credentials: 'include',
+          });
+          const courses: Course[] = await response.json();
+          setCourseData(courses);
+  
+          
+        } catch (error) {
+          console.error('Error al obtener los datos', error);
+        }
+      };
       fetchData();
     }, []);
+
+    
 
   //cambia el tema del aggrid segun el estado de colorMode
   useEffect(() => {
@@ -80,49 +126,19 @@ const Students: React.FC = () => {
     );
   };
 
-//   const deactivateStudent = async (studentId: number) => {
-//     try {
-//       const response = await fetch(`${API_URL}/students.remove`, {
-//         method: 'POST',
-//         headers: {
-//           Authorization: API_KEY,
-//           'Content-Type': 'application/json', // Muy importante
-//         },
-//         credentials: 'include',
-//         body: JSON.stringify({ student_id: studentId }), // Aquí va el JSON correcto
-//       });
-  
-//       if (!response.ok) {
-//         throw new Error('Error al desactivar el estudiante');
-//       }
-  
-//       fetchData(); // recarga los datos
-//     } catch (error) {
-//       console.error('Error al desactivar el estudiante:', error);
-//     }
-//   };
+  const filteredData = useMemo(() => {
+      return rowData?.students?.filter((student) => {
+        const valuesToSearch = [
+          student.name ?? '',
+          student.id_card ?? '',
+        ];
+    
+        return valuesToSearch.some((value) =>
+          value.toLowerCase().includes(searchText.toLowerCase())
+        );
+      }) ?? [];
+    }, [rowData, searchText]);
 
-//   const activateStudent = async (studentId: number) => {
-//   try {
-//     const response = await fetch(`${API_URL}/students.recover`, {
-//       method: 'POST',
-//       headers: {
-//         Authorization: API_KEY,
-//         'Content-Type': 'application/json', // Muy importante
-//       },
-//       credentials: 'include',
-//       body: JSON.stringify({ student_id: studentId }), // Aquí va el JSON correcto
-//     });
-
-//     if (!response.ok) {
-//       throw new Error('Error al desactivar el estudiante');
-//     }
-
-//     fetchData(); // recarga los datos
-//   } catch (error) {
-//     console.error('Error al desactivar el estudiante:', error);
-//   }
-// };
 
   // Renderer para la columna de acciones
   const opcionesRenderer = (params: { data: { id: number, is_active: boolean 
@@ -133,35 +149,20 @@ const Students: React.FC = () => {
           <FaArrowRight size={20} />
         </button>
 
-        {/* <button className={clsx(colorVariants['white'].btnSc)}>
-          <FaPencil size={20} />
-        </button> */}
-
-        {/* <button className={clsx(colorVariants['white'].btnSc)} onClick={() => {params.data.is_active ? deactivateStudent(params.data.id) : activateStudent(params.data.id)}}>
-        {params.data.is_active ? <FaMinus size={20} /> : <FaPlus size={20} />}
-      </button> */}
       </div>
     );
   };
 
-  // Definición de columnas con tipado correcto
-
-  const formatDate = (value: string) => {
-    if (!value) {
-      return '—';
-    }
-    const date = new Date(value + "T00:00:00-06:00");
-    return date.toLocaleDateString('es-NI');
-  };
-
   const columnDefs = useMemo(
     () => [
-      { field: 'id', headerName: 'ID' },
       { field: 'name', headerName: 'Nombre', flex: 2 },
-      { field: 'id_card', headerName: 'Cédula', valueFormatter: (params) => (v => !v ? "—" : v)(params.value) },
+      { field: 'id_card', headerName: 'Cédula', valueFormatter: (params: { value: any; }) => (v => !v ? "—" : v)(params.value) },
       { field: 'email', headerName: 'Correo', valueFormatter: (params) => (v => !v ? "—" : v)(params.value) },
       { field: 'phone_number', headerName: 'Teléfono', valueFormatter: (params) => (v => !v ? "—" : v)(params.value) },
-      { field: 'date_of_birth', headerName: 'Nacimiento', valueFormatter: (params) => formatDate(params.value) },
+      { field: 'date_of_birth', headerName: 'Nacimiento', valueFormatter: (params) => formatDateFlexible(params.value, {
+                  type: 'date',
+                  withTimezoneOffset: true,
+                }) },
       { field: 'is_active', headerName: 'Estado', cellRenderer: estadoRenderer },
       { field: 'opciones', headerName: 'Opciones', cellRenderer: opcionesRenderer },
     ],
@@ -197,7 +198,9 @@ const Students: React.FC = () => {
             </span>
             <input
               type="text"
-              placeholder="Busca un estudiante para continuar..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder="Buscar estudiante (nombre, cédula)"
               className={clsx(
                 'w-full h-12 bg-white pl-9 pr-4 text-black focus:outline-none rounded-lg shadow-default',
                 colorVariants['white'].inp,
@@ -208,18 +211,16 @@ const Students: React.FC = () => {
           
         </div>
         <div className='flex justify-center sm:justify-end gap-4 sm:w-2/5  mb-6'>
+            <div className="w-1/3 justify-center sm:justify-end flex">
+            <button onClick={() => { navigate("/students")}}><FaX/></button></div>
             <div className="w-1/3">
-
-            <SelectGroupOne placeholder='Curso'/>
+            <SelectGroupOne placeholder='Curso' course={courseData} onChange={(selected: number) => setSelectedCourse(selected)}/>
             </div>
             <div className="w-1/3">
 
-            <SelectGroupOne placeholder='Turno'/>
+            <SelectGroupOne placeholder='Turno' shift={shifts} onChange={(selected: number) => setSelectedShift(selected)}/>
             </div>
-            <div className="w-1/3">
-
-            <SelectGroupOne placeholder='Edad'/>
-            </div>
+            
           </div>
       </div>
       <div className="h-125 w-full">
@@ -227,7 +228,7 @@ const Students: React.FC = () => {
           ref={gridRef}
           theme={theme}
           loading={loading}
-          rowData={rowData?.students}
+          rowData={filteredData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           rowHeight={75}
@@ -235,12 +236,12 @@ const Students: React.FC = () => {
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">
         <div className="sm:w-1/2 xl:w-1/4 mb-4">
-          <CardDataStats title="Total de activos" total={`${rowData?.total_active}`}>
+          <CardDataStats title="Total de activos" total={`${rowData?.total_active.toString() || '0'}`}>
             <FaUserGroup className="fill-primary dark:fill-white" size={20} />
           </CardDataStats>
         </div>
         <div className="sm:w-1/2 xl:w-1/4">
-          <CardDataStats title="Total de inactivos" total={`${rowData?.total_inactive}`}>
+          <CardDataStats title="Total de inactivos" total={`${rowData?.total_inactive.toString() || '0'}`}>
             <FaUserGroup className="fill-danger dark:fill-white" size={20} />
           </CardDataStats>
         </div>

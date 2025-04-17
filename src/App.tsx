@@ -71,7 +71,7 @@ function App() {
           <DefaultLayout>
             <>
               <PageTitle title="Estudiantes | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
-              <Students />
+              <Students key={Date.now()}/>
             </>
           </DefaultLayout>
           

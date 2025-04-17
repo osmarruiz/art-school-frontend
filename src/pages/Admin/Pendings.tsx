@@ -8,7 +8,12 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import { FaArrowRight, FaDollarSign, FaMoneyBillWave, FaPencil } from 'react-icons/fa6';
+import {
+  FaArrowRight,
+  FaDollarSign,
+  FaMoneyBillWave,
+  FaPencil,
+} from 'react-icons/fa6';
 import { Student } from '../../types/student';
 import clsx from 'clsx';
 import { FaSearch, FaBell } from 'react-icons/fa';
@@ -18,6 +23,7 @@ import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { PendingAggregate } from '../../types/pendingAggregate';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { useNavigate } from 'react-router-dom';
+import { formatDateFlexible } from '../../utils/formatDateflexible';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -34,15 +40,17 @@ const Pendings: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`${API_URL}/transactions.pending.aggregate?rpp=999999`, {
-        headers: {
-          Authorization: API_KEY,
+      const response = await fetch(
+        `${API_URL}/transactions.pending.aggregate?rpp=999999`,
+        {
+          headers: {
+            Authorization: API_KEY,
+          },
+          credentials: 'include',
         },
-        credentials: 'include',
-      });
+      );
 
       const data = await response.json();
-      console.log('Data fetched:', data);
       setRowData({ ...data, payload: [...data.payload] });
     } catch (error) {
       console.error('Error al obtener datos:', error);
@@ -50,6 +58,18 @@ const Pendings: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const filteredData = useMemo(() => {
+    return (
+      rowData?.payload?.filter((item) => {
+        const valuesToSearch = [item.student.name ?? ''];
+
+        return valuesToSearch.some((value) =>
+          value.toLowerCase().includes(searchText.toLowerCase()),
+        );
+      }) || []
+    );
+  }, [rowData, searchText]);
 
   useEffect(() => {
     fetchData();
@@ -64,7 +84,10 @@ const Pendings: React.FC = () => {
   const opcionesRenderer = (params: any) => {
     return (
       <div className="flex gap-4 mt-1 justify-center ">
-        <button className={clsx(colorVariants['white'].btnSc)} onClick={() => navigate(`/student/${params.data.student.id}`)}>
+        <button
+          className={clsx(colorVariants['white'].btnSc)}
+          onClick={() => navigate(`/student/${params.data.student.id}`)}
+        >
           <FaArrowRight size={20} />
         </button>
         <button className={clsx(colorVariants['white'].btnSc)}>
@@ -74,25 +97,40 @@ const Pendings: React.FC = () => {
     );
   };
 
-  // Definición de columnas con tipado correcto
-
-  const formatShortDate = (value: number) => {
-    if (!value) {
-      return '—';
-    }
-    console.log(value)
-    const date = new Date(value + "T00:00:00-06:00");
-    return date.toLocaleDateString('es-NI', {month: 'long', year: 'numeric'});
-  };
 
   const columnDefs = useMemo(
     () => [
       { field: 'student.name', headerName: 'Estudiante' },
       { field: 'total_transactions', headerName: 'Cant. transacciones pte.' },
-      { field: 'balance_sum', headerName: 'Saldo total pte.', valueGetter: (params: any) => formatCurrency(params.data.balance_sum) },
-      { field: 'balance_avg', headerName: 'Saldo promedio pte.', valueGetter: (params: any) => formatCurrency(params.data.balance_avg) },
-      { field: 'min_due_date', headerName: 'Mes mín. pte.', valueFormatter: (params: any) => formatShortDate(params.value) },
-      { field: 'max_due_date', headerName: 'Mes máx. pte.', valueFormatter: (params: any) => formatShortDate(params.value) },
+      {
+        field: 'balance_sum',
+        headerName: 'Saldo total pte.',
+        valueGetter: (params: any) => formatCurrency(params.data.balance_sum),
+      },
+      {
+        field: 'balance_avg',
+        headerName: 'Saldo promedio pte.',
+        valueGetter: (params: any) => formatCurrency(params.data.balance_avg),
+      },
+      {
+        field: 'min_due_date',
+        headerName: 'Mes mín. pte.',
+        valueFormatter: (params: any) =>
+          formatDateFlexible(params.value, {
+            type: 'month-year',
+            withTimezoneOffset: true,
+          }),
+      },
+
+      {
+        field: 'max_due_date',
+        headerName: 'Mes máx. pte.',
+        valueFormatter: (params: any) =>
+          formatDateFlexible(params.value, {
+            type: 'month-year',
+            withTimezoneOffset: true,
+          }),
+      },
       {
         field: 'opciones',
         headerName: 'Opciones',
@@ -131,7 +169,9 @@ const Pendings: React.FC = () => {
             </span>
             <input
               type="text"
-              placeholder="Buscar pendiente"
+              placeholder="Buscar pendiente (nombre)"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
               className={clsx(
                 'w-full h-12 bg-white pl-9 pr-4 text-black focus:outline-none rounded-lg shadow-default',
                 colorVariants['white'].inp,
@@ -155,7 +195,7 @@ const Pendings: React.FC = () => {
           ref={gridRef}
           theme={theme}
           loading={loading}
-          rowData={rowData?.payload}
+          rowData={filteredData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           rowHeight={75}
@@ -163,8 +203,14 @@ const Pendings: React.FC = () => {
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">
         <div className="sm:w-1/2 xl:w-1/4">
-          <CardDataStats title="Total de pendientes" total={rowData?.total_pending.toString()}>
-            <FaMoneyBillWave className="fill-danger dark:fill-white" size={20} />
+          <CardDataStats
+            title="Total de pendientes"
+            total={rowData?.total_pending.toString()}
+          >
+            <FaMoneyBillWave
+              className="fill-danger dark:fill-white"
+              size={20}
+            />
           </CardDataStats>
         </div>
       </div>

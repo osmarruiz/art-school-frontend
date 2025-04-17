@@ -71,7 +71,6 @@ const Disciplines: React.FC = () => {
     return rowData.filter((item) => {
       const shifts = getShiftsAsString(item.shifts);
       const valuesToSearch = [
-        item.id?.toString() ?? '',
         item.name ?? '',
         shifts ?? '',
         item.type.name ?? '',
@@ -289,7 +288,7 @@ const Disciplines: React.FC = () => {
             </span>
             <input
               type="text"
-              placeholder="Buscar disciplina"
+              placeholder="Buscar disciplina (nombre, tipo, turno)"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               className={clsx(
