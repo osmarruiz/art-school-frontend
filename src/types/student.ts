@@ -13,6 +13,8 @@ export interface Student {
       phone_number: string;
       city: string;
       address: string;
+      courses: Course[];
+      coursesString: string;
       school_name: string;
       school_year: number;
       is_enrolled: boolean;

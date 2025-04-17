@@ -1,7 +1,7 @@
 export const formatDateFlexible = (
   value: string | number,
   options: {
-    type?: 'date' | 'time' | 'datetime' | 'month-year';
+    type?: 'date' | 'time' | 'datetime' | 'month-year' | 'year';
     short?: boolean;
     withTimezoneOffset?: boolean;
   } = {}
@@ -12,8 +12,13 @@ export const formatDateFlexible = (
 
   let date: Date;
 
-  if (typeof value === 'string' && withTimezoneOffset) {
-    date = new Date(value + "T00:00:00-06:00");
+  if (typeof value === 'string') {
+    date = new Date(value); // Intentar parsear la cadena tal cual
+    if (withTimezoneOffset && !value.includes('T')) {
+      // Si no tiene info de hora y queremos el offset, podemos manipular la Date
+      const offsetMilliseconds = -6 * 60 * 60 * 1000; // -6 horas en milisegundos
+      date = new Date(date.getTime() + offsetMilliseconds);
+    }
   } else {
     date = new Date(value);
   }
@@ -30,12 +35,14 @@ export const formatDateFlexible = (
     second: 'numeric',
   };
 
+  const yearOpts: Intl.DateTimeFormatOptions = { year: 'numeric' };
+  const monthYearOpts: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long' };
+
   switch (type) {
+    case 'year':
+      return date.toLocaleDateString(locale, yearOpts);
     case 'month-year':
-      return date.toLocaleDateString(locale, {
-        year: 'numeric',
-        month: 'long',
-      });
+      return date.toLocaleDateString(locale, monthYearOpts);
     case 'date':
       return date.toLocaleDateString(locale, dateOpts);
     case 'time':
@@ -45,5 +52,3 @@ export const formatDateFlexible = (
       return `${date.toLocaleDateString(locale, dateOpts)} ${date.toLocaleTimeString(locale, timeOpts)}`;
   }
 };
-
-  

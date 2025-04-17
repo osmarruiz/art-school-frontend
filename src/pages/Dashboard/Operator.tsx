@@ -51,7 +51,7 @@ const Operator: React.FC = () => {
                 <FaRepeat size={18} className='fill-white'/>
               </CardDataStats>
             </motion.a>
-            <motion.a href='#' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
+            <motion.a href='/viewstudent' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
               <CardDataStats title="Vizualizar Estudiantes" color="green" >
                 <FaEye size={18} className='fill-white' />
               </CardDataStats>

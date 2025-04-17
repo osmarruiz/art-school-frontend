@@ -16,7 +16,7 @@ import { useAuth } from '../utils/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { colorVariants } from '../types/colorVariants';
 import clsx from 'clsx';
-import { FaArrowRight } from 'react-icons/fa6';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa6';
 import { Student } from '../types/student';
 import { StatusHistory } from '../types/statusHistory';
 import { Transaction } from '../types/transaction';
@@ -570,10 +570,22 @@ const StudentProfile: React.FC = () => {
                     Activar
                   </button>
                 )}
+
               </div>
             ) : (
               <></>
             )}
+            <div
+                          className={clsx(
+                            'flex h-8.5 w-8.5 items-center justify-center rounded-full hover:cursor-pointer',
+                            colorVariants['white'].btn,
+                          )}
+                          onClick={() => {
+                            navigate(-2);
+                          }}
+                        >
+                          <FaArrowLeft size={20}  />
+                        </div>
           </div>
           <p className="text-md text-gray-600 dark:text-gray-400">
             <span className="font-semibold">Registro:</span>{' '}

@@ -13,6 +13,7 @@ import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import useToast from '../../hooks/useToast';
+import { formatDateFlexible } from '../../utils/formatDateflexible';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -61,24 +62,7 @@ const Renew = ({
     fetchHistory();
   }, [fetchHistory]);
 
-  const formatDate = (value) => {
-    if (!value) {
-      return '—';
-    }
-    const date = new Date(value + "T00:00:00-06:00");
-    return date.toLocaleDateString('es-NI', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
-  const formatText = (value) => {
-    if (!value) {
-      return '—';
-    }
-    return value;
-  };
+  
 
   //cambia el tema del aggrid segun el estado de colorMode
   useEffect(() => {
@@ -96,18 +80,13 @@ const Renew = ({
     [],
   );
 
-  const getYearOfDate = (value) => {
-    if (!value) {
-      return '—';
-    }
-    return new Date(value + "T00:00:00-06:00").getFullYear();
-  };
+  
 
-  const tableRef = useRef<AgGridReact<RenewalRecord>>(null);
+  const tableRef = useRef<AgGridReact>(null);
   const columnDefs = useMemo(
     () => [
-      { field: 'registered_at', headerName: 'Año', valueFormatter: p => getYearOfDate(p.value) },
-      { field: 'registered_at', headerName: 'Fecha', valueFormatter: p => formatDate(p.value) },
+      { field: 'registered_at', headerName: 'Año', valueFormatter: (p:any) => formatDateFlexible(p.value,  { type: 'year', withTimezoneOffset: true }) },
+      { field: 'registered_at', headerName: 'Fecha', valueFormatter: (p:any) => formatDateFlexible(p.value,  { type: 'date', withTimezoneOffset: true }) },
       { field: 'transaction_id', headerName: 'ID Transacción' },
       {
         headerName: 'Acción',

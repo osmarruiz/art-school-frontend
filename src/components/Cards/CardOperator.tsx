@@ -63,16 +63,18 @@ const CardOperator: React.FC<CardDataStatsProps> = ({
         {childrenArray[1]}
       </div>
 
-      <div
+      {childrenArray[2] && (<div
         className={clsx('mt-4 p-4 block', colorVariants[color].bgSub)}
       >
         {childrenArray[2]}
-      </div>
+      </div>)}
+      
 
       {/* Botón */}
-      <div className="mt-4 flex justify-end gap-3 align-middle">
+      {childrenArray[3] &&(<div className="mt-4 flex justify-end gap-3 align-middle">
         {childrenArray[3]}
-      </div>
+      </div>)}
+      
     </div>
   );
 };

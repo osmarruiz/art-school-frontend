@@ -30,6 +30,7 @@ import {
 import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
 import Swal from 'sweetalert2';
+import { formatDateFlexible } from '../../utils/formatDateflexible';
 
 moment.locale('es');
 
@@ -83,37 +84,16 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     }));
   };
 
-  const formatDateTime = (value) => {
-    if (!value) {
-      return '—';
-    }
-    const date = new Date(value + "T00:00:00-06:00");
-    const dateString = date.toLocaleDateString('es-NI', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-    const timeString = date.toLocaleTimeString('es-NI', {
-      hour: 'numeric',
-      minute: 'numeric',
-    });
-    return `${dateString} ${timeString}`;
-  };
-
-  const formatText = (value) => {
-    if (!value) {
-      return '—';
-    }
-    return value;
-  };
-
   const columnDefs = useMemo(
     () => [
-      { field: 'issued_at', headerName: 'Fecha', valueFormatter: p => formatDateTime(p.value) },
+      { field: 'issued_at', headerName: 'Fecha', valueFormatter: (params: {value: any}) => formatDateFlexible(params.value, {
+                              type: 'date',
+                              withTimezoneOffset: false,
+                            })  },
       { field: 'no', headerName: 'No. Recibo' },
       { field: 'amount', headerName: 'Monto' },
-      { field: 'payer', headerName: 'Pagado Por', valueFormatter: p => formatText(p.value) },
-      { field: 'remarks', headerName: 'Concepto', valueFormatter: p => formatText(p.value) },
+      { field: 'payer', headerName: 'Pagado Por', valueFormatter: (p:any) => p.value || '—' },
+      { field: 'remarks', headerName: 'Concepto', valueFormatter: (p:any) => p.value || '—' },
       {
         headerName: 'Acción',
         field: 'action',

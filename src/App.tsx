@@ -21,6 +21,7 @@ import PrivateRoute from './utils/PrivateRoute';
 import ProtectedRoute from './utils/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
 import StudentProfile from './pages/StudentProfile';
+import View from './pages/Operator/view';
 
 function App() {
   const { pathname } = useLocation();
@@ -179,6 +180,21 @@ function App() {
             <>
               <PageTitle title="Renovar Matr&iacute;cula | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
               <Renew color="orange" />
+            </>
+          </OperatorLayout>
+        }
+        allowedRoles={['operator']}/>
+      }
+      />
+      <Route
+        path="/viewstudent"
+        element={
+          <PrivateRoute
+        element={
+          <OperatorLayout>
+            <>
+              <PageTitle title="Ver Estudiantes | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+              <View color="green" />
             </>
           </OperatorLayout>
         }
