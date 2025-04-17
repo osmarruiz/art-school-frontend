@@ -24,6 +24,7 @@ import { PendingAggregate } from '../../types/pendingAggregate';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { useNavigate } from 'react-router-dom';
 import { formatDateFlexible } from '../../utils/formatDateflexible';
+import { useAuth } from '../../utils/AuthContext';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -36,6 +37,7 @@ const Pendings: React.FC = () => {
   const [rowData, setRowData] = useState<PendingAggregate>();
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
+  const { user} = useAuth();
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -90,9 +92,10 @@ const Pendings: React.FC = () => {
         >
           <FaArrowRight size={20} />
         </button>
-        <button className={clsx(colorVariants['white'].btnSc)}>
+        {user?.role === 'admin' && (<button className={clsx(colorVariants['white'].btnSc)}>
           <FaBell size={20} />
-        </button>
+        </button>)}
+        
       </div>
     );
   };
@@ -179,7 +182,7 @@ const Pendings: React.FC = () => {
             />
           </div>
         </div>
-        <div className="flex justify-center sm:justify-end gap-4 sm:w-1/5  mb-6">
+        {user?.role === 'admin' && (<div className="flex justify-center sm:justify-end gap-4 sm:w-1/5  mb-6">
           <button
             className={clsx(
               'inline-flex items-center justify-center py-2.5 px-3 disabled:',
@@ -188,7 +191,8 @@ const Pendings: React.FC = () => {
           >
             Notificar a todos
           </button>
-        </div>
+        </div>)}
+        
       </div>
       <div className="h-125 w-full">
         <AgGridReact

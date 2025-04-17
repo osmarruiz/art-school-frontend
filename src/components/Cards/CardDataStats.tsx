@@ -14,7 +14,7 @@ interface CardDataStatsProps {
 
 const CardDataStats: React.FC<CardDataStatsProps> = ({
   title,
-  total = '0',
+  total ,
   rate = null,
   levelUp = null,
   levelDown = null,

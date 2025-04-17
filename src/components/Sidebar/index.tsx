@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import Logo from '../../images/logo/logo.svg';
 import { FaChartSimple, FaX, FaMoneyBillWave, FaPencil, FaBook } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa";
+import { useAuth } from '../../utils/AuthContext';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -12,7 +13,7 @@ interface SidebarProps {
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
-
+  const { user } = useAuth();
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
 
@@ -138,18 +139,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
 
                 {/* <!-- Menu Item Settings --> */}
-                <li>
-                  <NavLink
-                    to="/disciplines"
-                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-boxdark-2  ${
-                      pathname.includes('disciplines') &&
-                      'bg-boxdark-2'
-                    }`}
-                  >
-                    <FaStar/>
-                    Disciplinas
-                  </NavLink>
-                </li>
+{user?.role === 'admin' && (
+<li>
+  <NavLink
+    to="/disciplines"
+    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-boxdark-2  ${
+      pathname.includes('disciplines') &&
+      'bg-boxdark-2'
+    }`}
+  >
+    <FaStar/>
+    Disciplinas
+  </NavLink>
+</li>
+)}
                 {/* <!-- Menu Item Settings --> */}
               </ul>
             </div>
