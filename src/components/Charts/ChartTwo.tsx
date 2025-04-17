@@ -17,14 +17,16 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ data }) => {
     return null;
   }
 
-  const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const sortedData = [...data].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
 
-  const categories = sortedData.map(item => {
+  const categories = sortedData.map((item) => {
     const date = new Date(item.date);
-    return date.toLocaleString('es-ES', { month: 'short', year: 'numeric' }); 
+    return date.toLocaleString('es-ES', { month: 'short', year: 'numeric' });
   });
 
-  const incomeValues = sortedData.map(item => item.income);
+  const incomeValues = sortedData.map((item) => item.income);
 
   const options: ApexOptions = {
     colors: ['#3C50E0'],
@@ -42,12 +44,12 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ data }) => {
     },
     yaxis: {
       labels: {
-        formatter: (value) => formatCurrency(value), 
+        formatter: (value) => formatCurrency(value),
       },
     },
     tooltip: {
       y: {
-        formatter: (value) => formatCurrency(value), 
+        formatter: (value) => formatCurrency(value),
       },
     },
     plotOptions: {
@@ -69,8 +71,15 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ data }) => {
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
-      <h4 className="text-xl font-semibold text-black dark:text-white">Ingresos del Último Año</h4>
-      <ReactApexChart options={options} series={series} type="bar" height={280} />
+      <h4 className="text-xl font-semibold text-black dark:text-white">
+        Ingresos del Último Año
+      </h4>
+      <ReactApexChart
+        options={options}
+        series={series}
+        type="bar"
+        height={280}
+      />
     </div>
   );
 };

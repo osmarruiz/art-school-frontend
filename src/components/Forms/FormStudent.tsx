@@ -11,7 +11,8 @@ const FormStudent = ({
 }) => {
   const [enabled, setEnabled] = useState(false);
   const [switcherSchoolEnabled, setSwitcherSchoolEnabled] = useState(false);
-  const [switcherExonerateEnabled, setSwitcherExonerateEnabled] = useState(false);
+  const [switcherExonerateEnabled, setSwitcherExonerateEnabled] =
+    useState(false);
   const [studentData, setStudentData] = useState({
     id_card: '',
     name: '',
@@ -31,7 +32,9 @@ const FormStudent = ({
     onToggle(value);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setStudentData((prevState) => {
       const updatedData = { ...prevState, [name]: value };
@@ -39,47 +42,48 @@ const FormStudent = ({
     });
   };
 
-  const handleSchoolYearChange = ( schoolYear : number) => {
+  const handleSchoolYearChange = (schoolYear: number) => {
     setStudentData((prevState) => ({
       ...prevState,
-      school_year: schoolYear, 
+      school_year: schoolYear,
     }));
   };
 
   const handleDateChange = (date: Date | null) => {
     setStudentData((prevState) => ({
       ...prevState,
-      date_of_birth: date ? date.toISOString().split('T')[0] : '', 
+      date_of_birth: date ? date.toISOString().split('T')[0] : '',
     }));
   };
 
   function formatInput(input: string) {
     let cleaned = input.replace(/[^0-9a-zA-Z]/g, '');
-  
+
     if (cleaned.length > 0 && /[a-zA-Z]/.test(cleaned[cleaned.length - 1])) {
-      cleaned = cleaned.slice(0, -1) + cleaned[cleaned.length - 1].toUpperCase();
+      cleaned =
+        cleaned.slice(0, -1) + cleaned[cleaned.length - 1].toUpperCase();
     }
-  
+
     if (cleaned.length >= 13) {
       return cleaned.replace(/^(\d{3})(\d{6})(\d{4})([a-zA-Z])$/, '$1-$2-$3$4');
     }
-  
+
     return cleaned.replace(/^(\d{3})(\d{6})(\d{4})$/, '$1$2$3');
   }
-  
+
   const formatPhoneNumber = (input: string) => {
     let cleaned = input.replace(/\D/g, '');
-  
-    if (cleaned.startsWith("505")) {
-      cleaned = cleaned.slice(3); 
+
+    if (cleaned.startsWith('505')) {
+      cleaned = cleaned.slice(3);
     }
-  
+
     if (cleaned.length < 8) {
       return cleaned;
     }
     return `+505 ${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
   };
-  
+
   useEffect(() => {
     setStudentData((prevState) => ({
       ...prevState,
@@ -111,7 +115,7 @@ const FormStudent = ({
 
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            Cédula 
+            Cédula
           </label>
           <input
             type="text"
@@ -119,7 +123,7 @@ const FormStudent = ({
             value={studentData.id_card}
             onChange={(e) => {
               const formattedValue = formatInput(e.target.value);
-              setStudentData({ ...studentData, id_card: formattedValue }); 
+              setStudentData({ ...studentData, id_card: formattedValue });
             }}
             minLength={16}
             maxLength={16}
@@ -132,7 +136,11 @@ const FormStudent = ({
           <label className="mb-2.5 block text-black dark:text-white">
             Fecha de nacimiento <span className="text-meta-1">*</span>
           </label>
-          <DatePickerOne onDateChange={handleDateChange} name="date_of_birth" value={studentData.date_of_birth}/>
+          <DatePickerOne
+            onDateChange={handleDateChange}
+            name="date_of_birth"
+            value={studentData.date_of_birth}
+          />
         </div>
 
         <div className="mb-4.5">
@@ -167,7 +175,7 @@ const FormStudent = ({
 
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            Correo Electrónico 
+            Correo Electrónico
           </label>
           <input
             type="email"
@@ -202,7 +210,7 @@ const FormStudent = ({
 
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
-            Número de emergencia 
+            Número de emergencia
           </label>
           <input
             type="tel"
@@ -210,11 +218,13 @@ const FormStudent = ({
             value={studentData.emergency_number}
             onChange={(e) => {
               const formattedValue = formatPhoneNumber(e.target.value);
-              setStudentData({ ...studentData, emergency_number: formattedValue });
+              setStudentData({
+                ...studentData,
+                emergency_number: formattedValue,
+              });
             }}
             placeholder="Ej: 87656859"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            
             minLength={8}
             maxLength={13}
             title="Ingrese un número de 8 dígitos"
@@ -243,7 +253,7 @@ const FormStudent = ({
             />
           </div>
           <div>
-          <label className="mb-2.5 block text-black dark:text-white ">
+            <label className="mb-2.5 block text-black dark:text-white ">
               Exonerar matrícula
             </label>
             <Switcher

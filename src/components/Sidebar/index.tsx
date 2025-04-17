@@ -1,8 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import Logo from '../../images/logo/logo.svg';
-import { FaChartSimple, FaX, FaMoneyBillWave, FaPencil, FaBook } from "react-icons/fa6";
-import { FaStar } from "react-icons/fa";
+import {
+  FaChartSimple,
+  FaX,
+  FaMoneyBillWave,
+  FaPencil,
+  FaBook,
+} from 'react-icons/fa6';
+import { FaStar } from 'react-icons/fa';
 import { useAuth } from '../../utils/AuthContext';
 
 interface SidebarProps {
@@ -41,8 +47,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     return () => document.removeEventListener('keydown', keyHandler);
   });
 
-  
-
   return (
     <div className="sidebar expanded">
       <aside
@@ -53,8 +57,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       >
         {/* <!-- SIDEBAR HEADER --> */}
         <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5 border-stroke ">
-          <NavLink to="/" >
-            <img src={Logo} alt="Logo" width={200} className=' pl-10 '/>
+          <NavLink to="/">
+            <img src={Logo} alt="Logo" width={200} className=" pl-10 " />
           </NavLink>
 
           <button
@@ -64,7 +68,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             aria-expanded={sidebarOpen}
             className="block lg:hidden"
           >
-           <FaX/> 
+            <FaX />
           </button>
         </div>
         {/* <!-- SIDEBAR HEADER --> */}
@@ -102,7 +106,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       pathname.includes('students') && 'bg-boxdark-2'
                     }`}
                   >
-                    <FaBook/>
+                    <FaBook />
                     Estudiantes
                   </NavLink>
                 </li>
@@ -113,11 +117,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <NavLink
                     to="/transactions"
                     className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-boxdark-2  ${
-                      pathname.includes('transactions') &&
-                      'bg-boxdark-2'
+                      pathname.includes('transactions') && 'bg-boxdark-2'
                     }`}
                   >
-                    <FaMoneyBillWave/>
+                    <FaMoneyBillWave />
                     Transacciones
                   </NavLink>
                 </li>
@@ -131,28 +134,26 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       pathname.includes('pendings') && 'bg-boxdark-2'
                     }`}
                   >
-                    <FaPencil/>
+                    <FaPencil />
                     Pendientes
                   </NavLink>
                 </li>
                 {/* <!-- Menu Item Profile --> */}
 
-
                 {/* <!-- Menu Item Settings --> */}
-{user?.role === 'admin' && (
-<li>
-  <NavLink
-    to="/disciplines"
-    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-boxdark-2  ${
-      pathname.includes('disciplines') &&
-      'bg-boxdark-2'
-    }`}
-  >
-    <FaStar/>
-    Disciplinas
-  </NavLink>
-</li>
-)}
+                {user?.role === 'admin' && (
+                  <li>
+                    <NavLink
+                      to="/disciplines"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-boxdark-2  ${
+                        pathname.includes('disciplines') && 'bg-boxdark-2'
+                      }`}
+                    >
+                      <FaStar />
+                      Disciplinas
+                    </NavLink>
+                  </li>
+                )}
                 {/* <!-- Menu Item Settings --> */}
               </ul>
             </div>

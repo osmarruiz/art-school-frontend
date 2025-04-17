@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { FaWallet, FaX } from 'react-icons/fa6';
 import CardOperator from '../../components/Cards/CardOperator';
 import { Tutor } from '../../types/tutor';
@@ -30,7 +30,12 @@ const Enrollment = ({
     null | 'search' | 'form'
   >(null);
   const [courseSelection, setCourseSelection] = useState<
-    { courseId: number | null; shiftId: number | null, courseName: string | null, shiftName: string }[]
+    {
+      courseId: number | null;
+      shiftId: number | null;
+      courseName: string | null;
+      shiftName: string;
+    }[]
   >([]);
   const [studentData, setStudentData] = useState({
     id_card: '',
@@ -87,7 +92,6 @@ const Enrollment = ({
   };
 
   const handleTutorSelection = (tutor: Tutor) => {
-
     setSelectTutorData((prevState) => ({
       ...prevState,
       tutor_id: tutor.id,
@@ -119,7 +123,7 @@ const Enrollment = ({
       };
     }
 
-    const courses: {name: string; shift: string}[] = [];
+    const courses: { name: string; shift: string }[] = [];
 
     const payload = {
       emergency_number: studentData.emergency_number || '',
@@ -136,7 +140,10 @@ const Enrollment = ({
         school_year: studentData.school_year ?? null,
       },
       courses: courseSelection.map((course) => {
-        courses.push({name: course.courseName ?? "", shift: course.shiftName})
+        courses.push({
+          name: course.courseName ?? '',
+          shift: course.shiftName,
+        });
         return {
           course_id: course.courseId,
           shift_id: course.shiftId,
@@ -149,32 +156,39 @@ const Enrollment = ({
   <div style="text-align: left;">
     <h2 class="text-1xl font-bold mb-1">Curso(s):</h3>
     <ul>
-      ${courses.map(course => `
+      ${courses
+        .map(
+          (course) => `
         <li class="ms-1">${course.name} (${course.shift})</li>
-      `).join('')}
+      `,
+        )
+        .join('')}
     </ul>
 
     <h3 class="text-1xl font-bold mb-1 mt-3">Resumen de Información del Estudiante:</h3>
-    <p>Cédula: ${payload.student.id_card || "—"}</p>
+    <p>Cédula: ${payload.student.id_card || '—'}</p>
     <p>Nombre: ${payload.student.name}</p>
-    <p>Fecha de Nacimiento: ${new Date(payload.student.date_of_birth + "T00:00:00-06:00").toLocaleDateString()}</p>
-    <p>Email: ${payload.student.email || "—"}</p>
+    <p>Fecha de Nacimiento: ${new Date(
+      payload.student.date_of_birth + 'T00:00:00-06:00',
+    ).toLocaleDateString()}</p>
+    <p>Email: ${payload.student.email || '—'}</p>
     <p>Ciudad: ${payload.student.city}</p>
     <p>Dirección: ${payload.student.address}</p>
-    <p>Teléfono: ${payload.student.phone_number || "—"}</p>
-    <p>Colegio: ${payload.student.school_name || "—"}</p>
-    <p>Año Escolar: ${payload.student.school_year || "—"}</p>
-    <p>Número de Emergencia: ${payload.emergency_number || "—"}</p>
+    <p>Teléfono: ${payload.student.phone_number || '—'}</p>
+    <p>Colegio: ${payload.student.school_name || '—'}</p>
+    <p>Año Escolar: ${payload.student.school_year || '—'}</p>
+    <p>Número de Emergencia: ${payload.emergency_number || '—'}</p>
     <p>Exonerado: ${payload.exonerate ? 'Sí' : 'No'}</p>
 `;
 
-    if (tutorData.name !== "" && tutorData.phone_number !== "") {
+    if (tutorData.name !== '' && tutorData.phone_number !== '') {
       summary += `
     <h4 class="text-1xl font-bold mb-1 mt-3">Información del Tutor:</h4>
-    <p>Parentesco: ${kinshipData.find(k => k.id === tutorData.tutor_kinship)?.name}</p>
-    <p>Cédula: ${tutorData.id_card || "—"}</p>
+    <p>Parentesco: ${kinshipData.find((k) => k.id === tutorData.tutor_kinship)
+      ?.name}</p>
+    <p>Cédula: ${tutorData.id_card || '—'}</p>
     <p>Nombre: ${tutorData.name}</p>
-    <p>Email: ${tutorData.email || "—"}</p>
+    <p>Email: ${tutorData.email || '—'}</p>
     <p>Teléfono: ${tutorData.phone_number}</p>
     <p>Ciudad: ${tutorData.city}</p>
     <p>Dirección: ${tutorData.address}</p>
@@ -183,32 +197,35 @@ const Enrollment = ({
       summary += `
     <h4 class="text-1xl font-bold mb-1 mt-3">Información del Tutor:</h4>
     <p>Nombre: ${selectedTutor?.name}</p>
-    <p>Parentesco: ${kinshipData.find(k => k.id === selectTutorData.tutor_kinship)?.name}</p>
+    <p>Parentesco: ${kinshipData.find(
+      (k) => k.id === selectTutorData.tutor_kinship,
+    )?.name}</p>
   `;
     }
 
     summary += `</div>`;
     Swal.fire({
-      title: "¿Estás seguro?",
+      title: '¿Estás seguro?',
       html: summary,
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, registrar",
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, registrar',
+      cancelButtonText: 'No, cancelar',
       customClass: {
         popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
-        confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
-        cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
+        confirmButton: 'bg-blue-500 text-white dark:bg-boxdark text-white',
+        cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 text-white',
       },
     }).then((result) => {
       if (result.isConfirmed) {
         (async () => {
           try {
             const response = await fetch(`${API_URL}/students.enroll`, {
-              method: "POST",
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
                 Authorization: API_KEY,
               },
               body: JSON.stringify(payload),
@@ -218,7 +235,9 @@ const Enrollment = ({
             let data = null;
             try {
               if (
-                response.headers.get('Content-Type')?.includes('application/json')
+                response.headers
+                  .get('Content-Type')
+                  ?.includes('application/json')
               ) {
                 data = await response.json();
               }
@@ -235,7 +254,7 @@ const Enrollment = ({
 
             navigate('/enrollment');
           } catch (error) {
-            console.error("Error al enviar datos:", error);
+            console.error('Error al enviar datos:', error);
           }
         })();
       }
@@ -273,15 +292,18 @@ const Enrollment = ({
             Datos del estudiante
           </p>
           <FormStudent
-            onToggle={(e) => { setIsSwitchEnabled(e); setTutorData({
-              id_card: '',
-              name: '',
-              email: '',
-              city: '',
-              address: '',
-              phone_number: '',
-              tutor_kinship: 0,
-            }) }}
+            onToggle={(e) => {
+              setIsSwitchEnabled(e);
+              setTutorData({
+                id_card: '',
+                name: '',
+                email: '',
+                city: '',
+                address: '',
+                phone_number: '',
+                tutor_kinship: 0,
+              });
+            }}
             onStudentChange={setStudentData}
           />
           <br />

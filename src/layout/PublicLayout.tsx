@@ -5,15 +5,15 @@ interface DefaultLayoutProps {
   bgClassName?: string;
 }
 
-const PublicLayout: React.FC<DefaultLayoutProps> = ({ children, bgClassName = "" }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+const PublicLayout: React.FC<DefaultLayoutProps> = ({
+  children,
+  bgClassName = '',
+}) => {
   return (
     <div className={`  ${bgClassName}`}>
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <main>
-        <div className="mx-auto max-w-screen-2xl ">
-          {children}
-        </div>
+        <div className="mx-auto max-w-screen-2xl ">{children}</div>
       </main>
       {/* <!-- ===== Main Content End ===== --> */}
     </div>

@@ -7,7 +7,10 @@ interface DefaultLayoutProps {
   bgClassName?: string;
 }
 
-const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children, bgClassName = '' }) => {
+const DefaultLayout: React.FC<DefaultLayoutProps> = ({
+  children,
+  bgClassName = '',
+}) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -19,7 +22,9 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ children, bgClassName = '
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
-        <div className={`relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden ${bgClassName} ` }>
+        <div
+          className={`relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden ${bgClassName} `}
+        >
           {/* <!-- ===== Header Start ===== --> */}
           <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           {/* <!-- ===== Header End ===== --> */}

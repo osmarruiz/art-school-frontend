@@ -1,5 +1,12 @@
-const Switcher = ({ enabled, onToggle, labelId }: { enabled: boolean; onToggle: (value: boolean) => void; labelId: string}) => {
-
+const Switcher = ({
+  enabled,
+  onToggle,
+  labelId,
+}: {
+  enabled: boolean;
+  onToggle: (value: boolean) => void;
+  labelId: string;
+}) => {
   return (
     <div>
       <label
@@ -11,7 +18,7 @@ const Switcher = ({ enabled, onToggle, labelId }: { enabled: boolean; onToggle: 
             type="checkbox"
             id={labelId}
             className="sr-only"
-            onChange={(e) => onToggle(e.target.checked) }
+            onChange={(e) => onToggle(e.target.checked)}
           />
           <div className="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B]"></div>
           <div

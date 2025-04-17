@@ -1,4 +1,4 @@
-import background from '../../images/background/background1.jpg';
+import background from '../../images/background/background1.webp';
 import { useState } from 'react';
 import { useAuth } from '../../utils/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -49,15 +49,13 @@ const SignIn: React.FC = () => {
       navigate('/');
     } catch (error) {
       console.error('Error en la solicitud:', error);
-    } 
+    }
   };
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setCredentials((prev) => ({ ...prev, [name]: value }));
   };
-
- 
 
   return (
     <>

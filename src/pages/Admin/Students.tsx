@@ -8,7 +8,7 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import { FaArrowRight, FaEye, FaMinus, FaPencil, FaPlus, FaUserGroup, FaX } from 'react-icons/fa6';
+import { FaArrowRight, FaUserGroup, FaX } from 'react-icons/fa6';
 import { Student } from '../../types/student';
 import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
@@ -41,20 +41,22 @@ const Students: React.FC = () => {
   const [courseData, setCourseData] = useState<Course[]>([]);
   const [shifts, _] = useState<Shift[]>([
     {
-      id: 7, name: 'Diario',
+      id: 7,
+      name: 'Diario',
       is_closed: false,
       capacity_of_students: 0,
-      num_of_students: 0
+      num_of_students: 0,
     },
     {
-      id: 8, name: 'Sabatino',
+      id: 8,
+      name: 'Sabatino',
       is_closed: false,
       capacity_of_students: 0,
-      num_of_students: 0
+      num_of_students: 0,
     },
   ]);
   const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
-const [selectedShift, setSelectedShift] = useState<number | null>(null);
+  const [selectedShift, setSelectedShift] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -63,14 +65,14 @@ const [selectedShift, setSelectedShift] = useState<number | null>(null);
       let url = `${API_URL}/students.list?rpp=99999`;
       if (course) url += `&course=${course}`;
       if (shift) url += `&shift=${shift}`;
-  
+
       const response = await fetch(url, {
         headers: {
           Authorization: API_KEY,
         },
         credentials: 'include',
       });
-  
+
       const data = await response.json();
       setRowData(data);
     } catch (error) {
@@ -79,39 +81,33 @@ const [selectedShift, setSelectedShift] = useState<number | null>(null);
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchData(selectedCourse ?? undefined, selectedShift ?? undefined);
   }, [selectedCourse, selectedShift]);
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          let response = await fetch(`${API_URL}/courses.list`, {
-            headers: {
-              Authorization: API_KEY,
-            },
-            credentials: 'include',
-          });
-          const courses: Course[] = await response.json();
-          setCourseData(courses);
-  
-          
-        } catch (error) {
-          console.error('Error al obtener los datos', error);
-        }
-      };
-      fetchData();
-    }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let response = await fetch(`${API_URL}/courses.list`, {
+          headers: {
+            Authorization: API_KEY,
+          },
+          credentials: 'include',
+        });
+        const courses: Course[] = await response.json();
+        setCourseData(courses);
+      } catch (error) {
+        console.error('Error al obtener los datos', error);
+      }
+    };
+    fetchData();
+  }, []);
 
-    
-
-  //cambia el tema del aggrid segun el estado de colorMode
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
 
-  // Renderer para la columna de estado
   const estadoRenderer = (params: { value: boolean }) => {
     return (
       <span
@@ -127,28 +123,28 @@ const [selectedShift, setSelectedShift] = useState<number | null>(null);
   };
 
   const filteredData = useMemo(() => {
-      return rowData?.students?.filter((student) => {
-        const valuesToSearch = [
-          student.name ?? '',
-          student.id_card ?? '',
-        ];
-    
+    return (
+      rowData?.students?.filter((student) => {
+        const valuesToSearch = [student.name ?? '', student.id_card ?? ''];
+
         return valuesToSearch.some((value) =>
-          value.toLowerCase().includes(searchText.toLowerCase())
+          value.toLowerCase().includes(searchText.toLowerCase()),
         );
-      }) ?? [];
-    }, [rowData, searchText]);
+      }) ?? []
+    );
+  }, [rowData, searchText]);
 
-
-  // Renderer para la columna de acciones
-  const opcionesRenderer = (params: { data: { id: number, is_active: boolean 
-} }) => {
+  const opcionesRenderer = (params: {
+    data: { id: number; is_active: boolean };
+  }) => {
     return (
       <div className="flex gap-4 mt-1 justify-center ">
-        <button className={clsx(colorVariants['white'].btnSc)} onClick={() => navigate(`/student/${params.data.id}`)}>
+        <button
+          className={clsx(colorVariants['white'].btnSc)}
+          onClick={() => navigate(`/student/${params.data.id}`)}
+        >
           <FaArrowRight size={20} />
         </button>
-
       </div>
     );
   };
@@ -156,15 +152,41 @@ const [selectedShift, setSelectedShift] = useState<number | null>(null);
   const columnDefs = useMemo(
     () => [
       { field: 'name', headerName: 'Nombre', flex: 2 },
-      { field: 'id_card', headerName: 'Cédula', valueFormatter: (params: { value: any; }) => (v => !v ? "—" : v)(params.value) },
-      { field: 'email', headerName: 'Correo', valueFormatter: (params) => (v => !v ? "—" : v)(params.value) },
-      { field: 'phone_number', headerName: 'Teléfono', valueFormatter: (params) => (v => !v ? "—" : v)(params.value) },
-      { field: 'date_of_birth', headerName: 'Nacimiento', valueFormatter: (params) => formatDateFlexible(params.value, {
-                  type: 'date',
-                  withTimezoneOffset: true,
-                }) },
-      { field: 'is_active', headerName: 'Estado', cellRenderer: estadoRenderer },
-      { field: 'opciones', headerName: 'Opciones', cellRenderer: opcionesRenderer },
+      {
+        field: 'id_card',
+        headerName: 'Cédula',
+        valueFormatter: (params: { value: any }) =>
+          ((v) => (!v ? '—' : v))(params.value),
+      },
+      {
+        field: 'email',
+        headerName: 'Correo',
+        valueFormatter: (params) => ((v) => (!v ? '—' : v))(params.value),
+      },
+      {
+        field: 'phone_number',
+        headerName: 'Teléfono',
+        valueFormatter: (params) => ((v) => (!v ? '—' : v))(params.value),
+      },
+      {
+        field: 'date_of_birth',
+        headerName: 'Nacimiento',
+        valueFormatter: (params) =>
+          formatDateFlexible(params.value, {
+            type: 'date',
+            withTimezoneOffset: true,
+          }),
+      },
+      {
+        field: 'is_active',
+        headerName: 'Estado',
+        cellRenderer: estadoRenderer,
+      },
+      {
+        field: 'opciones',
+        headerName: 'Opciones',
+        cellRenderer: opcionesRenderer,
+      },
     ],
     [],
   );
@@ -207,21 +229,32 @@ const [selectedShift, setSelectedShift] = useState<number | null>(null);
               )}
             />
           </div>
-
-          
         </div>
-        <div className='flex justify-center sm:justify-end gap-4 sm:w-2/5  mb-6'>
-            <div className="w-1/3 justify-center sm:justify-end flex">
-            <button onClick={() => { navigate("/students")}}><FaX/></button></div>
-            <div className="w-1/3">
-            <SelectGroupOne placeholder='Curso' course={courseData} onChange={(selected: number) => setSelectedCourse(selected)}/>
-            </div>
-            <div className="w-1/3">
-
-            <SelectGroupOne placeholder='Turno' shift={shifts} onChange={(selected: number) => setSelectedShift(selected)}/>
-            </div>
-            
+        <div className="flex justify-center sm:justify-end gap-4 sm:w-2/5  mb-6">
+          <div className="w-1/3 justify-center sm:justify-end flex">
+            <button
+              onClick={() => {
+                navigate('/students');
+              }}
+            >
+              <FaX />
+            </button>
           </div>
+          <div className="w-1/3">
+            <SelectGroupOne
+              placeholder="Curso"
+              course={courseData}
+              onChange={(selected: number) => setSelectedCourse(selected)}
+            />
+          </div>
+          <div className="w-1/3">
+            <SelectGroupOne
+              placeholder="Turno"
+              shift={shifts}
+              onChange={(selected: number) => setSelectedShift(selected)}
+            />
+          </div>
+        </div>
       </div>
       <div className="h-125 w-full">
         <AgGridReact
@@ -236,12 +269,18 @@ const [selectedShift, setSelectedShift] = useState<number | null>(null);
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">
         <div className="sm:w-1/2 xl:w-1/4 mb-4">
-          <CardDataStats title="Total de activos" total={`${rowData?.total_active.toString() || '0'}`}>
+          <CardDataStats
+            title="Total de activos"
+            total={`${rowData?.total_active.toString() || '0'}`}
+          >
             <FaUserGroup className="fill-primary dark:fill-white" size={20} />
           </CardDataStats>
         </div>
         <div className="sm:w-1/2 xl:w-1/4">
-          <CardDataStats title="Total de inactivos" total={`${rowData?.total_inactive.toString() || '0'}`}>
+          <CardDataStats
+            title="Total de inactivos"
+            total={`${rowData?.total_inactive.toString() || '0'}`}
+          >
             <FaUserGroup className="fill-danger dark:fill-white" size={20} />
           </CardDataStats>
         </div>

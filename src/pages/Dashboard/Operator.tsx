@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import CardDataStats from '../../components/Cards/CardDataStats';
 import { motion } from 'framer-motion';
-import { FaAddressBook, FaEye } from "react-icons/fa";
+import { FaAddressBook, FaEye } from 'react-icons/fa';
 import { FaWallet, FaRepeat } from 'react-icons/fa6';
-
 
 const Operator: React.FC = () => {
   const [mensaje, setMensaje] = useState('');
@@ -20,7 +19,6 @@ const Operator: React.FC = () => {
     }
   }, []);
 
-
   return (
     <>
       <div className="grid place-items-center ">
@@ -36,24 +34,44 @@ const Operator: React.FC = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-2 2xl:gap-7.5 ">
-            <motion.a href='/enrollment' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
+            <motion.a
+              href="/enrollment"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+            >
               <CardDataStats title="Matricular Estudiante" color="violet">
-                <FaAddressBook size={18} className='fill-white'/>
+                <FaAddressBook size={18} className="fill-white" />
               </CardDataStats>
             </motion.a>
-            <motion.a href='/payment' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
+            <motion.a
+              href="/payment"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+            >
               <CardDataStats title="Registrar Pago" color="red">
-                <FaWallet size={18} className='fill-white' />
+                <FaWallet size={18} className="fill-white" />
               </CardDataStats>
             </motion.a>
-            <motion.a href='/renew' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
+            <motion.a
+              href="/renew"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+            >
               <CardDataStats title="Renovar Matrícula" color="orange">
-                <FaRepeat size={18} className='fill-white'/>
+                <FaRepeat size={18} className="fill-white" />
               </CardDataStats>
             </motion.a>
-            <motion.a href='/viewstudent' initial={{scale: 0.8}} animate={{scale: 1}} whileHover={{scale: 1.1}} >
-              <CardDataStats title="Vizualizar Estudiantes" color="green" >
-                <FaEye size={18} className='fill-white' />
+            <motion.a
+              href="/viewstudent"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+            >
+              <CardDataStats title="Visualizar Estudiantes" color="green">
+                <FaEye size={18} className="fill-white" />
               </CardDataStats>
             </motion.a>
           </div>

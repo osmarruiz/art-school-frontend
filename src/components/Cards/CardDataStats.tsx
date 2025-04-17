@@ -9,19 +9,18 @@ interface CardDataStatsProps {
   levelUp?: boolean;
   levelDown?: boolean;
   children?: ReactNode;
-  color?: 'violet' | 'white' | 'red' | 'orange' | 'green'; 
+  color?: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }
 
 const CardDataStats: React.FC<CardDataStatsProps> = ({
   title,
-  total ,
+  total,
   rate = null,
   levelUp = null,
   levelDown = null,
   children,
-  color = 'white', 
+  color = 'white',
 }) => {
-  
   const rateColorClasses = {
     violet: 'text-meta-3',
     white: 'text-meta-3',
@@ -31,17 +30,29 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   };
 
   return (
-    <div className={clsx("rounded-sm border border-stroke bg- dark:border-strokedark py-6 px-7.5 shadow-default ", colorVariants[color].bg)}>
-      <div className={clsx("flex h-11.5 w-11.5 items-center justify-center rounded-full", colorVariants[color].icon )}>
+    <div
+      className={clsx(
+        'rounded-sm border border-stroke bg- dark:border-strokedark py-6 px-7.5 shadow-default ',
+        colorVariants[color].bg,
+      )}
+    >
+      <div
+        className={clsx(
+          'flex h-11.5 w-11.5 items-center justify-center rounded-full',
+          colorVariants[color].icon,
+        )}
+      >
         {children}
       </div>
 
       <div className="mt-4 pt-4 flex items-end justify-between">
         <div>
-          <h4 className={"text-title-md font-bold text-black dark:text-white"}>
+          <h4 className={'text-title-md font-bold text-black dark:text-white'}>
             {total}
           </h4>
-          <span className={"text-s font-medium text-black dark:text-white"}>{title}</span>
+          <span className={'text-s font-medium text-black dark:text-white'}>
+            {title}
+          </span>
         </div>
 
         <span

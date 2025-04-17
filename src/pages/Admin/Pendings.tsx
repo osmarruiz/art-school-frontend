@@ -8,13 +8,7 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import {
-  FaArrowRight,
-  FaDollarSign,
-  FaMoneyBillWave,
-  FaPencil,
-} from 'react-icons/fa6';
-import { Student } from '../../types/student';
+import { FaArrowRight, FaMoneyBillWave } from 'react-icons/fa6';
 import clsx from 'clsx';
 import { FaSearch, FaBell } from 'react-icons/fa';
 import CardDataStats from '../../components/Cards/CardDataStats';
@@ -37,7 +31,7 @@ const Pendings: React.FC = () => {
   const [rowData, setRowData] = useState<PendingAggregate>();
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
-  const { user} = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -77,12 +71,10 @@ const Pendings: React.FC = () => {
     fetchData();
   }, []);
 
-  //cambia el tema del aggrid segun el estado de colorMode
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
 
-  // Renderer para la columna de acciones
   const opcionesRenderer = (params: any) => {
     return (
       <div className="flex gap-4 mt-1 justify-center ">
@@ -92,14 +84,14 @@ const Pendings: React.FC = () => {
         >
           <FaArrowRight size={20} />
         </button>
-        {user?.role === 'admin' && (<button className={clsx(colorVariants['white'].btnSc)}>
-          <FaBell size={20} />
-        </button>)}
-        
+        {user?.role === 'admin' && (
+          <button className={clsx(colorVariants['white'].btnSc)}>
+            <FaBell size={20} />
+          </button>
+        )}
       </div>
     );
   };
-
 
   const columnDefs = useMemo(
     () => [
@@ -182,17 +174,18 @@ const Pendings: React.FC = () => {
             />
           </div>
         </div>
-        {user?.role === 'admin' && (<div className="flex justify-center sm:justify-end gap-4 sm:w-1/5  mb-6">
-          <button
-            className={clsx(
-              'inline-flex items-center justify-center py-2.5 px-3 disabled:',
-              colorVariants['white'].btn,
-            )}
-          >
-            Notificar a todos
-          </button>
-        </div>)}
-        
+        {user?.role === 'admin' && (
+          <div className="flex justify-center sm:justify-end gap-4 sm:w-1/5  mb-6">
+            <button
+              className={clsx(
+                'inline-flex items-center justify-center py-2.5 px-3 disabled:',
+                colorVariants['white'].btn,
+              )}
+            >
+              Notificar a todos
+            </button>
+          </div>
+        )}
       </div>
       <div className="h-125 w-full">
         <AgGridReact

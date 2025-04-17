@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import DropdownNotification from './DropdownNotification';
 import DropdownUser from './DropdownUser';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import logo from '../../images/logo/logo.svg';
@@ -13,7 +12,7 @@ const Header = (props: {
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
         <div className="flex items-center gap-2 sm:gap-4">
           {/* <!-- Hamburger Toggle BTN --> */}
-          <button 
+          <button
             aria-controls="sidebar"
             onClick={(e) => {
               e.stopPropagation();
@@ -60,9 +59,7 @@ const Header = (props: {
           </Link>
         </div>
 
-        <div className="hidden sm:block">
-          
-        </div>
+        <div className="hidden sm:block"></div>
 
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
@@ -71,11 +68,6 @@ const Header = (props: {
             {/* <!-- Dark Mode Toggler --> */}
 
             {/* <!-- Notification Menu Area --> */}
-            <div className='hidden'>
-            <DropdownNotification />
-            </div>
-            {/* <!-- Notification Menu Area --> */}
-
           </ul>
 
           {/* <!-- User Area --> */}

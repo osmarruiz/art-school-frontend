@@ -23,7 +23,7 @@ const CardTutor = ({
       <div className="flex justify-between">
         <div className={clsx(colorVariants[color].text)}>
           <h3 className="text-lg font-bold">{tutor.name}</h3>
-          <p>Cedula: {tutor.id_card}</p>
+          <p>Cédula: {tutor.id_card}</p>
         </div>
         <button onClick={onReset} className={clsx(colorVariants[color].btnSc)}>
           <FaArrowLeft size={24} />

@@ -86,14 +86,27 @@ const CardTransaction: React.FC<TransactionListProps> = ({
 
   const columnDefs = useMemo(
     () => [
-      { field: 'issued_at', headerName: 'Fecha', valueFormatter: (params: {value: any}) => formatDateFlexible(params.value, {
-                              type: 'date',
-                              withTimezoneOffset: false,
-                            })  },
+      {
+        field: 'issued_at',
+        headerName: 'Fecha',
+        valueFormatter: (params: { value: any }) =>
+          formatDateFlexible(params.value, {
+            type: 'date',
+            withTimezoneOffset: false,
+          }),
+      },
       { field: 'no', headerName: 'No. Recibo' },
       { field: 'amount', headerName: 'Monto' },
-      { field: 'payer', headerName: 'Pagado Por', valueFormatter: (p:any) => p.value || '—' },
-      { field: 'remarks', headerName: 'Concepto', valueFormatter: (p:any) => p.value || '—' },
+      {
+        field: 'payer',
+        headerName: 'Pagado Por',
+        valueFormatter: (p: any) => p.value || '—',
+      },
+      {
+        field: 'remarks',
+        headerName: 'Concepto',
+        valueFormatter: (p: any) => p.value || '—',
+      },
       {
         headerName: 'Acción',
         field: 'action',
@@ -116,7 +129,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
               </button>
             );
           }
-          return <p className='text-red-500'>(Revocado)</p>;
+          return <p className="text-red-500">(Revocado)</p>;
         },
       },
     ],
@@ -133,15 +146,18 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     [],
   );
 
-
   return (
     <div className="w-full">
       {loading ? (
         <div className="flex justify-center items-center p-4">
-          <p className="text-lg font-semibold text-gray-500">Cargando transacciones...</p>
+          <p className="text-lg font-semibold text-gray-500">
+            Cargando transacciones...
+          </p>
         </div>
       ) : transactions.length === 0 ? (
-        <p className="text-center text-gray-500">No hay transacciones disponibles.</p>
+        <p className="text-center text-gray-500">
+          No hay transacciones disponibles.
+        </p>
       ) : (
         transactions.map((transaction) => {
           const rowData =
@@ -164,14 +180,30 @@ const CardTransaction: React.FC<TransactionListProps> = ({
             >
               <div className="flex justify-between items-center">
                 <div className={clsx(colorVariants[color].text)}>
-                  <div className='block sm:flex gap-2'>
-                    <p className={`font-bold block xl:inline-flex text-[${
-                      transaction.fee.type === "enrollment" ? "#4CAF50" : transaction.fee.type === "month" ? "#FA5A7D" : "#FF947A"
-                    }]`}>{transaction.fee.label}</p>
+                  <div className="block sm:flex gap-2">
+                    <p
+                      className={`font-bold block xl:inline-flex text-[${
+                        transaction.fee.type === 'enrollment'
+                          ? '#4CAF50'
+                          : transaction.fee.type === 'month'
+                          ? '#FA5A7D'
+                          : '#FF947A'
+                      }]`}
+                    >
+                      {transaction.fee.label}
+                    </p>
                     <span>•</span>
-                    <p>{new Date(transaction.target_date + "T00:00:00-06:00").toLocaleString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', })}</p>
+                    <p>
+                      {new Date(
+                        transaction.target_date + 'T00:00:00-06:00',
+                      ).toLocaleString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </p>
                   </div>
-                  <div className='block sm:flex gap-2'>
+                  <div className="block sm:flex gap-2">
                     <p className="font-bold block xl:inline-flex">
                       Total: {formatCurrency(transaction.total)}
                     </p>
@@ -179,14 +211,13 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                       Saldo: {formatCurrency(transaction.balance)}
                     </p>
                   </div>
-                  <p>{(transaction.remarks) ? transaction.remarks : "—"}</p>
-
+                  <p>{transaction.remarks ? transaction.remarks : '—'}</p>
                 </div>
 
                 {/* Botones de acción */}
                 <div className="flex gap-2">
                   <button
-                    title='Agregar un recibo a esta transacción'
+                    title="Agregar un recibo a esta transacción"
                     className={clsx(colorVariants[color].btnSc)}
                     onClick={() =>
                       addReceiptButton(
@@ -201,7 +232,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                   </button>
 
                   <button
-                    title='Listar los recibos de esta transacción'
+                    title="Listar los recibos de esta transacción"
                     className={clsx(colorVariants[color].btnSc)}
                     onClick={() => toggleVisibility(transaction.id)}
                   >
@@ -213,7 +244,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                   </button>
 
                   <button
-                    title='Finalizar transacción'
+                    title="Finalizar transacción"
                     className={clsx(colorVariants[color].btnSc)}
                     onClick={async () => {
                       const result = await Swal.fire({
@@ -222,9 +253,12 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                         icon: 'warning',
                         showCancelButton: true,
                         customClass: {
-                          popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
-                          confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
-                          cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
+                          popup:
+                            'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                          confirmButton:
+                            'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                          cancelButton:
+                            'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
                         },
                         confirmButtonText: 'Sí, finalizar',
                         cancelButtonText: 'No, cancelar',
@@ -238,14 +272,13 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                           showSuccess,
                         );
                       }
-                    }
-                    }
+                    }}
                   >
                     <FaCheck size={20} />
                   </button>
 
                   <button
-                    title='Revocar transacción'
+                    title="Revocar transacción"
                     className={clsx(colorVariants[color].btnSc)}
                     onClick={() =>
                       revokeTransactionButton(

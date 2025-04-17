@@ -29,17 +29,18 @@ const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
   const [colorMode] = useColorMode();
   const [theme, setTheme] = useState(themeLightCold);
 
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${API_URL}/students.tutors.list?rpp=999`,
-                  {
-                    headers: {
-                      Authorization: API_KEY,
-                    },
-                    credentials: 'include',
-                  },);
+        const response = await fetch(
+          `${API_URL}/students.tutors.list?rpp=999`,
+          {
+            headers: {
+              Authorization: API_KEY,
+            },
+            credentials: 'include',
+          },
+        );
         const data = await response.json();
         setTutorData(data);
       } catch (error) {
@@ -51,23 +52,20 @@ const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
     fetchData();
   }, []);
 
-  
   const filteredStudents = tutorData.filter(
     (tutor) =>
       tutor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tutor.id_card.toLowerCase().includes(searchTerm.toLowerCase())
+      tutor.id_card.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
 
-  
-
   const columnDefs = useMemo(
     () => [
       { field: 'name', headerName: 'Nombre' },
-      { field: 'id_card', headerName: 'Cedula' },
+      { field: 'id_card', headerName: 'Cédula' },
     ],
     [],
   );

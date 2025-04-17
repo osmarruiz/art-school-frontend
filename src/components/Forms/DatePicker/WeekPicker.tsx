@@ -1,30 +1,32 @@
-import flatpickr from "flatpickr";
-import { useState, useEffect, useRef } from "react";
+import flatpickr from 'flatpickr';
+import { useState, useEffect, useRef } from 'react';
 
 const WeekPicker = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const flatpickrInstance = useRef<flatpickr.Instance | null>(null);
-  const [selectedWeek, setSelectedWeek] = useState<string>(""); 
+  const [selectedWeek, setSelectedWeek] = useState<string>('');
 
   useEffect(() => {
     if (!inputRef.current) return;
 
-    const storedWeek = sessionStorage.getItem("selectedWeek");
+    const storedWeek = sessionStorage.getItem('selectedWeek');
     if (storedWeek) {
       setSelectedWeek(storedWeek);
     }
 
     flatpickrInstance.current = flatpickr(inputRef.current, {
-      mode: "single",
+      mode: 'single',
       static: true,
-      dateFormat: "Y-W",
+      dateFormat: 'Y-W',
       weekNumbers: true,
       onChange: (selectedDates) => {
         if (selectedDates.length > 0) {
           const selectedDate = selectedDates[0];
-          const formattedDate = `${selectedDate.getFullYear()}-W${getISOWeek(selectedDate)}`;
+          const formattedDate = `${selectedDate.getFullYear()}-W${getISOWeek(
+            selectedDate,
+          )}`;
           setSelectedWeek(formattedDate);
-          sessionStorage.setItem("selectedWeek", formattedDate);
+          sessionStorage.setItem('selectedWeek', formattedDate);
         }
       },
     });
@@ -37,9 +39,11 @@ const WeekPicker = () => {
   const getISOWeek = (date: Date) => {
     const tempDate = new Date(date.getTime());
     tempDate.setHours(0, 0, 0, 0);
-    tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7)); 
+    tempDate.setDate(tempDate.getDate() + 4 - (tempDate.getDay() || 7));
     const yearStart = new Date(tempDate.getFullYear(), 0, 1);
-    return Math.ceil(((tempDate.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+    return Math.ceil(
+      ((tempDate.getTime() - yearStart.getTime()) / 86400000 + 1) / 7,
+    );
   };
 
   return (
@@ -57,4 +61,4 @@ const WeekPicker = () => {
 };
 
 export default WeekPicker;
-``
+``;

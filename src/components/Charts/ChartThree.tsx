@@ -2,7 +2,6 @@ import { ApexOptions } from 'apexcharts';
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-
 interface Course {
   course: string;
   percentage: number;
@@ -13,14 +12,20 @@ interface ChartThreeProps {
 }
 
 const ChartThree: React.FC<ChartThreeProps> = ({ data }) => {
-
   if (!data || data.length === 0) {
-    return ;
+    return;
   }
 
   const labels = data.map((item) => item.course);
   const series = data.map((item) => item.percentage);
-  const colors = ['#3C50E0', '#6577F3', '#8FD0EF', '#FF5733', '#FFC300', '#DAF7A6'];
+  const colors = [
+    '#3C50E0',
+    '#6577F3',
+    '#8FD0EF',
+    '#FF5733',
+    '#FFC300',
+    '#DAF7A6',
+  ];
 
   const options: ApexOptions = {
     chart: {
@@ -59,7 +64,9 @@ const ChartThree: React.FC<ChartThreeProps> = ({ data }) => {
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-5">
       <div className="mb-3">
-        <h5 className="text-xl font-semibold text-black dark:text-white">Disciplinas</h5>
+        <h5 className="text-xl font-semibold text-black dark:text-white">
+          Disciplinas
+        </h5>
       </div>
 
       <div className="mb-2 flex justify-center">
@@ -70,7 +77,10 @@ const ChartThree: React.FC<ChartThreeProps> = ({ data }) => {
         {data.map((item, index) => (
           <div key={index} className="w-full sm:w-1/2 px-8">
             <div className="flex w-full items-center">
-              <span className="mr-2 block h-3 w-full max-w-3 rounded-full" style={{ backgroundColor: colors[index] }}></span>
+              <span
+                className="mr-2 block h-3 w-full max-w-3 rounded-full"
+                style={{ backgroundColor: colors[index] }}
+              ></span>
               <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
                 <span>{item.course}</span>
                 <span>{item.percentage}%</span>

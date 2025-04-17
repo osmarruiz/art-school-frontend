@@ -6,7 +6,6 @@ import {
   colorSchemeLightCold,
   colorSchemeDarkBlue,
   themeQuartz,
-  ColDef,
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
@@ -15,7 +14,6 @@ import { FaSearch } from 'react-icons/fa';
 import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
-import Students from '../../pages/Admin/Students';
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
 const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
@@ -48,9 +46,10 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
         const data = await response.json();
         const processedStudents = data.students.map((student: Student) => ({
           ...student,
-          coursesString: student.courses && student.courses.length > 0
-            ? student.courses.map((course) => course.name).join(', ')
-            : 'Sin cursos',
+          coursesString:
+            student.courses && student.courses.length > 0
+              ? student.courses.map((course) => course.name).join(', ')
+              : 'Sin cursos',
         }));
 
         setStudentData(processedStudents);
@@ -67,7 +66,7 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
     const name = student?.name?.toLowerCase() || '';
     const idCard = student?.id_card?.toLowerCase() || '';
     const coursesString = student?.coursesString?.toLowerCase() || '';
-  
+
     return (
       name.includes(searchTerm.toLowerCase()) ||
       idCard.includes(searchTerm.toLowerCase()) ||
@@ -82,7 +81,7 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
   const columnDefs = useMemo(
     () => [
       { field: 'name', headerName: 'Nombre' },
-      { field: 'id_card', headerName: 'Cedula' },
+      { field: 'id_card', headerName: 'Cédula' },
       { field: 'coursesString', headerName: 'Curso' },
     ],
     [],

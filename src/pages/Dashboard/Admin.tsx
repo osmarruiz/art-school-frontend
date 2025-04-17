@@ -40,12 +40,10 @@ const Admin: React.FC = () => {
       setData(result);
     } catch (error) {
       console.error('Error fetching data:', error);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchData();
@@ -70,41 +68,55 @@ const Admin: React.FC = () => {
   }, [month, week]);
 
   return (
-  <>
-    {loading ? (
-      <></>
-    ) : (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
-        <CardDataStats title="Matriculas" total={data?.month_enrollments}>
-          <FaUserGroup className="fill-primary dark:fill-white" size={20} />
-        </CardDataStats>
+    <>
+      {loading ? (
+        <></>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
+          <CardDataStats title="Matriculas" total={data?.month_enrollments}>
+            <FaUserGroup className="fill-primary dark:fill-white" size={20} />
+          </CardDataStats>
 
-        <CardDataStats title="Ingreso Mensual" total={formatCurrency(data?.month_income)}>
-          <FaMoneyBills className="fill-primary dark:fill-white" size={20} />
-        </CardDataStats>
+          <CardDataStats
+            title="Ingreso Mensual"
+            total={formatCurrency(data?.month_income)}
+          >
+            <FaMoneyBills className="fill-primary dark:fill-white" size={20} />
+          </CardDataStats>
 
-        <CardDataStats title="Ingreso Semanal" total={formatCurrency(data?.week_income)}>
-          <FaMoneyBills className="fill-primary dark:fill-white" size={20} />
-        </CardDataStats>
+          <CardDataStats
+            title="Ingreso Semanal"
+            total={formatCurrency(data?.week_income)}
+          >
+            <FaMoneyBills className="fill-primary dark:fill-white" size={20} />
+          </CardDataStats>
 
-        <CardDataStats title="Estudiantes Activos" total={data?.active_students} color="violet">
-          <FaUserGroup className="fill-white" size={20} />
-        </CardDataStats>
+          <CardDataStats
+            title="Estudiantes Activos"
+            total={data?.active_students}
+            color="violet"
+          >
+            <FaUserGroup className="fill-white" size={20} />
+          </CardDataStats>
 
-        <CardDataStats title="Pagos Pendientes" total={data?.pending_transactions} color="red">
-          <FaPencil className="fill-white" size={20} />
-        </CardDataStats>
+          <CardDataStats
+            title="Pagos Pendientes"
+            total={data?.pending_transactions}
+            color="red"
+          >
+            <FaPencil className="fill-white" size={20} />
+          </CardDataStats>
 
-        <div className="row-span-2">
-          <ChartThree data={data?.courses_distribution} />
+          <div className="row-span-2">
+            <ChartThree data={data?.courses_distribution} />
+          </div>
+          <div className="col-span-1 xl:col-span-2">
+            <ChartTwo data={data?.incomes_in_last_year} />
+          </div>
         </div>
-        <div className="col-span-1 xl:col-span-2">
-          <ChartTwo data={data?.incomes_in_last_year} />
-        </div>
-      </div>
-    )}
-  </>
-);
+      )}
+    </>
+  );
 };
 
 export default Admin;

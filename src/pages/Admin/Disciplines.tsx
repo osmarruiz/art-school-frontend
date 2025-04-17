@@ -8,7 +8,7 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import { FaPencil, FaStar } from 'react-icons/fa6';
+import { FaStar } from 'react-icons/fa6';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
 import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
@@ -16,8 +16,6 @@ import CardDataStats from '../../components/Cards/CardDataStats';
 import { colorVariants } from '../../types/colorVariants';
 import { Course } from '../../types/course';
 import { Shift } from '../../types/shift';
-import Swal from 'sweetalert2';
-import { Type } from '../../types/type';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -35,15 +33,12 @@ const Disciplines: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/courses.list`,
-        {
-          headers: {
-            Authorization: API_KEY,
-          },
-          credentials: 'include',
+      const response = await fetch(`${API_URL}/courses.list`, {
+        headers: {
+          Authorization: API_KEY,
         },
-      );
+        credentials: 'include',
+      });
 
       const data = await response.json();
       setRowData(data);
@@ -82,6 +77,7 @@ const Disciplines: React.FC = () => {
     });
   }, [rowData, searchText]);
 
+  /*
   const getCourseTypes = async (): Promise<Type[]> => {
     const cacheKey = 'courseTypes';
 
@@ -102,6 +98,7 @@ const Disciplines: React.FC = () => {
     return types;
   };
 
+   
   const handleEdit = async (data: Course) => {
     try {
       const types = await getCourseTypes();
@@ -231,7 +228,7 @@ const Disciplines: React.FC = () => {
     }
   };
 
-  const opcionesRenderer = (params: { data: Course }) => {
+ const opcionesRenderer = (params: { data: Course }) => {
     return (
       <div className="flex gap-4 mt-1 justify-center">
         <button
@@ -242,7 +239,7 @@ const Disciplines: React.FC = () => {
         </button>
       </div>
     );
-  };
+  };*/
 
   const columnDefs = useMemo(
     () => [
@@ -252,7 +249,11 @@ const Disciplines: React.FC = () => {
         headerName: 'Turno(s)',
         valueGetter: (params: any) => getShiftsAsString(params.data.shifts),
       },
-      { field: 'price', headerName: 'Precio', valueGetter: (params: any) => formatCurrency(params.data.price),},
+      {
+        field: 'price',
+        headerName: 'Precio',
+        valueGetter: (params: any) => formatCurrency(params.data.price),
+      },
       { field: 'total_of_students', headerName: 'Cant. est. registrados' },
       /*{
         headerName: 'Opciones',

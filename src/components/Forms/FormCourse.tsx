@@ -5,11 +5,38 @@ import { Shift } from '../../types/shift';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
 
-const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: number | null; shiftId: number | null; courseName: string | null; shiftName: string }[]) => void }) => {
+const FormCourse = ({
+  onCourseChange,
+}: {
+  onCourseChange: (
+    courses: {
+      courseId: number | null;
+      shiftId: number | null;
+      courseName: string | null;
+      shiftName: string;
+    }[],
+  ) => void;
+}) => {
   const [courseData, setCourseData] = useState<Course[]>([]);
   const [shiftsMap, setShiftsMap] = useState<Map<number, string>>();
-  const [courseForms, setCourseForms] = useState<{ id: number; courseName: string, shiftName: string, selectedCourse: number | null; selectedShift: number | null; shiftOptions: Shift[] }[]>([
-    { id: Date.now(), selectedCourse: null, shiftName: "", courseName: "", selectedShift: null, shiftOptions: [] },
+  const [courseForms, setCourseForms] = useState<
+    {
+      id: number;
+      courseName: string;
+      shiftName: string;
+      selectedCourse: number | null;
+      selectedShift: number | null;
+      shiftOptions: Shift[];
+    }[]
+  >([
+    {
+      id: Date.now(),
+      selectedCourse: null,
+      shiftName: '',
+      courseName: '',
+      selectedShift: null,
+      shiftOptions: [],
+    },
   ]);
 
   useEffect(() => {
@@ -25,11 +52,11 @@ const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: 
         setCourseData(courses);
 
         const ss = new Map<number, string>();
-        courses.map(c => {
+        courses.map((c) => {
           if (c.shifts !== null) {
-            c.shifts.map(s => ss.set(s.id, s.name))
+            c.shifts.map((s) => ss.set(s.id, s.name));
           }
-        })
+        });
         setShiftsMap(ss);
       } catch (error) {
         console.error('Error al obtener los datos', error);
@@ -39,7 +66,17 @@ const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: 
   }, []);
 
   const addCourseForm = () => {
-    setCourseForms([...courseForms, { id: Date.now(), courseName: "", shiftName: "", selectedCourse: null, selectedShift: null, shiftOptions: [] }]);
+    setCourseForms([
+      ...courseForms,
+      {
+        id: Date.now(),
+        courseName: '',
+        shiftName: '',
+        selectedCourse: null,
+        selectedShift: null,
+        shiftOptions: [],
+      },
+    ]);
   };
 
   const removeCourseForm = (id: number) => {
@@ -49,62 +86,74 @@ const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: 
   };
 
   const handleCourseChange = (id: number, courseId: number) => {
-    const shiftSelector: NodeListOf<HTMLSelectElement> | null = document.querySelectorAll(".shifts-container select");
+    const shiftSelector: NodeListOf<HTMLSelectElement> | null =
+      document.querySelectorAll('.shifts-container select');
     if (shiftSelector !== null) {
-      shiftSelector.forEach(s => {
+      shiftSelector.forEach((s) => {
         s.selectedIndex = 0;
       });
     }
     let selectedShift = 0;
-    let shiftName = "";
+    let shiftName = '';
     const found = courseData.find((course) => course.id === courseId);
     if (found !== null && found?.shifts !== null) {
       selectedShift = Number(found?.shifts[0].id);
-      shiftName = shiftsMap?.get(selectedShift) ?? "";
+      shiftName = shiftsMap?.get(selectedShift) ?? '';
     }
 
     setCourseForms((prevForms) =>
       prevForms.map((form) =>
         form.id === id
           ? {
-            ...form,
-            selectedCourse: courseId,
-            shiftOptions: courseData.find((course) => course.id === courseId)?.shifts || [],
-            selectedShift: selectedShift,
-            courseName: courseData.find((course) => course.id === courseId)?.name || "",
-            shiftName: shiftName,
-          }
-          : form
-      )
+              ...form,
+              selectedCourse: courseId,
+              shiftOptions:
+                courseData.find((course) => course.id === courseId)?.shifts ||
+                [],
+              selectedShift: selectedShift,
+              courseName:
+                courseData.find((course) => course.id === courseId)?.name || '',
+              shiftName: shiftName,
+            }
+          : form,
+      ),
     );
   };
 
   const handleShiftChange = (id: number, shiftId: number) => {
-    const shiftName = shiftsMap?.get(shiftId) ?? "";
+    const shiftName = shiftsMap?.get(shiftId) ?? '';
     setCourseForms((prevForms) =>
       prevForms.map((form) =>
-        form.id === id ? { ...form, selectedShift: shiftId, shiftName, } : form
-      )
+        form.id === id ? { ...form, selectedShift: shiftId, shiftName } : form,
+      ),
     );
   };
 
   useEffect(() => {
     onCourseChange(
-      courseForms.map(({ selectedCourse, selectedShift, courseName, shiftName }) => ({
-        courseId: selectedCourse,
-        shiftId: selectedShift,
-        courseName: courseName,
-        shiftName: shiftName,
-      }))
+      courseForms.map(
+        ({ selectedCourse, selectedShift, courseName, shiftName }) => ({
+          courseId: selectedCourse,
+          shiftId: selectedShift,
+          courseName: courseName,
+          shiftName: shiftName,
+        }),
+      ),
     );
   }, [courseForms, onCourseChange]);
 
   return (
     <div>
       {courseForms.map(({ id, shiftOptions }, index) => (
-        <div key={id} className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark my-2 p-6.5 relative">
+        <div
+          key={id}
+          className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark my-2 p-6.5 relative"
+        >
           {index > 0 && (
-            <button onClick={() => removeCourseForm(id)} className="absolute top-2 right-2">
+            <button
+              onClick={() => removeCourseForm(id)}
+              className="absolute top-2 right-2"
+            >
               <FaMinus />
             </button>
           )}
@@ -129,7 +178,11 @@ const FormCourse = ({ onCourseChange }: { onCourseChange: (courses: { courseId: 
         </div>
       ))}
       <div className="flex justify-center">
-        <button onClick={addCourseForm} type="button" className="mt-4 py-4 px-8 text-black bg-white dark:text-white dark:bg-boxdark dark:hover:bg-black hover:bg-slate-100">
+        <button
+          onClick={addCourseForm}
+          type="button"
+          className="mt-4 py-4 px-8 text-black bg-white dark:text-white dark:bg-boxdark dark:hover:bg-black hover:bg-slate-100"
+        >
           <FaPlus />
         </button>
       </div>

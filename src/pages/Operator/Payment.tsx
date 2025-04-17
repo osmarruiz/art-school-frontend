@@ -9,9 +9,7 @@ import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
 import CardStudent from '../../components/Cards/CardStudent';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
-import {
-  addTransactionButton,
-} from '../../utils/actionButton';
+import { addTransactionButton } from '../../utils/actionButton';
 import useToast from '../../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 
@@ -39,7 +37,10 @@ const Payment = ({
       );
       const data = await response.json();
       setTransactions(
-        data.filter((transaction: Transaction) => !transaction.is_finished && !transaction.is_revoked),
+        data.filter(
+          (transaction: Transaction) =>
+            !transaction.is_finished && !transaction.is_revoked,
+        ),
       );
     } catch (error) {
       console.error('Error al obtener datos:', error);
@@ -68,7 +69,10 @@ const Payment = ({
         ) : (
           <CardStudent
             student={selectedStudent}
-            onReset={() => { setSelectedStudent(null); setTransactions([]); }}
+            onReset={() => {
+              setSelectedStudent(null);
+              setTransactions([]);
+            }}
             color="red"
           />
         )}
@@ -89,11 +93,7 @@ const Payment = ({
             />
           )
         ) : (
-          <p
-            className={clsx(
-              'text-l py-5  ',
-            )}
-          >
+          <p className={clsx('text-l py-5  ')}>
             Selecciona un estudiante para ver sus transacciones en curso.
           </p>
         )}
@@ -105,7 +105,7 @@ const Payment = ({
             <button
               className={clsx(
                 'inline-flex items-center justify-center py-4 px-10',
-                colorVariants["green"].btn,
+                colorVariants['green'].btn,
               )}
               onClick={() => {
                 navigate(`/student/${selectedStudent.id}`);
@@ -119,13 +119,22 @@ const Payment = ({
                 'inline-flex items-center justify-center py-4 px-10',
                 colorVariants[color].btn,
               )}
-              onClick={async () => await addTransactionButton(selectedStudent.id, fetchTransactions, showError, showSuccess)}
+              onClick={async () =>
+                await addTransactionButton(
+                  selectedStudent.id,
+                  fetchTransactions,
+                  showError,
+                  showSuccess,
+                )
+              }
             >
               Comenzar nueva transacción
             </button>
           </>
-        )) : (<></>)}
-
+        )
+      ) : (
+        <></>
+      )}
     </CardOperator>
   );
 };

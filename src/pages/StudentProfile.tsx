@@ -38,15 +38,13 @@ const StudentProfile: React.FC = () => {
   const [colorMode] = useColorMode();
   const [theme, setTheme] = useState(themeLightCold);
   const [studentData, setStudentData] = useState<Student>();
-  const [finishedTransactionsData, setFinishedTransactionsData] = useState<
-    Transaction[] 
-  >();
+  const [finishedTransactionsData, setFinishedTransactionsData] =
+    useState<Transaction[]>();
   const [statusHistoryData, setStatusHistoryData] = useState<StatusHistory[]>(
     [],
   );
-  const [pendingTransactionsData, setpendingTransactionsData] = useState<
-    TransactionsPending[] 
-  >();
+  const [pendingTransactionsData, setpendingTransactionsData] =
+    useState<TransactionsPending[]>();
   const [loading, setLoading] = useState(true);
   const [studentFound, setStudentFound] = useState<boolean>(true);
   const { user } = useAuth();
@@ -80,8 +78,6 @@ const StudentProfile: React.FC = () => {
           }
           return;
         }
-
-        
 
         const studentProfileData = await studentRes.json();
         const transactionsData = await transactionsRes.json();
@@ -137,15 +133,17 @@ const StudentProfile: React.FC = () => {
     {
       label: 'Curso(s)',
       value: `${
-        studentData?.enrollment?.courses.map((item) => item.course.name).join(', ') ||
-        '—'
+        studentData?.enrollment?.courses
+          .map((item) => item.course.name)
+          .join(', ') || '—'
       }`,
     },
     {
       label: 'turno(s)',
       value: `${
-        studentData?.enrollment?.courses.map((item) => item.shift.name).join(', ') ||
-        '—'
+        studentData?.enrollment?.courses
+          .map((item) => item.shift.name)
+          .join(', ') || '—'
       }`,
     },
     {
@@ -178,7 +176,6 @@ const StudentProfile: React.FC = () => {
     },
   ];
 
-  //cambia el tema del aggrid segun el estado de colorMode
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
   }, [colorMode]);
@@ -331,7 +328,9 @@ const StudentProfile: React.FC = () => {
 
   if (!loading) {
     return (
-      <div className={clsx(" w-full p-12 rounded-xl", colorVariants['white'].bg)}>
+      <div
+        className={clsx(' w-full p-12 rounded-xl', colorVariants['white'].bg)}
+      >
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row justify-between items-center mb-1">
             <h2 className="text-4xl sm:text-4xl font-bold mb-2 sm:mb-0">
@@ -557,8 +556,7 @@ const StudentProfile: React.FC = () => {
                                 );
                               }
 
-                              window.location.reload();
-                              // navigate(`/student/${id}`);
+                              navigate(`/student/${id}`);
                             } catch (error) {
                               console.error('Error al activar:', error);
                             }
@@ -570,22 +568,21 @@ const StudentProfile: React.FC = () => {
                     Activar
                   </button>
                 )}
-
               </div>
             ) : (
               <></>
             )}
             <div
-                          className={clsx(
-                            'flex h-8.5 w-8.5 items-center justify-center rounded-full hover:cursor-pointer',
-                            colorVariants['white'].btn,
-                          )}
-                          onClick={() => {
-                            navigate(-2);
-                          }}
-                        >
-                          <FaArrowLeft size={20}  />
-                        </div>
+              className={clsx(
+                'flex h-8.5 w-8.5 items-center justify-center rounded-full hover:cursor-pointer',
+                colorVariants['white'].btn,
+              )}
+              onClick={() => {
+                navigate(-2);
+              }}
+            >
+              <FaArrowLeft size={20} />
+            </div>
           </div>
           <p className="text-md text-gray-600 dark:text-gray-400">
             <span className="font-semibold">Registro:</span>{' '}
@@ -605,7 +602,12 @@ const StudentProfile: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className={clsx("shadow rounded-md p-6", colorVariants['white'].icon)}>
+          <div
+            className={clsx(
+              'shadow rounded-md p-6',
+              colorVariants['white'].icon,
+            )}
+          >
             <h3 className="text-2xl font-semibold mb-4">Datos Personales</h3>
             {personalData.map((item) => (
               <div
@@ -622,7 +624,12 @@ const StudentProfile: React.FC = () => {
             ))}
           </div>
 
-          <div className={clsx(" shadow rounded-md p-6", colorVariants['white'].icon)}>
+          <div
+            className={clsx(
+              ' shadow rounded-md p-6',
+              colorVariants['white'].icon,
+            )}
+          >
             <h3 className="text-2xl font-semibold mb-4">Datos del Tutor</h3>
             {tutorData.map((item) => (
               <div
@@ -641,7 +648,12 @@ const StudentProfile: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className={clsx(" shadow rounded-md p-6", colorVariants['white'].icon)}>
+          <div
+            className={clsx(
+              ' shadow rounded-md p-6',
+              colorVariants['white'].icon,
+            )}
+          >
             <h3 className="text-2xl font-semibold mb-4">Matrícula</h3>
             {enrollmentData.map((item) => (
               <div
@@ -658,7 +670,12 @@ const StudentProfile: React.FC = () => {
             ))}
           </div>
 
-          <div className={clsx(" shadow rounded-md p-6", colorVariants['white'].icon)}>
+          <div
+            className={clsx(
+              ' shadow rounded-md p-6',
+              colorVariants['white'].icon,
+            )}
+          >
             <h3 className="text-2xl font-semibold mb-4">Datos Académicos</h3>
             {academicData.map((item) => (
               <div
@@ -725,11 +742,12 @@ const StudentProfile: React.FC = () => {
         </div>
       </div>
     );
-  } else{
+  } else {
     return (
-      <div className={clsx(" p-12 rounded-xl", colorVariants['white'].bg)}>
-        
-      <p className={clsx("text-center",colorVariants['white'].text)}>cargando datos del estudiante...</p>
+      <div className={clsx(' p-12 rounded-xl', colorVariants['white'].bg)}>
+        <p className={clsx('text-center', colorVariants['white'].text)}>
+          cargando datos del estudiante...
+        </p>
       </div>
     );
   }

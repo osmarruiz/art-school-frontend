@@ -23,35 +23,35 @@ const FormTutor: React.FC<{
     setTutorData((prevState) => ({ ...prevState, [name]: value }));
   };
 
-
-  const handleKinshipChange = ( kinshipId: number) => {
+  const handleKinshipChange = (kinshipId: number) => {
     setTutorData((prevState) => ({
       ...prevState,
-      tutor_kinship: kinshipId, 
+      tutor_kinship: kinshipId,
     }));
   };
 
   function formatInput(input: string) {
     let cleaned = input.replace(/[^0-9a-zA-Z]/g, '');
-  
+
     if (cleaned.length > 0 && /[a-zA-Z]/.test(cleaned[cleaned.length - 1])) {
-      cleaned = cleaned.slice(0, -1) + cleaned[cleaned.length - 1].toUpperCase();
+      cleaned =
+        cleaned.slice(0, -1) + cleaned[cleaned.length - 1].toUpperCase();
     }
-  
+
     if (cleaned.length >= 13) {
       return cleaned.replace(/^(\d{3})(\d{6})(\d{4})([a-zA-Z])$/, '$1-$2-$3$4');
     }
-  
+
     return cleaned.replace(/^(\d{3})(\d{6})(\d{4})$/, '$1$2$3');
   }
-  
+
   const formatPhoneNumber = (input: string) => {
     let cleaned = input.replace(/\D/g, '');
-  
-    if (cleaned.startsWith("505")) {
-      cleaned = cleaned.slice(3); 
+
+    if (cleaned.startsWith('505')) {
+      cleaned = cleaned.slice(3);
     }
-  
+
     if (cleaned.length < 8) {
       return cleaned;
     }
@@ -66,7 +66,7 @@ const FormTutor: React.FC<{
     <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="p-6.5">
         <div className="mb-4.5">
-        <label className="mb-2.5 block text-black dark:text-white">
+          <label className="mb-2.5 block text-black dark:text-white">
             Nombres y apellidos <span className="text-meta-1">*</span>
           </label>
           <input
@@ -151,7 +151,7 @@ const FormTutor: React.FC<{
             value={tutorData.phone_number}
             onChange={(e) => {
               const formattedValue = formatPhoneNumber(e.target.value);
-              setTutorData({ ...tutorData, phone_number: formattedValue }); 
+              setTutorData({ ...tutorData, phone_number: formattedValue });
             }}
             required
             placeholder="Ej: 87656859"
@@ -164,7 +164,7 @@ const FormTutor: React.FC<{
             title="Parentezco"
             placeholder="Selecciona un parentezco"
             kinship={kinship}
-            onChange={(kinshipId) => handleKinshipChange(kinshipId)}  
+            onChange={(kinshipId) => handleKinshipChange(kinshipId)}
           />
         </div>
       </div>

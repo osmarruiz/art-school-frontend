@@ -1,8 +1,7 @@
-export interface Shift{
-    id: number,
-    name: string,
-    is_closed: boolean,
-    capacity_of_students: number,
-    num_of_students: number,
-
+export interface Shift {
+  id: number;
+  name: string;
+  is_closed: boolean;
+  capacity_of_students: number;
+  num_of_students: number;
 }

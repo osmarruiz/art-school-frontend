@@ -1,32 +1,34 @@
-import flatpickr from "flatpickr";
-import { useState, useEffect, useRef } from "react";
-import { Spanish } from "flatpickr/dist/l10n/es.js"; 
+import flatpickr from 'flatpickr';
+import { useState, useEffect, useRef } from 'react';
+import { Spanish } from 'flatpickr/dist/l10n/es.js';
 
 const MonthPicker = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const flatpickrInstance = useRef<flatpickr.Instance | null>(null);
-  const [selectedMonth, setSelectedMonth] = useState<string>("");
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
 
   useEffect(() => {
     if (!inputRef.current) return;
 
-    const storedMonth = sessionStorage.getItem("selectedMonth");
+    const storedMonth = sessionStorage.getItem('selectedMonth');
     if (storedMonth) {
       setSelectedMonth(storedMonth);
     }
 
     flatpickrInstance.current = flatpickr(inputRef.current, {
-      mode: "single",
+      mode: 'single',
       static: true,
       disableMobile: true,
-      dateFormat: "Y-m", 
-      locale: Spanish, 
+      dateFormat: 'Y-m',
+      locale: Spanish,
       onChange: (selectedDates) => {
         if (selectedDates.length > 0) {
           const selectedDate = selectedDates[0];
-          const formattedDate = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, "0")}`;
+          const formattedDate = `${selectedDate.getFullYear()}-${String(
+            selectedDate.getMonth() + 1,
+          ).padStart(2, '0')}`;
           setSelectedMonth(formattedDate);
-          sessionStorage.setItem("selectedMonth", formattedDate);
+          sessionStorage.setItem('selectedMonth', formattedDate);
         }
       },
     });

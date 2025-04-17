@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import { Course } from '../../../types/course';
 import { Shift } from '../../../types/shift';
 import { Kinship } from '../../../types/kinship';
@@ -9,36 +9,55 @@ interface SelectProps {
   course?: Course[];
   shift?: Shift[];
   kinship?: Kinship[];
-  value?: string | number; 
-  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;  
+  value?: string | number;
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
 }
 
-const SelectGroupKinship: React.FC<SelectProps> = ({ title, course, placeholder, shift, kinship, value, onChange }) => {
+const SelectGroupKinship: React.FC<SelectProps> = ({
+  title,
+  course,
+  placeholder,
+  shift,
+  kinship,
+  value,
+  onChange,
+}) => {
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const value = Number(event.target.value);
     if (onChange) {
-      onChange(event); 
+      onChange(event);
     }
   };
 
   const renderOptions = () => {
     if (Array.isArray(course)) {
       return course.map((item) => (
-        <option key={item.id} value={item.id} className="text-black dark:text-white">
+        <option
+          key={item.id}
+          value={item.id}
+          className="text-black dark:text-white"
+        >
           {item.name}
         </option>
       ));
     }
     if (Array.isArray(shift)) {
       return shift.map((item) => (
-        <option key={item.id} value={item.id} className="text-black dark:text-white">
+        <option
+          key={item.id}
+          value={item.id}
+          className="text-black dark:text-white"
+        >
           {item.name}
         </option>
       ));
     }
     if (Array.isArray(kinship)) {
       return kinship.map((item) => (
-        <option key={item.id} value={item.id} className="text-black dark:text-white">
+        <option
+          key={item.id}
+          value={item.id}
+          className="text-black dark:text-white"
+        >
           {item.name}
         </option>
       ));
@@ -56,11 +75,13 @@ const SelectGroupKinship: React.FC<SelectProps> = ({ title, course, placeholder,
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
-          value={value} 
+          value={value}
           required
-          onChange={handleSelectChange} 
+          onChange={handleSelectChange}
           className={`relative z-20 w-full appearance-none rounded border border-stroke bg-white py-2.5 pl-4 pr-8 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
-            value ? 'text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'
+            value
+              ? 'text-black dark:text-white'
+              : 'text-gray-500 dark:text-gray-400'
           }`}
         >
           <option value="" disabled>

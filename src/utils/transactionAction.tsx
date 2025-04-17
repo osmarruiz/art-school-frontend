@@ -1,4 +1,4 @@
-import { API_URL, API_KEY } from "./apiConfig";
+import { API_URL, API_KEY } from './apiConfig';
 
 export const revokeReceipt = async (
   receipt_id: number,
@@ -26,15 +26,13 @@ export const revokeReceipt = async (
       data = await response.json();
     }
 
-    if (response.status === 409 ) {
+    if (response.status === 409) {
       showError(data?.detail);
       return;
     }
 
     if (!response.ok) {
-      
       throw new Error(`Error HTTP: ${response.status}`);
-      
     }
 
     showSuccess('Recibo revocado con éxito');

@@ -6,29 +6,37 @@ import { Kinship } from '../../../types/kinship';
 interface SelectProps {
   title?: string;
   placeholder: string;
-  course?: Course[]; 
+  course?: Course[];
   shift?: Shift[];
   kinship?: Kinship[];
   onChange?: (value: number) => void;
-  
 }
 
-const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shift, kinship, onChange }) => {
+const SelectGroupOne: React.FC<SelectProps> = ({
+  title,
+  course,
+  placeholder,
+  shift,
+  kinship,
+  onChange,
+}) => {
   const [selectedOption, setSelectedOption] = useState<string | number>('');
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = Number(event.target.value);
     setSelectedOption(value);
     if (onChange) {
-      onChange(value); 
+      onChange(value);
     }
   };
 
   return (
     <div className="">
-      {title &&( <label className="mb-2.5 block text-black dark:text-white">
-        {title} <span className="text-meta-1">*</span>
-      </label>)}
+      {title && (
+        <label className="mb-2.5 block text-black dark:text-white">
+          {title} <span className="text-meta-1">*</span>
+        </label>
+      )}
 
       <div className="relative z-20  bg-transparent dark:bg-form-input">
         <select
@@ -36,7 +44,9 @@ const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shi
           required
           onChange={handleSelectChange}
           className={`relative z-20 w-full  appearance-none rounded border border-stroke bg-white py-2.5 pl-4 pr-8 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
-            selectedOption ? 'text-black dark:text-white' : 'text-gray-500 dark:text-gray-400'
+            selectedOption
+              ? 'text-black dark:text-white'
+              : 'text-gray-500 dark:text-gray-400'
           }`}
         >
           <option value="" disabled>
@@ -44,25 +54,34 @@ const SelectGroupOne: React.FC<SelectProps> = ({ title, course, placeholder, shi
           </option>
           {Array.isArray(course) &&
             course.map((item) => (
-              <option key={item.id} value={item.id} className="text-black dark:text-white">
+              <option
+                key={item.id}
+                value={item.id}
+                className="text-black dark:text-white"
+              >
                 {item.name}
               </option>
-            ) )
-            }
-            {Array.isArray(shift) &&
+            ))}
+          {Array.isArray(shift) &&
             shift.map((item) => (
-              <option key={item.id} value={item.id} className="text-black dark:text-white">
+              <option
+                key={item.id}
+                value={item.id}
+                className="text-black dark:text-white"
+              >
                 {item.name}
               </option>
-            ) )
-            }
-            {Array.isArray(kinship) &&
+            ))}
+          {Array.isArray(kinship) &&
             kinship.map((item) => (
-              <option key={item.id} value={item.id} className="text-black dark:text-white">
+              <option
+                key={item.id}
+                value={item.id}
+                className="text-black dark:text-white"
+              >
                 {item.name}
               </option>
-            ) )
-            }
+            ))}
         </select>
 
         <span className="absolute top-1/2 right-2 z-30 -translate-y-1/2">

@@ -23,7 +23,7 @@ export const revokeReceiptButton = async (
       <p>Escribe la palabra <b><code>revocar</code></b> para proceder con esta operación.</p>
       `,
       icon: 'warning',
-      input: "text",
+      input: 'text',
       showCancelButton: true,
       customClass: {
         popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
@@ -35,7 +35,7 @@ export const revokeReceiptButton = async (
     });
 
     if (result.isConfirmed) {
-      if (result.value === "revocar") {
+      if (result.value === 'revocar') {
         revokeReceipt(
           receipt_id,
           transaction_id,
@@ -43,15 +43,16 @@ export const revokeReceiptButton = async (
           showError,
           showSuccess,
         );
-
       } else {
         Swal.fire({
-          title: "Recibo no revocado.",
-          icon: "info",
+          title: 'Recibo no revocado.',
+          icon: 'info',
           customClass: {
             popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
-            confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
-            cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
+            confirmButton:
+              'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+            cancelButton:
+              'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
           },
         });
       }
@@ -65,7 +66,8 @@ export const revokeTransactionButton = async (
   transaction_id: number,
   reloadTransactions: () => void,
   showError: (message: string) => void,
-  showSuccess: (message: string) => void,) => {
+  showSuccess: (message: string) => void,
+) => {
   try {
     const result = await Swal.fire({
       title: '¿Estás seguro?',
@@ -74,7 +76,7 @@ export const revokeTransactionButton = async (
       <p>Escribe la palabra <b><code>revocar</code></b> para proceder con esta operación.</p>
       `,
       icon: 'warning',
-      input: "text",
+      input: 'text',
       showCancelButton: true,
       customClass: {
         popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
@@ -86,7 +88,7 @@ export const revokeTransactionButton = async (
     });
 
     if (result.isConfirmed) {
-      if (result.value === "revocar") {
+      if (result.value === 'revocar') {
         revokeTransaction(
           transaction_id,
           reloadTransactions,
@@ -95,12 +97,14 @@ export const revokeTransactionButton = async (
         );
       } else {
         Swal.fire({
-          title: "Transacción no revocada.",
-          icon: "info",
+          title: 'Transacción no revocada.',
+          icon: 'info',
           customClass: {
             popup: 'bg-white text-black dark:bg-boxdark-2 dark:text-white',
-            confirmButton: 'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
-            cancelButton: 'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
+            confirmButton:
+              'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+            cancelButton:
+              'bg-gray-300 text-black dark:bg-gray-700 dark:text-white',
           },
         });
       }
@@ -152,7 +156,9 @@ export const addReceiptButton = async (
         )?.value.trim();
 
         if (!no || !amount) {
-          Swal.showValidationMessage('Número de recibo y monto son campos obligatorios.');
+          Swal.showValidationMessage(
+            'Número de recibo y monto son campos obligatorios.',
+          );
           return false;
         }
 
@@ -214,8 +220,6 @@ export const addTransactionButton = async (
       )
       .join('');
 
-
-
     await Swal.fire({
       title: 'Agregar Transacción',
       html: `
@@ -275,8 +279,6 @@ export const addTransactionButton = async (
 
         return { fee, amount, remarks, target_date, seed_total };
       },
-
-
     }).then(async (result) => {
       if (result.isConfirmed && result.value) {
         const { fee, amount, remarks, target_date, seed_total } = result.value;
@@ -287,9 +289,8 @@ export const addTransactionButton = async (
           target_date: target_date,
           remarks: remarks,
           total: parseFloat(amount),
-          seed_total: seed_total
+          seed_total: seed_total,
         };
-
 
         try {
           const response = await fetch(`${API_URL}/transactions.begin`, {

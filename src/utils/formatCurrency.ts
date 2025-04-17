@@ -1,9 +1,9 @@
 export const formatCurrency = (
   amount: number,
-  locale: string = 'es-NI' 
+  locale: string = 'es-NI',
 ): string => {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: 'NIO', 
+    currency: 'NIO',
   }).format(amount);
 };

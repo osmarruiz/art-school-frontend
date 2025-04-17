@@ -35,10 +35,10 @@ const CardOperator: React.FC<CardDataStatsProps> = ({
           {childrenArray[0]}
         </div>
         <div className="pl-7">
-          <p className={ clsx("text-s font-medium ", colorVariants[color].text)}>
+          <p className={clsx('text-s font-medium ', colorVariants[color].text)}>
             {title}
           </p>
-          <p className={ clsx("text-sm font-light ", colorVariants[color].text)}>
+          <p className={clsx('text-sm font-light ', colorVariants[color].text)}>
             {subtitle}
           </p>
         </div>
@@ -50,31 +50,29 @@ const CardOperator: React.FC<CardDataStatsProps> = ({
                 colorVariants[color].btn,
               )}
             >
-              <FaArrowLeft size={20}  />
+              <FaArrowLeft size={20} />
             </div>
           </a>
         </div>
       </div>
 
       {/* Contenido */}
-      <div
-        className={clsx('mt-4 p-4 block', colorVariants[color].bgSub)}
-      >
+      <div className={clsx('mt-4 p-4 block', colorVariants[color].bgSub)}>
         {childrenArray[1]}
       </div>
 
-      {childrenArray[2] && (<div
-        className={clsx('mt-4 p-4 block', colorVariants[color].bgSub)}
-      >
-        {childrenArray[2]}
-      </div>)}
-      
+      {childrenArray[2] && (
+        <div className={clsx('mt-4 p-4 block', colorVariants[color].bgSub)}>
+          {childrenArray[2]}
+        </div>
+      )}
 
       {/* Botón */}
-      {childrenArray[3] &&(<div className="mt-4 flex justify-end gap-3 align-middle">
-        {childrenArray[3]}
-      </div>)}
-      
+      {childrenArray[3] && (
+        <div className="mt-4 flex justify-end gap-3 align-middle">
+          {childrenArray[3]}
+        </div>
+      )}
     </div>
   );
 };
