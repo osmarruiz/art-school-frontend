@@ -93,6 +93,16 @@ const Pendings: React.FC = () => {
     );
   };
 
+  // Definición de columnas con tipado correcto
+
+  const formatShortDate = (value: number) => {
+    if (!value) {
+      return '—';
+    }
+    const date = new Date(value + "T00:00:00-06:00");
+    return date.toLocaleDateString('es-NI', {month: 'long', year: 'numeric'});
+  };
+
   const columnDefs = useMemo(
     () => [
       { field: 'student.name', headerName: 'Estudiante' },
