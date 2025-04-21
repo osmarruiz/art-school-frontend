@@ -14,6 +14,7 @@ import { FaSearch } from 'react-icons/fa';
 import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
+import { formatDateFlexible } from '../../utils/formatDateflexible';
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
 const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
@@ -35,7 +36,7 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${API_URL}/students.list?rpp=999&status=active`,
+          `${API_URL}/students.list?rpp=9999&status=active`,
           {
             headers: {
               Authorization: API_KEY,
@@ -80,9 +81,33 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
 
   const columnDefs = useMemo(
     () => [
-      { field: 'name', headerName: 'Nombre' },
-      { field: 'id_card', headerName: 'Cédula' },
-      { field: 'coursesString', headerName: 'Curso' },
+      { field: 'name', headerName: 'Nombre', flex: 2 },
+      {
+        field: 'id_card',
+        headerName: 'Cédula',
+        valueFormatter: (params: { value: any }) =>
+          ((v) => (!v ? '—' : v))(params.value),
+      },
+      {
+        field: 'email',
+        headerName: 'Correo',
+        valueFormatter: (params) => ((v) => (!v ? '—' : v))(params.value),
+      },
+      {
+        field: 'phone_number',
+        headerName: 'Teléfono',
+        valueFormatter: (params) => ((v) => (!v ? '—' : v))(params.value),
+      },
+      {
+        field: 'date_of_birth',
+        headerName: 'Nacimiento',
+        valueFormatter: (params) =>
+          formatDateFlexible(params.value, {
+            type: 'date',
+            withTimezoneOffset: true,
+          }),
+      },
+      { field: 'coursesString', headerName: 'Curso(s)' },
     ],
     [],
   );
@@ -118,7 +143,7 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
           )}
         />
       </div>
-      <div className=" " style={{ height: 250, width: '100%' }}>
+      <div className=" " style={{ height: 550, width: '100%' }}>
         <AgGridReact
           ref={gridRef}
           theme={theme}
