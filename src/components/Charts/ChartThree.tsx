@@ -62,7 +62,7 @@ const ChartThree: React.FC<ChartThreeProps> = ({ data }) => {
   };
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-5">
+    <div className="h-full col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-5">
       <div className="mb-3">
         <h5 className="text-xl font-semibold text-black dark:text-white">
           Disciplinas
@@ -70,12 +70,12 @@ const ChartThree: React.FC<ChartThreeProps> = ({ data }) => {
       </div>
 
       <div className="mb-2 flex justify-center">
-        <ReactApexChart options={options} series={series} type="donut" />
+        <ReactApexChart options={options} series={series} type="pie" height={500} />
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-y-3">
         {data.map((item, index) => (
-          <div key={index} className="w-full sm:w-1/2 px-8">
+          <div key={index} className="w-full mx-20">
             <div className="flex w-full items-center">
               <span
                 className="mr-2 block h-3 w-full max-w-3 rounded-full"

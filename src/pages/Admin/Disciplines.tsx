@@ -320,7 +320,6 @@ const Disciplines: React.FC = () => {
           loading={loading}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
-          rowHeight={75}
         />
       </div>
 

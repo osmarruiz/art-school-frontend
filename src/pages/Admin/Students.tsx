@@ -74,6 +74,14 @@ const Students: React.FC = () => {
       });
 
       const data = await response.json();
+      console.log(data);
+      data.students = data.students.map((student: Student) => ({
+        ...student,
+        coursesString:
+          student.courses && student.courses.length > 0
+            ? student.courses.map((course) => course.name).join(', ')
+            : 'Sin cursos',
+      }));
       setRowData(data);
     } catch (error) {
       console.error('Error al obtener datos:', error);
@@ -111,11 +119,10 @@ const Students: React.FC = () => {
   const estadoRenderer = (params: { value: boolean }) => {
     return (
       <span
-        className={`text-sm py-1 px-2  rounded ${
-          params.value
-            ? 'bg-green-200 dark:bg-green-900'
-            : 'bg-red-200 dark:bg-red-900'
-        }`}
+        className={`text-sm py-1 px-2  rounded ${params.value
+          ? 'bg-green-200 dark:bg-green-900'
+          : 'bg-red-200 dark:bg-red-900'
+          }`}
       >
         {params.value ? 'Activo' : 'Inactivo'}
       </span>
@@ -134,24 +141,9 @@ const Students: React.FC = () => {
     );
   }, [rowData, searchText]);
 
-  const opcionesRenderer = (params: {
-    data: { id: number; is_active: boolean };
-  }) => {
-    return (
-      <div className="flex gap-4 mt-1 justify-center ">
-        <button
-          className={clsx(colorVariants['white'].btnSc)}
-          onClick={() => navigate(`/student/${params.data.id}`)}
-        >
-          <FaArrowRight size={20} />
-        </button>
-      </div>
-    );
-  };
-
   const columnDefs = useMemo(
     () => [
-      { field: 'name', headerName: 'Nombre', flex: 2 },
+      { field: 'name', headerName: 'Nombre' },
       {
         field: 'id_card',
         headerName: 'Cédula',
@@ -177,15 +169,11 @@ const Students: React.FC = () => {
             withTimezoneOffset: true,
           }),
       },
+      { field: 'coursesString', headerName: 'Curso(s)' },
       {
         field: 'is_active',
         headerName: 'Estado',
         cellRenderer: estadoRenderer,
-      },
-      {
-        field: 'opciones',
-        headerName: 'Opciones',
-        cellRenderer: opcionesRenderer,
       },
     ],
     [],
@@ -264,7 +252,12 @@ const Students: React.FC = () => {
           rowData={filteredData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
-          rowHeight={75}
+          onRowClicked={(event) => {
+            if (event.data) {
+              navigate(`/student/${event.data.id}`);
+            }
+          }}
+          rowStyle={{ cursor: 'pointer' }}
         />
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">

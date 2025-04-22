@@ -151,7 +151,7 @@ const Transactions: React.FC = () => {
             </span>
             <input
               type="text"
-              placeholder="Buscar transacción (nombre, tipo)"
+              placeholder="Buscar transacción (estudiante, tipo de transacción)"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               className="w-full h-12 bg-white pl-10 pr-4 text-black focus:outline-none rounded-lg shadow-sm dark:bg-gray-800 dark:text-gray-300"
@@ -207,7 +207,6 @@ const Transactions: React.FC = () => {
           rowData={filteredData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
-          rowHeight={75}
         />
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">

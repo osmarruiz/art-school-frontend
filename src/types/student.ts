@@ -22,7 +22,7 @@ export interface Student {
   registered_at: Date;
   updated_at: string;
   tutor: Tutor;
-  tutor_kinship: string;
+  tutor_kinship: {id: number; name: string};
   enrollment: Enrollment;
   status_history: StatusHistory[];
 }

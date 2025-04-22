@@ -5,6 +5,7 @@ import ChartTwo from '../../components/Charts/ChartTwo';
 import { FaUserGroup, FaMoneyBills, FaPencil } from 'react-icons/fa6';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
 import { formatCurrency } from '../../utils/formatCurrency';
+import Loader from '../../common/Loader';
 
 const Admin: React.FC = () => {
   const [data, setData] = useState<any>(null);
@@ -70,7 +71,7 @@ const Admin: React.FC = () => {
   return (
     <>
       {loading ? (
-        <></>
+        <Loader />
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
           <CardDataStats title="Matriculas" total={data?.month_enrollments}>

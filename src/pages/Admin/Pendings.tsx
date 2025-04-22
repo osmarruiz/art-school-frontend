@@ -174,7 +174,7 @@ const Pendings: React.FC = () => {
             </span>
             <input
               type="text"
-              placeholder="Buscar pendiente (nombre)"
+              placeholder="Buscar pendiente (estudiante)"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               className={clsx(
@@ -205,7 +205,6 @@ const Pendings: React.FC = () => {
           rowData={filteredData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
-          rowHeight={75}
         />
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">

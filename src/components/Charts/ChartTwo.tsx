@@ -72,7 +72,7 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ data }) => {
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
       <h4 className="text-xl font-semibold text-black dark:text-white">
-        Ingresos del Último Año
+        Ingresos del último año
       </h4>
       <ReactApexChart
         options={options}

@@ -9,4 +9,5 @@ export interface Enrollment {
   courses: CourseShift[];
   transaction: Transaction;
   registered_at: Date;
+  emergency_number: string;
 }

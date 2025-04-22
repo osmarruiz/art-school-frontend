@@ -23,6 +23,9 @@ import { Transaction } from '../types/transaction';
 import { TransactionsPending } from '../types/transactionsPending';
 import { formatCurrency } from '../utils/formatCurrency';
 import { formatDateFlexible } from '../utils/formatDateflexible';
+import FormCourse from '../components/Forms/FormCourse';
+import Switcher from '../components/Forms/Switcher/Switcher';
+import processCourseChanges from '../utils/processCourseChanges';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -49,6 +52,16 @@ const StudentProfile: React.FC = () => {
   const [studentFound, setStudentFound] = useState<boolean>(true);
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const [switcherSchoolEnabled, setSwitcherSchoolEnabled] = useState(false);
+  const [courseSelection, setCourseSelection] = useState<
+    {
+      courseId: number | null;
+      shiftId: number | null;
+      courseName: string | null;
+      shiftName: string;
+    }[]
+  >([]);
 
   useEffect(() => {
     const fetchStudentInfo = async () => {
@@ -78,7 +91,7 @@ const StudentProfile: React.FC = () => {
           }
           return;
         }
-
+        
         const studentProfileData = await studentRes.json();
         const transactionsData = await transactionsRes.json();
         const pendingData = await pendingRes.json();
@@ -118,8 +131,9 @@ const StudentProfile: React.FC = () => {
   let tutorData: DataItem[] = [];
   if (!!studentData) {
     const tutor = studentData.tutor;
+
     tutorData = [
-      { label: 'Parentesco', value: studentData?.tutor_kinship || '—' },
+      { label: 'Parentesco', value: studentData?.tutor_kinship?.name || '—' },
       { label: 'Nombre', value: !!tutor ? tutor.name : '—' },
       { label: 'Cédula', value: !!tutor ? tutor.id_card : '—' },
       { label: 'Correo', value: !!tutor ? tutor.email : '—' },
@@ -132,19 +146,21 @@ const StudentProfile: React.FC = () => {
   const enrollmentData: DataItem[] = [
     {
       label: 'Curso(s)',
-      value: `${
-        studentData?.enrollment?.courses
-          .map((item) => item.course.name)
-          .join(', ') || '—'
-      }`,
+      value: `${studentData?.enrollment?.courses
+        .map((item) => item.course.name)
+        .join(', ') || '—'
+        }`,
     },
     {
-      label: 'turno(s)',
-      value: `${
-        studentData?.enrollment?.courses
-          .map((item) => item.shift.name)
-          .join(', ') || '—'
-      }`,
+      label: 'Turno(s)',
+      value: `${studentData?.enrollment?.courses
+        .map((item) => item.shift.name)
+        .join(', ') || '—'
+        }`,
+    },
+    {
+      label: 'Tel. emergencia',
+      value: `${studentData?.enrollment.emergency_number || '—'}`,
     },
     {
       label: '¿Exonerada?',
@@ -158,9 +174,9 @@ const StudentProfile: React.FC = () => {
       label: 'Registro',
       value: studentData?.enrollment.registered_at
         ? new Date(studentData.enrollment.registered_at).toLocaleDateString(
-            'es-NI',
-            { year: 'numeric', month: 'long', day: 'numeric' },
-          )
+          'es-NI',
+          { year: 'numeric', month: 'long', day: 'numeric' },
+        )
         : '—',
     },
   ];
@@ -241,18 +257,6 @@ const StudentProfile: React.FC = () => {
       },
       { field: 'is_finished', headerName: '¿Finalizada?' },
       { field: 'is_revoked', headerName: '¿Revocada?' },
-      {
-        headerName: 'Acción',
-        cellRenderer: (params: any) => (
-          <button
-            title="Ver transacción"
-            className={clsx(colorVariants['orange'].btnSc)}
-            onClick={() => navigate(`/transaction/${params.data.id}`)}
-          >
-            <FaArrowRight />
-          </button>
-        ),
-      },
     ],
     [],
   );
@@ -310,6 +314,12 @@ const StudentProfile: React.FC = () => {
     ],
     [],
   );
+
+  const handleSaveChanges = async () => {
+    if (studentData) {
+      await processCourseChanges(Number(id), courseSelection, studentData, navigate);
+    }
+  };
 
   if (!studentFound) {
     return (
@@ -588,9 +598,9 @@ const StudentProfile: React.FC = () => {
             <span className="font-semibold">Registro:</span>{' '}
             {studentData?.registered_at
               ? new Date(studentData.registered_at).toLocaleDateString(
-                  'es-NI',
-                  { year: 'numeric', month: 'long', day: 'numeric' },
-                )
+                'es-NI',
+                { year: 'numeric', month: 'long', day: 'numeric' },
+              )
               : '—'}
             <span> | </span>
             {studentData?.is_active ? (
@@ -668,6 +678,61 @@ const StudentProfile: React.FC = () => {
                 </dd>
               </div>
             ))}
+
+            {user?.role === 'admin' && <>
+              <hr className='mt-3 mb-3' />
+              <div>
+                <label className="block text-2xl dark:text-white mb-3">
+                  Editar curso(s)
+                </label>
+                <Switcher
+                  enabled={switcherSchoolEnabled}
+                  onToggle={setSwitcherSchoolEnabled}
+                  labelId="toggleSchool"
+                />
+              </div>
+
+              {switcherSchoolEnabled && <>
+                <FormCourse onCourseChange={setCourseSelection} preloadData={studentData?.enrollment.courses} />
+                <button
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline me-3 mt-3"
+                  onClick={() => {
+                    Swal.fire({
+                      title: 'Selecciona una opción.',
+                      text: 'La matrícula del estudiante dejará de ser exonerada.',
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonText: 'Continuar',
+                      denyButtonText: 'Cancelar',
+                      customClass: {
+                        popup:
+                          'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                        confirmButton:
+                          'bg-yellow-500 text-white dark:bg-boxdark dark:text-white',
+                        cancelButton:
+                          'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                      },
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        (async () => {
+                          try {
+                            await handleSaveChanges();
+                          } catch (error) {
+                            console.error(
+                              'Error al actualizar los cursos:',
+                              error,
+                            );
+                          }
+                        })();
+                      }
+                    });
+                  }}
+                >
+                  Guardar información
+                </button>
+              </>
+              }
+            </>}
           </div>
 
           <div
@@ -705,6 +770,12 @@ const StudentProfile: React.FC = () => {
               columnDefs={finalizedColumnDefs}
               defaultColDef={defaultColDef}
               rowSelection="single"
+              onRowClicked={(event) => {
+                if (event.data) {
+                  navigate(`/transaction/${event.data.id}`);
+                }
+              }}
+              rowStyle={{ cursor: 'pointer' }}
             />
           </div>
         </div>

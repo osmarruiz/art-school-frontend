@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Course } from '../../../types/course';
 import { Shift } from '../../../types/shift';
 import { Kinship } from '../../../types/kinship';
@@ -10,6 +10,7 @@ interface SelectProps {
   shift?: Shift[];
   kinship?: Kinship[];
   onChange?: (value: number) => void;
+  selectedValue?: number | null;
 }
 
 const SelectGroupOne: React.FC<SelectProps> = ({
@@ -19,8 +20,17 @@ const SelectGroupOne: React.FC<SelectProps> = ({
   shift,
   kinship,
   onChange,
+  selectedValue,
 }) => {
   const [selectedOption, setSelectedOption] = useState<string | number>('');
+
+  useEffect(() => {
+    if (selectedValue !== undefined && selectedValue !== null) {
+      setSelectedOption(selectedValue);
+    } else {
+      setSelectedOption(''); // Reset if selectedValue becomes null or undefined
+    }
+  }, [selectedValue]);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = Number(event.target.value);
