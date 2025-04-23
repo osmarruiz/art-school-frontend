@@ -22,6 +22,7 @@ import ProtectedRoute from './utils/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
 import StudentProfile from './pages/StudentProfile';
 import View from './pages/Operator/view';
+import TransactionDetails from './pages/TransactionDetails';
 
 function App() {
   const { pathname } = useLocation();
@@ -219,6 +220,22 @@ function App() {
                   <>
                     <PageTitle title="Perfil de Estudiante | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
                     <StudentProfile key={Date.now()} />
+                  </>
+                </OperatorLayout>
+              }
+              allowedRoles={['operator', 'admin', 'viewer']}
+            />
+          }
+        />
+        <Route
+          path="/transaction/:id"
+          element={
+            <PrivateRoute
+              element={
+                <OperatorLayout>
+                  <>
+                    <PageTitle title="Detalles de Transacción | Escuela de Bellas Artes “Mariana Sansón Argüello”" />
+                    <TransactionDetails key={Date.now()} />
                   </>
                 </OperatorLayout>
               }

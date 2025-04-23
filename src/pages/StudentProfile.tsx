@@ -588,7 +588,7 @@ const StudentProfile: React.FC = () => {
                 colorVariants['white'].btn,
               )}
               onClick={() => {
-                navigate(-2);
+                navigate(-1);
               }}
             >
               <FaArrowLeft size={20} />
@@ -698,8 +698,8 @@ const StudentProfile: React.FC = () => {
                   className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline me-3 mt-3"
                   onClick={() => {
                     Swal.fire({
-                      title: 'Selecciona una opción.',
-                      text: 'La matrícula del estudiante dejará de ser exonerada.',
+                      title: '¿Estás seguro?',
+                      text: 'Los cursos del estudiante serán modificados. El pago total de las transacciones no será modificado al alterar los cursos, es posible que tengas que revocar las transacciones de mensualidad para evitar incoherencias.',
                       icon: 'warning',
                       showCancelButton: true,
                       confirmButtonText: 'Continuar',
@@ -817,7 +817,7 @@ const StudentProfile: React.FC = () => {
     return (
       <div className={clsx(' p-12 rounded-xl', colorVariants['white'].bg)}>
         <p className={clsx('text-center', colorVariants['white'].text)}>
-          cargando datos del estudiante...
+          Cargando datos del estudiante...
         </p>
       </div>
     );

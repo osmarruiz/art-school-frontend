@@ -6,6 +6,7 @@ export const revokeReceipt = async (
   reloadTransactions: () => void,
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
+  navigate?: () => void,
 ) => {
   try {
     const response = await fetch(`${API_URL}/transactions.revoke_receipt`, {
@@ -36,7 +37,11 @@ export const revokeReceipt = async (
     }
 
     showSuccess('Recibo revocado con éxito');
-    reloadTransactions();
+    if (navigate !== undefined) {
+      navigate();
+    } else {
+      reloadTransactions();
+    }
   } catch (error) {
     showError(error instanceof Error ? error.message : String(error));
   }
@@ -137,6 +142,7 @@ export const revokeTransaction = async (
   reloadTransactions: () => void,
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
+  navigate: () => void,
 ) => {
   try {
     const response = await fetch(`${API_URL}/transactions.revoke`, {
@@ -166,7 +172,11 @@ export const revokeTransaction = async (
     }
 
     showSuccess('Transacción revocada con éxito');
-    reloadTransactions();
+    if (navigate !== undefined) {
+      navigate();
+    } else {
+      reloadTransactions();
+    }
   } catch (error) {
     showError(error instanceof Error ? error.message : String(error));
   }

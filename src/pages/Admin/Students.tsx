@@ -74,7 +74,6 @@ const Students: React.FC = () => {
       });
 
       const data = await response.json();
-      console.log(data);
       data.students = data.students.map((student: Student) => ({
         ...student,
         coursesString:
@@ -143,7 +142,8 @@ const Students: React.FC = () => {
 
   const columnDefs = useMemo(
     () => [
-      { field: 'name', headerName: 'Nombre' },
+      { field: 'id', headerName: 'ID' },
+      { field: 'name', headerName: 'Nombre', flex: 2 },
       {
         field: 'id_card',
         headerName: 'Cédula',

@@ -18,6 +18,7 @@ import {
   FaAnglesDown,
   FaPlus,
   FaAnglesUp,
+  FaEye,
 } from 'react-icons/fa6';
 import useToast from '../../hooks/useToast';
 import { formatCurrency } from '../../utils/formatCurrency';
@@ -31,6 +32,7 @@ import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
 import Swal from 'sweetalert2';
 import { formatDateFlexible } from '../../utils/formatDateflexible';
+import { useNavigate } from 'react-router-dom';
 
 moment.locale('es');
 
@@ -57,6 +59,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     Record<string, boolean>
   >({});
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
@@ -100,12 +103,12 @@ const CardTransaction: React.FC<TransactionListProps> = ({
       {
         field: 'payer',
         headerName: 'Pagado Por',
-        valueFormatter: (p: any) => p.value || '—',
+        valueFormatter: (p: any) => p.value || 'N/a',
       },
       {
         field: 'remarks',
         headerName: 'Concepto',
-        valueFormatter: (p: any) => p.value || '—',
+        valueFormatter: (p: any) => p.value || 'N/a',
       },
       {
         headerName: 'Acción',
@@ -182,13 +185,12 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                 <div className={clsx(colorVariants[color].text)}>
                   <div className="block sm:flex gap-2">
                     <p
-                      className={`font-bold block xl:inline-flex text-[${
-                        transaction.fee.type === 'enrollment'
-                          ? '#4CAF50'
-                          : transaction.fee.type === 'month'
+                      className={`font-bold block xl:inline-flex text-[${transaction.fee.type === 'enrollment'
+                        ? '#4CAF50'
+                        : transaction.fee.type === 'month'
                           ? '#FA5A7D'
                           : '#FF947A'
-                      }]`}
+                        }]`}
                     >
                       {transaction.fee.label}
                     </p>
@@ -216,6 +218,14 @@ const CardTransaction: React.FC<TransactionListProps> = ({
 
                 {/* Botones de acción */}
                 <div className="flex gap-2">
+                  <button
+                    title="Ver más detalles de esta transacción"
+                    className={clsx(colorVariants[color].btnSc)}
+                    onClick={() => navigate(`/transaction/${transaction.id}`)}
+                  >
+                    <FaEye size={20} />
+                  </button>
+
                   <button
                     title="Agregar un recibo a esta transacción"
                     className={clsx(colorVariants[color].btnSc)}

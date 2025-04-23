@@ -15,6 +15,7 @@ import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { Aggregate } from '../../types/aggregate';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { formatDateFlexible } from '../../utils/formatDateflexible';
+import { useNavigate } from 'react-router-dom';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -28,6 +29,7 @@ const Transactions: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
   const [filterParam, setFilterParam] = useState<string>('');
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -60,6 +62,7 @@ const Transactions: React.FC = () => {
 
   const columnDefs = useMemo(
     () => [
+      { field: 'id', headerName: 'ID' },
       { field: 'student.name', headerName: 'Estudiante' },
       { field: 'fee.label', headerName: 'Tipo' },
       {
@@ -207,6 +210,12 @@ const Transactions: React.FC = () => {
           rowData={filteredData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
+          onRowClicked={(event) => {
+            if (event.data) {
+              navigate(`/transaction/${event.data.id}`);
+            }
+          }}
+          rowStyle={{ cursor: 'pointer' }}
         />
       </div>
       <div className="sm:flex justify-end gap-4 md:gap-6 my-6">

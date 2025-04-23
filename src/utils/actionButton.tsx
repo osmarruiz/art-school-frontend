@@ -13,6 +13,7 @@ export const revokeReceiptButton = async (
   reloadTransactions: () => void,
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
+  navigate?: () => void,
 ) => {
   try {
     const result = await Swal.fire({
@@ -42,6 +43,7 @@ export const revokeReceiptButton = async (
           reloadTransactions,
           showError,
           showSuccess,
+          navigate,
         );
       } else {
         Swal.fire({
@@ -67,6 +69,7 @@ export const revokeTransactionButton = async (
   reloadTransactions: () => void,
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
+  navigate: () => void,
 ) => {
   try {
     const result = await Swal.fire({
@@ -94,6 +97,7 @@ export const revokeTransactionButton = async (
           reloadTransactions,
           showError,
           showSuccess,
+          navigate,
         );
       } else {
         Swal.fire({
