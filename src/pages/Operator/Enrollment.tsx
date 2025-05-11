@@ -104,7 +104,7 @@ const Enrollment = ({
 
     let tutorInfo = {};
 
-    if (tutorData.id_card) {
+    if (tutorData.name !== '' && tutorData.phone_number !== '') { /* Required fields.  */
       tutorInfo = {
         tutor_kinship: tutorData.tutor_kinship,
         tutor: {
