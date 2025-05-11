@@ -153,7 +153,10 @@ const FormTutor: React.FC<{
               const formattedValue = formatPhoneNumber(e.target.value);
               setTutorData({ ...tutorData, phone_number: formattedValue });
             }}
+            minLength={8}
+            maxLength={13}
             required
+            title="Ingrese un número de 8 dígitos"
             placeholder="Ej: 87656859"
             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
           />
