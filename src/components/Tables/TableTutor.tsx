@@ -54,8 +54,8 @@ const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
 
   const filteredStudents = tutorData.filter(
     (tutor) =>
-      tutor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tutor.id_card.toLowerCase().includes(searchTerm.toLowerCase()),
+      tutor.name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").includes(searchTerm.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")) ||
+      tutor.id_card != null && tutor.id_card.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   useEffect(() => {

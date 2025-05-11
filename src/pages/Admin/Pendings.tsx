@@ -37,7 +37,7 @@ const Pendings: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${API_URL}/transactions.pending.aggregate?rpp=999999`,
+        `${API_URL}/transactions.pending.aggregate?rpp=9999999`,
         {
           headers: {
             Authorization: API_KEY,
@@ -61,7 +61,7 @@ const Pendings: React.FC = () => {
         const valuesToSearch = [item.student.name ?? ''];
 
         return valuesToSearch.some((value) =>
-          value.toLowerCase().includes(searchText.toLowerCase()),
+          value.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").includes(searchText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")),
         );
       }) || []
     );

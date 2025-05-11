@@ -34,7 +34,7 @@ const Transactions: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${API_URL}/transactions.aggregate?rpp=99999999${filterParam}`,
+        `${API_URL}/transactions.aggregate?rpp=999999999${filterParam}`,
         {
           headers: {
             Authorization: API_KEY,
@@ -119,7 +119,7 @@ const Transactions: React.FC = () => {
         ];
 
         return valuesToSearch.some((value) =>
-          value.toLowerCase().includes(searchText.toLowerCase()),
+          value.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").includes(searchText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")),
         );
       }) ?? []
     );

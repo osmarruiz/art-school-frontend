@@ -36,7 +36,7 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `${API_URL}/students.list?rpp=9999&status=active`,
+          `${API_URL}/students.list?rpp=9999999&status=active`,
           {
             headers: {
               Authorization: API_KEY,
@@ -64,14 +64,14 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
   }, []);
 
   const filteredStudents = studentData.filter((student) => {
-    const name = student?.name?.toLowerCase() || '';
-    const idCard = student?.id_card?.toLowerCase() || '';
-    const coursesString = student?.coursesString?.toLowerCase() || '';
+    const name = student?.name?.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ") || '';
+    const idCard = student?.id_card?.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ") || '';
+    const coursesString = student?.coursesString?.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ") || '';
 
     return (
-      name.includes(searchTerm.toLowerCase()) ||
-      idCard.includes(searchTerm.toLowerCase()) ||
-      coursesString.includes(searchTerm.toLowerCase())
+      name.includes(searchTerm.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")) ||
+      idCard.includes(searchTerm.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")) ||
+      coursesString.includes(searchTerm.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " "))
     );
   });
 

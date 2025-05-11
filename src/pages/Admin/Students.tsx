@@ -62,7 +62,7 @@ const Students: React.FC = () => {
 
   const fetchData = async (course?: number, shift?: number) => {
     try {
-      let url = `${API_URL}/students.list?rpp=99999`;
+      let url = `${API_URL}/students.list?rpp=9999999`;
       if (course) url += `&course=${course}`;
       if (shift) url += `&shift=${shift}`;
 
@@ -134,7 +134,7 @@ const Students: React.FC = () => {
         const valuesToSearch = [student.name ?? '', student.id_card ?? ''];
 
         return valuesToSearch.some((value) =>
-          value.toLowerCase().includes(searchText.toLowerCase()),
+          value.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").includes(searchText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")),
         );
       }) ?? []
     );
