@@ -244,7 +244,7 @@ const Renew = ({
                       title: 'Problemas al renovar matrícula',
                       html: `
                     <p>${data.detail}</p>
-                    <p>Por favor, intente renovar hasta la fecha: <strong>${new Date(
+                    <p>Por favor, intente renovar a partir de la fecha: <strong>${new Date(
                       data.with['renovar_hasta'] + 'T00:00:00-06:00',
                     ).toLocaleString('es-NI', {
                       month: 'long',

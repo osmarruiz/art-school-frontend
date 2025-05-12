@@ -81,6 +81,7 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
 
   const columnDefs = useMemo(
     () => [
+      { field: 'id', headerName: 'ID' },
       { field: 'name', headerName: 'Nombre', flex: 2 },
       {
         field: 'id_card',

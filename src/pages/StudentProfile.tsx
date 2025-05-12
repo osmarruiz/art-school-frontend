@@ -91,7 +91,7 @@ const StudentProfile: React.FC = () => {
           }
           return;
         }
-        
+
         const studentProfileData = await studentRes.json();
         const transactionsData = await transactionsRes.json();
         const pendingData = await pendingRes.json();
@@ -171,9 +171,27 @@ const StudentProfile: React.FC = () => {
       value: `${studentData?.enrollment.is_paid ? 'Sí' : 'No'}`,
     },
     {
-      label: 'Registro',
+      label: 'Matriculación',
       value: studentData?.enrollment.registered_at
-        ? new Date(studentData.enrollment.registered_at).toLocaleDateString(
+        ? (() => {
+          const registeredAtUTC = studentData.enrollment.registered_at;
+          const year = parseInt(registeredAtUTC.substring(0, 4));
+          const month = parseInt(registeredAtUTC.substring(5, 7)) - 1;
+          const day = parseInt(registeredAtUTC.substring(8, 10));
+
+          const localDateInterpretation = new Date(year, month, day);
+
+          return localDateInterpretation.toLocaleDateString(
+            'es-NI',
+            { year: 'numeric', month: 'long', day: 'numeric' },
+          );
+        })()
+        : '—',
+    },
+    {
+      label: 'Registro al sistema',
+      value: studentData?.registered_at
+        ? new Date(studentData.registered_at).toLocaleDateString(
           'es-NI',
           { year: 'numeric', month: 'long', day: 'numeric' },
         )
@@ -595,12 +613,21 @@ const StudentProfile: React.FC = () => {
             </div>
           </div>
           <p className="text-md text-gray-600 dark:text-gray-400">
-            <span className="font-semibold">Registro:</span>{' '}
-            {studentData?.registered_at
-              ? new Date(studentData.registered_at).toLocaleDateString(
-                'es-NI',
-                { year: 'numeric', month: 'long', day: 'numeric' },
-              )
+            <span className="font-semibold">Matriculación:</span>{' '}
+            {studentData?.enrollment.registered_at
+              ? (() => {
+                const registeredAtUTC = studentData.enrollment.registered_at;
+                const year = parseInt(registeredAtUTC.substring(0, 4));
+                const month = parseInt(registeredAtUTC.substring(5, 7)) - 1;
+                const day = parseInt(registeredAtUTC.substring(8, 10));
+
+                const localDateInterpretation = new Date(year, month, day);
+
+                return localDateInterpretation.toLocaleDateString(
+                  'es-NI',
+                  { year: 'numeric', month: 'long', day: 'numeric' },
+                );
+              })()
               : '—'}
             <span> | </span>
             {studentData?.is_active ? (

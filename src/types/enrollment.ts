@@ -8,6 +8,6 @@ export interface Enrollment {
   is_exonerated: boolean;
   courses: CourseShift[];
   transaction: Transaction;
-  registered_at: Date;
+  registered_at: string;
   emergency_number: string;
 }

@@ -40,6 +40,7 @@ const Enrollment = ({
   const [studentData, setStudentData] = useState({
     id_card: '',
     name: '',
+    enrollment_date: '',
     date_of_birth: '',
     email: '',
     city: '',
@@ -138,6 +139,9 @@ const Enrollment = ({
         phone_number: studentData.phone_number,
         school_name: studentData.school_name || null,
         school_year: studentData.school_year ?? null,
+        enrollment_date: studentData.enrollment_date
+          ? new Date(studentData.enrollment_date).toISOString().split('T')[0]
+          : new Date().toLocaleDateString('en-CA')
       },
       courses: courseSelection.map((course) => {
         courses.push({
@@ -169,8 +173,8 @@ const Enrollment = ({
     <p>Cédula: ${payload.student.id_card || '—'}</p>
     <p>Nombre: ${payload.student.name}</p>
     <p>Fecha de Nacimiento: ${new Date(
-      payload.student.date_of_birth + 'T00:00:00-06:00',
-    ).toLocaleDateString()}</p>
+          payload.student.date_of_birth + 'T00:00:00-06:00',
+        ).toLocaleDateString()}</p>
     <p>Email: ${payload.student.email || '—'}</p>
     <p>Ciudad: ${payload.student.city}</p>
     <p>Dirección: ${payload.student.address}</p>
@@ -185,7 +189,7 @@ const Enrollment = ({
       summary += `
     <h4 class="text-1xl font-bold mb-1 mt-3">Información del Tutor:</h4>
     <p>Parentesco: ${kinshipData.find((k) => k.id === tutorData.tutor_kinship)
-      ?.name}</p>
+          ?.name}</p>
     <p>Cédula: ${tutorData.id_card || '—'}</p>
     <p>Nombre: ${tutorData.name}</p>
     <p>Email: ${tutorData.email || '—'}</p>
@@ -198,8 +202,8 @@ const Enrollment = ({
     <h4 class="text-1xl font-bold mb-1 mt-3">Información del Tutor:</h4>
     <p>Nombre: ${selectedTutor?.name}</p>
     <p>Parentesco: ${kinshipData.find(
-      (k) => k.id === selectTutorData.tutor_kinship,
-    )?.name}</p>
+        (k) => k.id === selectTutorData.tutor_kinship,
+      )?.name}</p>
   `;
     }
 

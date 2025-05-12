@@ -16,6 +16,7 @@ const FormStudent = ({
   const [studentData, setStudentData] = useState({
     id_card: '',
     name: '',
+    enrollment_date: new Date().toLocaleDateString(),
     date_of_birth: '',
     email: '',
     city: '',
@@ -53,6 +54,13 @@ const FormStudent = ({
     setStudentData((prevState) => ({
       ...prevState,
       date_of_birth: date ? date.toISOString().split('T')[0] : '',
+    }));
+  };
+
+    const handleEnrollmentDateChange = (date: Date | null) => {
+    setStudentData((prevState) => ({
+      ...prevState,
+      enrollment_date: date ? date.toISOString().split('T')[0] : '',
     }));
   };
 
@@ -98,6 +106,17 @@ const FormStudent = ({
   return (
     <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="p-6.5">
+        <div className="mb-4.5">
+          <label className="mb-2.5 block text-black dark:text-white">
+            Fecha de matriculación
+          </label>
+          <DatePickerOne
+            onDateChange={handleEnrollmentDateChange}
+            name="enrollment_date"
+            value={studentData.enrollment_date}
+          />
+        </div>
+
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
             Nombres y apellidos <span className="text-meta-1">*</span>
