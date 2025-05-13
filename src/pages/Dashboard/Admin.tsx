@@ -79,14 +79,14 @@ const Admin: React.FC = () => {
           </CardDataStats>
 
           <CardDataStats
-            title="Ingreso Mensual"
+            title="Ingresos del Mes"
             total={formatCurrency(data?.month_income)}
           >
             <FaMoneyBills className="fill-primary dark:fill-white" size={20} />
           </CardDataStats>
 
           <CardDataStats
-            title="Ingreso Semanal"
+            title="Ingresos en la Semanal"
             total={formatCurrency(data?.week_income)}
           >
             <FaMoneyBills className="fill-primary dark:fill-white" size={20} />

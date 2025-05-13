@@ -18,11 +18,11 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ data }) => {
   }
 
   const sortedData = [...data].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    (a, b) => new Date(a.date + "T00:00:00-06:00").getTime() - new Date(b.date + "T00:00:00-06:00").getTime(),
   );
 
   const categories = sortedData.map((item) => {
-    const date = new Date(item.date);
+    const date = new Date(item.date + "T00:00:00-06:00");
     return date.toLocaleString('es-ES', { month: 'short', year: 'numeric' });
   });
 

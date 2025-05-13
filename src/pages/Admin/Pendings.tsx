@@ -121,7 +121,7 @@ const Pendings: React.FC = () => {
         field: 'min_due_date',
         headerName: 'Mes mín. pte.',
         valueFormatter: (params: any) =>
-          formatDateFlexible(params.value, {
+          formatDateFlexible(new Date(params.value + "T00:00:00-06:00").toString(), {
             type: 'month-year',
             withTimezoneOffset: true,
           }),
@@ -131,7 +131,7 @@ const Pendings: React.FC = () => {
         field: 'max_due_date',
         headerName: 'Mes máx. pte.',
         valueFormatter: (params: any) =>
-          formatDateFlexible(params.value, {
+          formatDateFlexible(new Date(params.value + "T00:00:00-06:00").toString(), {
             type: 'month-year',
             withTimezoneOffset: true,
           }),
