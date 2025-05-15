@@ -125,6 +125,19 @@ const Transactions: React.FC = () => {
     );
   }, [rowData, searchText]);
 
+  const localeText = {
+  loadingOoo: 'Cargando...',
+  noRowsToShow: 'No hay filas para mostrar',
+  page: 'Página',
+  of: 'de',
+  next: 'Siguiente',
+  previous: 'Anterior',
+  filterOoo: 'Filtrando...',
+  applyFilter: 'Aplicar filtro',
+  resetFilter: 'Reiniciar filtro',
+  searchOoo: 'Buscando...',
+};
+
   return (
     <>
       <div className="w-full flex flex-col xxl:flex-row xxl:items-center xxl:justify-between gap-y-4 gap-x-6 text-sm sm:text-base mb-4 sm:mb-6">
@@ -209,6 +222,7 @@ const Transactions: React.FC = () => {
           loading={loading}
           rowData={filteredData}
           columnDefs={columnDefs}
+          localeText={localeText}
           defaultColDef={defaultColDef}
           onRowClicked={(event) => {
             if (event.data) {

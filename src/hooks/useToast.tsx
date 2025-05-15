@@ -3,43 +3,51 @@ import { motion } from 'framer-motion';
 import { FaCheck, FaX } from 'react-icons/fa6';
 
 const useToast = () => {
-  const showSuccess = (message: string) => {
-    toast.custom(() => (
-      <motion.div
-        initial={{ x: 200, opacity: 0 }}
-        animate={{ x: 1, opacity: 1 }}
-        className={`flex w-full max-w-xs border-l-6 border-[#34D399] bg-white  px-7 py-8 shadow-md dark:bg-boxdark md:p-9`}
-      >
-        <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#34D399]">
-          <FaCheck size={20} className="text-white" />
-        </div>
-        <div className="w-full">
-          <h5 className="mb-3 text-lg font-semibold text-black dark:text-[#34D399]">
-            ¡Operación Exitosa!
-          </h5>
-          <p className="text-base leading-relaxed text-body">{message}</p>
-        </div>
-      </motion.div>
-    ));
-  };
+  const showSuccess = (message: string, hint: string) => {
+  toast.custom(() => (
+    <motion.div
+      initial={{ x: 200, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      className="flex w-full max-w-xs border-l-6 border-green-500 bg-white px-6 py-6 shadow-md dark:bg-boxdark md:p-7"
+    >
+      <div className="mr-4 flex h-9 w-9 items-center justify-center rounded-lg bg-green-500">
+        <FaCheck size={20} className="text-white" />
+      </div>
+      <div className="w-full">
+        <h5 className="mb-2 font-semibold text-green-700 dark:text-green-300">
+          ¡Operación Exitosa!
+        </h5>
+        <ul>
+          <li className="text-green-600 dark:text-green-400 font-medium">{message}</li>
+          <li className="mt-1 text-green-500 dark:text-green-500 text-sm">{hint}</li>
+        </ul>
+      </div>
+    </motion.div>
+  ));
+};
 
-  const showError = (message: string) => {
+
+  const showError = (detail: string, hint: string) => {
     toast.custom(() => (
       <motion.div
         initial={{ x: 200, opacity: 0 }}
-        animate={{ x: 1, opacity: 1 }}
-        className={`flex w-full max-w-xs border-l-6 border-[#F87171] bg-white px-7 py-8 shadow-md dark:bg-boxdark md:p-9 
-        }`}
+        animate={{ x: 0, opacity: 1 }}
+        className="flex w-full max-w-xs border-l-6 border-red-600 bg-white px-6 py-6 shadow-md dark:bg-boxdark md:p-7"
       >
-        <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#F87171]">
+        <div className="mr-4 flex h-9 w-9 items-center justify-center rounded-lg bg-red-600">
           <FaX size={20} className="text-white" />
         </div>
         <div className="w-full">
-          <h5 className="mb-3 font-semibold text-[#B45454]">
+          <h5 className="mb-2 font-semibold text-red-800 dark:text-red-500">
             ¡Algo Salió Mal!
           </h5>
           <ul>
-            <li className="leading-relaxed text-[#CD5D5D]">{message}</li>
+            <li className="text-red-700 dark:text-red-400 text-sm">
+              {detail}
+            </li>
+            <li className="mt-1 text-red-600 dark:text-red-300 text-sm">
+              {hint}
+            </li>
           </ul>
         </div>
       </motion.div>

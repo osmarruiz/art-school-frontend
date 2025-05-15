@@ -85,7 +85,7 @@ const Pendings: React.FC = () => {
           <FaArrowRight size={20} />
         </button>
         {user?.role === 'admin' && (
-          <button className={clsx(colorVariants['white'].btnSc)}>
+          <button className={clsx(colorVariants['white'].btnSc)} hidden>
             <FaBell size={20} />
           </button>
         )}
@@ -93,15 +93,18 @@ const Pendings: React.FC = () => {
     );
   };
 
-  // Definición de columnas con tipado correcto
-
-  const formatShortDate = (value: number) => {
-    if (!value) {
-      return '—';
-    }
-    const date = new Date(value + "T00:00:00-06:00");
-    return date.toLocaleDateString('es-NI', {month: 'long', year: 'numeric'});
-  };
+ const localeText = {
+  loadingOoo: 'Cargando...',
+  noRowsToShow: 'No hay filas para mostrar',
+  page: 'Página',
+  of: 'de',
+  next: 'Siguiente',
+  previous: 'Anterior',
+  filterOoo: 'Filtrando...',
+  applyFilter: 'Aplicar filtro',
+  resetFilter: 'Reiniciar filtro',
+  searchOoo: 'Buscando...',
+};
 
   const columnDefs = useMemo(
     () => [
@@ -185,10 +188,10 @@ const Pendings: React.FC = () => {
           </div>
         </div>
         {user?.role === 'admin' && (
-          <div className="flex justify-center sm:justify-end gap-4 sm:w-1/5  mb-6">
+          <div className="justify-center sm:justify-end gap-4 sm:w-1/5  mb-6 hidden">
             <button
               className={clsx(
-                'inline-flex items-center justify-center py-2.5 px-3 disabled:',
+                'inline-flex items-center justify-center py-2.5 px-3 ',
                 colorVariants['white'].btn,
               )}
             >
@@ -202,6 +205,7 @@ const Pendings: React.FC = () => {
           ref={gridRef}
           theme={theme}
           loading={loading}
+          localeText={localeText}
           rowData={filteredData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
@@ -211,7 +215,7 @@ const Pendings: React.FC = () => {
         <div className="sm:w-1/2 xl:w-1/4">
           <CardDataStats
             title="Total de pendientes"
-            total={rowData?.total_pending.toString()}
+            total={rowData?.total_pending.toString() || '0'}
           >
             <FaMoneyBillWave
               className="fill-danger dark:fill-white"

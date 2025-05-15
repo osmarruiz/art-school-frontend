@@ -4,6 +4,7 @@ import { useAuth } from '../../utils/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import useToast from '../../hooks/useToast';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
+import { motion } from 'framer-motion';
 
 const SignIn: React.FC = () => {
   const [credentials, setCredentials] = useState({
@@ -16,6 +17,13 @@ const SignIn: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const { username, password } = credentials;
+
+    if (!username.trim() || !password.trim()) {
+      showError('Usuario y contraseña son requeridos', '');
+      return;
+    }
 
     try {
       const response = await fetch(`${API_URL}/users.signin`, {
@@ -40,12 +48,12 @@ const SignIn: React.FC = () => {
       }
 
       if (!response.ok) {
-        showError(data?.detail || 'Error inesperado');
+        showError(data?.detail || 'Error inesperado', data?.hint);
         return;
       }
 
       await login();
-      showSuccess('Inicio de sesión correctamente');
+      showSuccess('Inicio de sesión correctamente','');
       navigate('/');
     } catch (error) {
       console.error('Error en la solicitud:', error);
@@ -60,7 +68,9 @@ const SignIn: React.FC = () => {
   return (
     <>
       <div className="flex h-screen items-center mx-4">
-        <div className="rounded-sm border border-stroke bg-white shadow-default  ">
+        <motion.div initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2, delay: 0.3 }} className="rounded-sm border border-stroke bg-white shadow-default">
           <div className="flex flex-wrap items-center">
             <div className="hidden w-full xl:block xl:w-1/2">
               <img className="" src={background} alt="background" />
@@ -149,9 +159,12 @@ const SignIn: React.FC = () => {
                   </div>
 
                   <div className="mb-5">
-                    <input
+                    <motion.input
                       type="submit"
                       value="Iniciar"
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.1, ease: 'easeOut' }}
                       className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                     />
                   </div>
@@ -159,7 +172,7 @@ const SignIn: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </>
   );

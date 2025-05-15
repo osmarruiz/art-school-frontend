@@ -8,7 +8,7 @@ import {
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import useColorMode from '../../hooks/useColorMode';
-import { FaArrowRight, FaUserGroup, FaX } from 'react-icons/fa6';
+import { FaUserGroup, FaX } from 'react-icons/fa6';
 import { Student } from '../../types/student';
 import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
@@ -190,6 +190,19 @@ const Students: React.FC = () => {
     [],
   );
 
+  const localeText = {
+  loadingOoo: 'Cargando...',
+  noRowsToShow: 'No hay filas para mostrar',
+  page: 'Página',
+  of: 'de',
+  next: 'Siguiente',
+  previous: 'Anterior',
+  filterOoo: 'Filtrando...',
+  applyFilter: 'Aplicar filtro',
+  resetFilter: 'Reiniciar filtro',
+  searchOoo: 'Buscando...',
+};
+
   return (
     <>
       <div className="block sm:flex justify-between items-center gap-4 text">
@@ -225,7 +238,7 @@ const Students: React.FC = () => {
                 navigate('/students');
               }}
             >
-              <FaX />
+              <FaX size={14}/>
             </button>
           </div>
           <div className="w-1/3">
@@ -249,6 +262,7 @@ const Students: React.FC = () => {
           ref={gridRef}
           theme={theme}
           loading={loading}
+          localeText={localeText}
           rowData={filteredData}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}

@@ -5,11 +5,10 @@ import ChartTwo from '../../components/Charts/ChartTwo';
 import { FaUserGroup, FaMoneyBills, FaPencil } from 'react-icons/fa6';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
 import { formatCurrency } from '../../utils/formatCurrency';
-import Loader from '../../common/Loader';
+import { motion } from 'framer-motion';
 
 const Admin: React.FC = () => {
   const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   const [month, setMonth] = useState<string | null>(
     sessionStorage.getItem('selectedMonth'),
   );
@@ -18,7 +17,6 @@ const Admin: React.FC = () => {
   );
 
   const fetchData = async () => {
-    setLoading(true);
     try {
       const url = () => {
         if (month && week) {
@@ -41,9 +39,7 @@ const Admin: React.FC = () => {
       setData(result);
     } catch (error) {
       console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   useEffect(() => {
@@ -70,52 +66,95 @@ const Admin: React.FC = () => {
 
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
-          <CardDataStats title="Matriculas" total={data?.month_enrollments}>
-            <FaUserGroup className="fill-primary dark:fill-white" size={20} />
-          </CardDataStats>
-
-          <CardDataStats
-            title="Ingresos del Mes"
-            total={formatCurrency(data?.month_income)}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <FaMoneyBills className="fill-primary dark:fill-white" size={20} />
-          </CardDataStats>
+            <CardDataStats title="Matriculas" total={data?.month_enrollments}>
+              <FaUserGroup className="fill-primary dark:fill-white" size={20} />
+            </CardDataStats>
+          </motion.div>
 
-          <CardDataStats
-            title="Ingresos en la Semanal"
-            total={formatCurrency(data?.week_income)}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <FaMoneyBills className="fill-primary dark:fill-white" size={20} />
-          </CardDataStats>
+            <CardDataStats
+              title="Ingresos del Mes"
+              total={formatCurrency(data?.month_income)}
+            >
+              <FaMoneyBills
+                className="fill-primary dark:fill-white"
+                size={20}
+              />
+            </CardDataStats>
+          </motion.div>
 
-          <CardDataStats
-            title="Estudiantes Activos"
-            total={data?.active_students}
-            color="violet"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <FaUserGroup className="fill-white" size={20} />
-          </CardDataStats>
+            <CardDataStats
+              title="Ingresos en la Semanal"
+              total={formatCurrency(data?.week_income)}
+            >
+              <FaMoneyBills
+                className="fill-primary dark:fill-white"
+                size={20}
+              />
+            </CardDataStats>
+          </motion.div>
 
-          <CardDataStats
-            title="Pagos Pendientes"
-            total={data?.pending_transactions}
-            color="red"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <FaPencil className="fill-white" size={20} />
-          </CardDataStats>
+            <CardDataStats
+              title="Estudiantes Activos"
+              total={data?.active_students}
+              color="violet"
+            >
+              <FaUserGroup className="fill-white" size={20} />
+            </CardDataStats>
+          </motion.div>
 
-          <div className="row-span-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <CardDataStats
+              title="Pagos Pendientes"
+              total={data?.pending_transactions}
+              color="red"
+            >
+              <FaPencil className="fill-white" size={20} />
+            </CardDataStats>
+          </motion.div>
+
+          <motion.div
+            className="row-span-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
             <ChartThree data={data?.courses_distribution} />
-          </div>
-          <div className="col-span-1 xl:col-span-2">
+          </motion.div>
+
+          <motion.div
+            className="col-span-1 xl:col-span-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
             <ChartTwo data={data?.incomes_in_last_year} />
-          </div>
+          </motion.div>
         </div>
-      )}
     </>
   );
 };

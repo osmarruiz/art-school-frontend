@@ -78,7 +78,7 @@ const Header = (props: {
                     navigate('/');
                   }}
                 >
-                  <FaX />
+                  <FaX size={14}/>
                 </button>
                 <MonthPicker />
                 <WeekPicker />

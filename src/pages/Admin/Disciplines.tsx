@@ -273,6 +273,19 @@ const Disciplines: React.FC = () => {
     [],
   );
 
+  const localeText = {
+  loadingOoo: 'Cargando...',
+  noRowsToShow: 'No hay filas para mostrar',
+  page: 'Página',
+  of: 'de',
+  next: 'Siguiente',
+  previous: 'Anterior',
+  filterOoo: 'Filtrando...',
+  applyFilter: 'Aplicar filtro',
+  resetFilter: 'Reiniciar filtro',
+  searchOoo: 'Buscando...',
+};
+
   return (
     <>
       <div className="block sm:flex justify-between items-center gap-4 text">
@@ -300,7 +313,7 @@ const Disciplines: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex justify-center sm:justify-end gap-4 sm:w-1/5 mb-6">
+        <div className=" justify-center sm:justify-end gap-4 sm:w-1/5 mb-6 hidden">
           <button
             className={clsx(
               'inline-flex items-center justify-center py-2.5 px-3',
@@ -317,6 +330,7 @@ const Disciplines: React.FC = () => {
           ref={gridRef}
           theme={theme}
           rowData={filteredData}
+          localeText={localeText}
           loading={loading}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
