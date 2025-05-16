@@ -18,8 +18,8 @@ import useColorMode from '../../hooks/useColorMode';
 import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import useToast from '../../hooks/useToast';
 import { formatDateFlexible } from '../../utils/formatDateflexible';
+import { motion } from 'framer-motion';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -43,7 +43,6 @@ const Renew = ({
   const [colorMode] = useColorMode();
   const [renewals, setRenewals] = useState<RenewalRecord[]>([]);
   const navigate = useNavigate();
-  const { showError } = useToast();
 
   const fetchHistory = useCallback(async () => {
     if (!selectedStudent) return;
@@ -129,6 +128,19 @@ const Renew = ({
     [],
   );
 
+  const localeText = {
+  loadingOoo: 'Cargando...',
+  noRowsToShow: 'No hay filas para mostrar',
+  page: 'Página',
+  of: 'de',
+  next: 'Siguiente',
+  previous: 'Anterior',
+  filterOoo: 'Filtrando...',
+  applyFilter: 'Aplicar filtro',
+  resetFilter: 'Reiniciar filtro',
+  searchOoo: 'Buscando...',
+};
+
   return (
     <CardOperator
       title="Renovar Matrícula"
@@ -161,16 +173,21 @@ const Renew = ({
         </p>
         {selectedStudent ? (
           renewals.length > 0 ? (
-            <div className="w-full h-100">
+            <motion.div
+              animate={{ scale: [0.9, 1] }}
+              transition={{ duration: 0.3 }}
+              className="w-full h-100"
+            >
               <AgGridReact
                 ref={tableRef}
                 rowData={renewals}
                 theme={theme}
+                localeText={localeText}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 rowSelection="single"
               />
-            </div>
+            </motion.div>
           ) : (
             <p
               className={clsx(
@@ -233,11 +250,6 @@ const Renew = ({
                   );
 
                   const data = await response.json();
-
-                  if (!response.ok) {
-                    showError(data?.detail || 'Error inesperado');
-                    return;
-                  }
 
                   if (response.status === 202) {
                     Swal.fire({

@@ -142,7 +142,7 @@ export const revokeTransaction = async (
   reloadTransactions: () => void,
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
-  navigate: () => void,
+  navigate?: () => void,
 ) => {
   try {
     const response = await fetch(`${API_URL}/transactions.revoke`, {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Kinship } from '../../types/kinship';
 import SelectGroupOne from './SelectGroup/SelectGroupOne';
+import { motion } from 'framer-motion';
 
 const FormTutor: React.FC<{
   kinship: Kinship[];
@@ -63,7 +64,11 @@ const FormTutor: React.FC<{
   }, [tutorData, onTutorChange]);
 
   return (
-    <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+    <motion.div
+      animate={{ scale: [0.9, 1] }}
+      transition={{ duration: 0.3 }}
+      className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+    >
       <div className="p-6.5">
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
@@ -171,7 +176,7 @@ const FormTutor: React.FC<{
           />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

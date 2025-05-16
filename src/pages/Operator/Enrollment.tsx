@@ -250,11 +250,11 @@ const Enrollment = ({
             }
 
             if (!response.ok) {
-              showError(data?.detail || 'Error inesperado');
+              showError(data?.detail || 'Error inesperado', data?.hint, data?.with.errors);
               return;
             }
 
-            showSuccess('Se registró el estudiante correctamente.');
+            showSuccess('Se registró el estudiante correctamente.', '');
 
             navigate('/enrollment');
           } catch (error) {
@@ -332,14 +332,14 @@ const Enrollment = ({
                     onClick={() => setSelectedOption('search')}
                     className="inline-flex items-center justify-center py-4 px-10 text-black bg-white dark:text-white dark:bg-boxdark dark:hover:bg-black hover:bg-slate-100"
                   >
-                    Asignar un tutor existente
+                    Asignar
                   </button>
                   <button
                     type="button"
                     onClick={() => setSelectedOption('form')}
                     className="inline-flex items-center justify-center py-4 px-10 text-black bg-white dark:text-white dark:bg-boxdark dark:hover:bg-black hover:bg-slate-100"
                   >
-                    Registrar un nuevo tutor
+                    Registrar
                   </button>
                 </div>
               ) : selectedOption === 'search' ? (

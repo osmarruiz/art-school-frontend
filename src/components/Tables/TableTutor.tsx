@@ -80,6 +80,19 @@ const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
     [],
   );
 
+  const localeText = {
+  loadingOoo: 'Cargando...',
+  noRowsToShow: 'No hay filas para mostrar',
+  page: 'Página',
+  of: 'de',
+  next: 'Siguiente',
+  previous: 'Anterior',
+  filterOoo: 'Filtrando...',
+  applyFilter: 'Aplicar filtro',
+  resetFilter: 'Reiniciar filtro',
+  searchOoo: 'Buscando...',
+};
+
   return (
     <motion.div
       animate={{ scale: [0.9, 1] }}
@@ -103,6 +116,7 @@ const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
           ref={gridRef}
           theme={theme}
           columnDefs={columnDefs}
+          localeText={localeText}
           defaultColDef={defaultColDef}
           rowData={filteredStudents}
           loading={loading}

@@ -15,7 +15,7 @@ export const colorVariants = {
     btnSc:
       'text-boxdark-2 hover:text-graydark dark:text-white dark:hover:text-graydark',
     text: 'text-[#05004E] dark:text-white',
-    btn: 'bg-boxdark hover:bg-graydark text-white',
+    btn: 'bg-boxdark text-white dark:bg-boxdark-2 dark:hover:bg-graydark',
     inp: 'dark:bg-boxdark dark:text-white text-[#05004E]',
   },
   red: {

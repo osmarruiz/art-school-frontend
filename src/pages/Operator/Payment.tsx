@@ -104,19 +104,19 @@ const Payment = ({
           <>
             <button
               className={clsx(
-                'inline-flex items-center justify-center py-4 px-10',
+                'inline-flex items-center justify-center py-4 px-5 xl:px-10',
                 colorVariants['green'].btn,
               )}
               onClick={() => {
                 navigate(`/student/${selectedStudent.id}`);
               }}
             >
-              Ver todas las transacciones
+              Ver transacciones
             </button>
 
             <button
               className={clsx(
-                'inline-flex items-center justify-center py-4 px-10',
+                'inline-flex items-center justify-center py-4 px-5 xl:px-10',
                 colorVariants[color].btn,
               )}
               onClick={async () =>
@@ -128,7 +128,7 @@ const Payment = ({
                 )
               }
             >
-              Comenzar nueva transacción
+              Comenzar transacción
             </button>
           </>
         )

@@ -115,7 +115,7 @@ const TransactionDetails: React.FC = () => {
     [],
   );
 
-  const finalizedGridRef = useRef<AgGridReact<Transaction>>(null);
+  const finalizedGridRef = useRef<AgGridReact>(null);
   const finalizedColumnDefs = useMemo(
     () => [
       { field: 'id', headerName: 'ID' },
@@ -175,6 +175,21 @@ const TransactionDetails: React.FC = () => {
     [revokeReceiptButton, transactionData],
   );
 
+  
+
+  const localeText = {
+  loadingOoo: 'Cargando...',
+  noRowsToShow: 'No hay filas para mostrar',
+  page: 'Página',
+  of: 'de',
+  next: 'Siguiente',
+  previous: 'Anterior',
+  filterOoo: 'Filtrando...',
+  applyFilter: 'Aplicar filtro',
+  resetFilter: 'Reiniciar filtro',
+  searchOoo: 'Buscando...',
+};
+
   if (!txFound) {
     return (
       <div className="flex items-center justify-center">
@@ -200,21 +215,33 @@ const TransactionDetails: React.FC = () => {
     );
   }
 
+  
+
   return (
     <div className={clsx(' w-full p-12 rounded-xl', colorVariants['white'].bg)} >
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-1">
-          <div
-            className={clsx(
-              'flex h-8.5 w-8.5 items-center justify-center rounded-full hover:cursor-pointer',
-              colorVariants['white'].btn,
-            )}
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
-            <FaArrowLeft size={20} />
-          </div>
+          <div>
+              <h2 className="text-4xl sm:text-4xl font-bold mb-2 sm:mb-0">
+                Transacción #{transactionData?.id}
+              </h2>
+              {transactionData?.is_paid && (
+                <p className="text-green-500 text-lg font-semibold">
+                  Pagada
+                </p>
+                )}
+              {transactionData?.is_revoked && (
+                <p className="text-red-500 text-lg font-semibold">
+                  Revocada
+                </p>
+              )}
+              {!transactionData?.is_paid && !transactionData?.is_revoked && !transactionData?.is_finished && (
+                <p className="text-yellow-500 text-lg font-semibold">
+                  Pendiente
+                </p>
+              )}
+              </div>
+          <div className="flex items-center">
           {!transactionData?.is_finished && !transactionData?.is_paid && !transactionData?.is_revoked && user?.role === 'admin' || user?.role === 'operator' ? (
             <div>
               <button
@@ -235,6 +262,18 @@ const TransactionDetails: React.FC = () => {
           ) : (
             <></>
           )}
+          <div
+            className={clsx(
+              'flex h-8.5 w-8.5 items-center justify-center rounded-full hover:cursor-pointer',
+              colorVariants['white'].btn,
+            )}
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            <FaArrowLeft size={20} />
+          </div>
+          </div>
         </div>
       </div>
 
@@ -293,6 +332,7 @@ const TransactionDetails: React.FC = () => {
             ref={finalizedGridRef}
             rowData={receiptsData}
             theme={theme}
+            localeText={localeText}
             columnDefs={finalizedColumnDefs}
             defaultColDef={defaultColDef}
             rowSelection="single"

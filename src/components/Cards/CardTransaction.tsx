@@ -71,7 +71,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
       try {
         await reloadTransactions();
       } catch (error) {
-        showError('Error al cargar las transacciones.');
+        showError('Error al cargar las transacciones.','',[]);
       } finally {
         setLoading(false);
       }
@@ -148,6 +148,19 @@ const CardTransaction: React.FC<TransactionListProps> = ({
     }),
     [],
   );
+
+  const localeText = {
+  loadingOoo: 'Cargando...',
+  noRowsToShow: 'No hay filas para mostrar',
+  page: 'Página',
+  of: 'de',
+  next: 'Siguiente',
+  previous: 'Anterior',
+  filterOoo: 'Filtrando...',
+  applyFilter: 'Aplicar filtro',
+  resetFilter: 'Reiniciar filtro',
+  searchOoo: 'Buscando...',
+};
 
   return (
     <div className="w-full">
@@ -296,6 +309,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                         reloadTransactions,
                         showError,
                         showSuccess,
+                        
                       )
                     }
                   >
@@ -322,6 +336,7 @@ const CardTransaction: React.FC<TransactionListProps> = ({
                           ref={gridRef}
                           theme={theme}
                           rowData={rowData}
+                          localeText={localeText}
                           columnDefs={columnDefs}
                           defaultColDef={defaultColDef}
                         />

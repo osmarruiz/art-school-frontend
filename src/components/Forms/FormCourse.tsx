@@ -6,6 +6,7 @@ import { FaMinus, FaPlus, FaTrash } from 'react-icons/fa6';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
 import { CourseShift } from '../../types/courseShift';
 import { FaTimes } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const FormCourse = ({
   onCourseChange,
@@ -19,7 +20,7 @@ const FormCourse = ({
       shiftName: string;
     }[],
   ) => void;
-  preloadData?: CourseShift[]
+  preloadData?: CourseShift[];
 }) => {
   const [courseData, setCourseData] = useState<Course[]>([]);
   const [shiftsMap, setShiftsMap] = useState<Map<number, string>>();
@@ -62,7 +63,8 @@ const FormCourse = ({
             shiftName: cs.shift.name,
             courseName: cs.course.name,
             selectedShift: cs.shift.id,
-            shiftOptions: courses.find((c) => c.id === cs.course.id)?.shifts || [],
+            shiftOptions:
+              courses.find((c) => c.id === cs.course.id)?.shifts || [],
           }));
           setCourseForms(initialForms);
         } else {
@@ -125,16 +127,16 @@ const FormCourse = ({
       prevForms.map((form) =>
         form.id === id
           ? {
-            ...form,
-            selectedCourse: courseId,
-            shiftOptions:
-              courseData.find((course) => course.id === courseId)?.shifts ||
-              [],
-            selectedShift: selectedShift,
-            courseName:
-              courseData.find((course) => course.id === courseId)?.name || '',
-            shiftName: shiftName,
-          }
+              ...form,
+              selectedCourse: courseId,
+              shiftOptions:
+                courseData.find((course) => course.id === courseId)?.shifts ||
+                [],
+              selectedShift: selectedShift,
+              courseName:
+                courseData.find((course) => course.id === courseId)?.name || '',
+              shiftName: shiftName,
+            }
           : form,
       ),
     );
@@ -164,41 +166,48 @@ const FormCourse = ({
 
   return (
     <div>
-      {courseForms.length > 0 && courseForms.map(({ id, shiftOptions, selectedCourse, selectedShift }, index) => (
-        <div
-          key={id}
-          className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark my-2 p-6.5 relative"
-        >
-          {index >= 0 && courseForms.length > 1 && (
-            <button
-              onClick={() => removeCourseForm(id)}
-              className="absolute top-2 right-2"
+      {(courseForms.length > 0 &&
+        courseForms.map(
+          ({ id, shiftOptions, selectedCourse, selectedShift }, index) => (
+            <motion.div
+              animate={{ scale: [0.9, 1] }}
+              transition={{ duration: 0.3 }}
+              key={id}
+              className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark my-2 p-6.5 relative"
             >
-              <FaMinus className='mt-1 mb-1' />
-            </button>
-          )}
-          <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-            <div className="w-full xl:w-1/2">
-              <SelectGroupOne
-                title="Curso"
-                placeholder="Selecciona un curso"
-                course={courseData}
-                onChange={(courseId) => handleCourseChange(id, courseId)}
-                selectedValue={selectedCourse}
-              />
-            </div>
-            <div className="w-full xl:w-1/2 shifts-container">
-              <SelectGroupOne
-                title="Turno"
-                placeholder="Selecciona un turno"
-                shift={shiftOptions}
-                onChange={(shiftId) => handleShiftChange(id, shiftId)}
-                selectedValue={selectedShift}
-              />
-            </div>
-          </div>
-        </div>
-      )) || <p className='text-lg text-center mt-1 mb-1'>Cargando cursos...</p>}
+              {index >= 0 && courseForms.length > 1 && (
+                <button
+                  onClick={() => removeCourseForm(id)}
+                  className="absolute top-2 right-2"
+                >
+                  <FaMinus className="mt-1 mb-1" />
+                </button>
+              )}
+              <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                <div className="w-full xl:w-1/2">
+                  <SelectGroupOne
+                    title="Curso"
+                    placeholder="Selecciona un curso"
+                    course={courseData}
+                    onChange={(courseId) => handleCourseChange(id, courseId)}
+                    selectedValue={selectedCourse}
+                  />
+                </div>
+                <div className="w-full xl:w-1/2 shifts-container">
+                  <SelectGroupOne
+                    title="Turno"
+                    placeholder="Selecciona un turno"
+                    shift={shiftOptions}
+                    onChange={(shiftId) => handleShiftChange(id, shiftId)}
+                    selectedValue={selectedShift}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          ),
+        )) || (
+        <p className="text-lg text-center mt-1 mb-1">Cargando cursos...</p>
+      )}
       <div className="flex justify-center">
         <button
           onClick={addCourseForm}

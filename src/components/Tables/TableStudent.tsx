@@ -64,14 +64,53 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
   }, []);
 
   const filteredStudents = studentData.filter((student) => {
-    const name = student?.name?.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ") || '';
-    const idCard = student?.id_card?.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ") || '';
-    const coursesString = student?.coursesString?.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ") || '';
+    const name =
+      student?.name
+        ?.toLowerCase()
+        .trim()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ') || '';
+    const idCard =
+      student?.id_card
+        ?.toLowerCase()
+        .trim()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ') || '';
+    const coursesString =
+      student?.coursesString
+        ?.toLowerCase()
+        .trim()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ') || '';
 
     return (
-      name.includes(searchTerm.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")) ||
-      idCard.includes(searchTerm.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")) ||
-      coursesString.includes(searchTerm.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " "))
+      name.includes(
+        searchTerm
+          .toLowerCase()
+          .trim()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, ' '),
+      ) ||
+      idCard.includes(
+        searchTerm
+          .toLowerCase()
+          .trim()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, ' '),
+      ) ||
+      coursesString.includes(
+        searchTerm
+          .toLowerCase()
+          .trim()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, ' '),
+      )
     );
   });
 
@@ -123,6 +162,20 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
     [],
   );
 
+  const localeText = {
+  loadingOoo: 'Cargando...',
+  noRowsToShow: 'No hay filas para mostrar',
+  page: 'Página',
+  of: 'de',
+  next: 'Siguiente',
+  previous: 'Anterior',
+  filterOoo: 'Filtrando...',
+  applyFilter: 'Aplicar filtro',
+  resetFilter: 'Reiniciar filtro',
+  searchOoo: 'Buscando...',
+};
+
+
   return (
     <motion.div
       animate={{ scale: [0.9, 1] }}
@@ -149,6 +202,7 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
           ref={gridRef}
           theme={theme}
           columnDefs={columnDefs}
+          localeText={localeText}
           defaultColDef={defaultColDef}
           rowData={filteredStudents}
           loading={loading}

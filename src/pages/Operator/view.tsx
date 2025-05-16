@@ -22,6 +22,12 @@ const View = ({
     }
   }, [selectedStudent]);
 
+  useEffect(() => {
+    if (selectedStudent) {
+      navigate(`/student/${selectedStudent.id}`);
+    }
+  }, [selectedStudent, navigate]);
+
   return (
     <CardOperator
       title="Ver estudiante"
@@ -35,11 +41,9 @@ const View = ({
         >
           Estudiante
         </p>
-        {!selectedStudent ? (
-          <TabletStudent onSelect={setSelectedStudent} color="red" />
-        ) : (
-          <>{navigate(`/student/${selectedStudent.id}`)}</>
-        )}
+        {!selectedStudent && (
+        <TabletStudent onSelect={setSelectedStudent} color="red" />
+      )}
       </div>
     </CardOperator>
   );

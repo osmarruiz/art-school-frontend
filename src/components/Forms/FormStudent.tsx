@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Switcher from './Switcher/Switcher';
 import DatePickerOne from './DatePicker/DatePickerOne';
+import { motion } from 'framer-motion';
 
 const FormStudent = ({
   onToggle,
@@ -57,7 +58,7 @@ const FormStudent = ({
     }));
   };
 
-    const handleEnrollmentDateChange = (date: Date | null) => {
+  const handleEnrollmentDateChange = (date: Date | null) => {
     setStudentData((prevState) => ({
       ...prevState,
       enrollment_date: date ? date.toISOString().split('T')[0] : '',
@@ -104,7 +105,11 @@ const FormStudent = ({
   }, [studentData, onStudentChange]);
 
   return (
-    <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+    <motion.div
+      animate={{ scale: [0.9, 1] }}
+      transition={{ duration: 0.3 }}
+      className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+    >
       <div className="p-6.5">
         <div className="mb-4.5">
           <label className="mb-2.5 block text-black dark:text-white">
@@ -319,7 +324,7 @@ const FormStudent = ({
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

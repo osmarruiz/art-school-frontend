@@ -8,6 +8,7 @@ export interface Transaction {
   fee: Fee;
   target_date: Date;
   total: number;
+  payer: string;
   balance: number;
   is_paid: boolean;
   is_finished: boolean;

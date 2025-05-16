@@ -69,7 +69,7 @@ export const revokeTransactionButton = async (
   reloadTransactions: () => void,
   showError: (message: string) => void,
   showSuccess: (message: string) => void,
-  navigate: () => void,
+  navigate?: () => void,
 ) => {
   try {
     const result = await Swal.fire({
