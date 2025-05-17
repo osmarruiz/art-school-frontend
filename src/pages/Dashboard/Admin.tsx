@@ -72,7 +72,7 @@ const Admin: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <CardDataStats title="Matriculas" total={data?.month_enrollments}>
+            <CardDataStats title="Matriculas" total={data?.month_enrollments || 0}>
               <FaUserGroup className="fill-primary dark:fill-white" size={20} />
             </CardDataStats>
           </motion.div>
@@ -84,7 +84,7 @@ const Admin: React.FC = () => {
           >
             <CardDataStats
               title="Ingresos del Mes"
-              total={formatCurrency(data?.month_income)}
+              total={formatCurrency(data?.month_income  || 0)}
             >
               <FaMoneyBills
                 className="fill-primary dark:fill-white"
@@ -100,7 +100,7 @@ const Admin: React.FC = () => {
           >
             <CardDataStats
               title="Ingresos en la Semanal"
-              total={formatCurrency(data?.week_income)}
+              total={formatCurrency(data?.week_income   || 0)}
             >
               <FaMoneyBills
                 className="fill-primary dark:fill-white"
@@ -116,7 +116,7 @@ const Admin: React.FC = () => {
           >
             <CardDataStats
               title="Estudiantes Activos"
-              total={data?.active_students}
+              total={data?.active_students || 0}
               color="violet"
             >
               <FaUserGroup className="fill-white" size={20} />
@@ -130,7 +130,7 @@ const Admin: React.FC = () => {
           >
             <CardDataStats
               title="Pagos Pendientes"
-              total={data?.pending_transactions}
+              total={data?.pending_transactions || 0}
               color="red"
             >
               <FaPencil className="fill-white" size={20} />
