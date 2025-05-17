@@ -66,7 +66,7 @@ const Admin: React.FC = () => {
 
   return (
     <>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -138,7 +138,7 @@ const Admin: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="row-span-8"
+            className="row-span-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.5 }}
@@ -147,7 +147,7 @@ const Admin: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="col-span-1 xl:col-span-2"
+            className="col-span-1 xl:col-span-2 "
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
