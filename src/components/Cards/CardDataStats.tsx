@@ -32,7 +32,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   return (
     <div
       className={clsx(
-        'rounded-sm border border-stroke bg- dark:border-strokedark py-6 px-7.5 shadow-default ',
+        'rounded-sm border border-stroke bg- dark:border-strokedark py-6 px-7.5 shadow-default h-full',
         colorVariants[color].bg,
       )}
     >

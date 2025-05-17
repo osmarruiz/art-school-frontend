@@ -70,7 +70,7 @@ const ChartTwo: React.FC<ChartTwoProps> = ({ data }) => {
   const series = [{ name: 'Ingresos', data: incomeValues }];
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
+    <div className="rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark h-full">
       <h4 className="text-xl font-semibold text-black dark:text-white">
         Ingresos del último año
       </h4>
