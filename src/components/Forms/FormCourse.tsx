@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import SelectGroupOne from './SelectGroup/SelectGroupOne';
 import { Course } from '../../types/course';
 import { Shift } from '../../types/shift';
-import { FaMinus, FaPlus, FaTrash } from 'react-icons/fa6';
+import { FaMinus, FaPlus} from 'react-icons/fa6';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
 import { CourseShift } from '../../types/courseShift';
-import { FaTimes } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const FormCourse = ({

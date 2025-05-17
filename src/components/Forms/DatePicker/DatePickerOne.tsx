@@ -1,6 +1,12 @@
 import flatpickr from 'flatpickr';
 import { useState, useEffect, useRef } from 'react';
 
+function formatToMMDDYYYY(dateString: string) {
+  if (!dateString) return '';
+  const [year, month, day] = dateString.split('-');
+  return `${month}/${day}/${year}`;
+}
+
 const DatePickerOne = ({
   onDateChange,
   name,
@@ -12,7 +18,7 @@ const DatePickerOne = ({
 }) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const flatpickrInstance = useRef<flatpickr.Instance | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(value);
+  const [selectedDate, setSelectedDate] = useState<string>(formatToMMDDYYYY(value));
 
   useEffect(() => {
     if (!inputRef.current) return;
@@ -41,10 +47,12 @@ const DatePickerOne = ({
   }, [onDateChange]);
 
   useEffect(() => {
+    const formatted = formatToMMDDYYYY(value);
+    setSelectedDate(formatted);
     if (flatpickrInstance.current) {
-      flatpickrInstance.current.setDate(selectedDate, false);
+      flatpickrInstance.current.setDate(formatted, false);
     }
-  }, [selectedDate]);
+  }, [value]);
 
   return (
     <div className="relative">
@@ -57,10 +65,6 @@ const DatePickerOne = ({
         value={selectedDate}
         onChange={(e) => setSelectedDate(e.target.value)}
       />
-
-      <div className="pointer-events-none absolute inset-0 left-auto right-5 flex items-center">
-        
-      </div>
     </div>
   );
 };
