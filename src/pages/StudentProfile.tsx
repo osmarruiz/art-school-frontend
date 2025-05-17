@@ -16,7 +16,7 @@ import { useAuth } from '../utils/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { colorVariants } from '../types/colorVariants';
 import clsx from 'clsx';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa6';
+import { FaArrowLeft } from 'react-icons/fa6';
 import { Student } from '../types/student';
 import { StatusHistory } from '../types/statusHistory';
 import { Transaction } from '../types/transaction';
@@ -26,6 +26,7 @@ import { formatDateFlexible } from '../utils/formatDateflexible';
 import FormCourse from '../components/Forms/FormCourse';
 import Switcher from '../components/Forms/Switcher/Switcher';
 import processCourseChanges from '../utils/processCourseChanges';
+import FormStudentEdit from '../components/Forms/FormStudentEdit';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
@@ -53,7 +54,8 @@ const StudentProfile: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [switcherSchoolEnabled, setSwitcherSchoolEnabled] = useState(false);
+  const [switcherCourseEnabled, setSwitcherCourseEnabled] = useState(false);
+  const [switcherPersonalEnabled, setSwitcherPersonalEnabled] = useState(false);
   const [courseSelection, setCourseSelection] = useState<
     {
       courseId: number | null;
@@ -111,7 +113,7 @@ const StudentProfile: React.FC = () => {
   }, [id]);
 
   const personalData: DataItem[] = [
-    { label: 'Cédula', value: studentData?.id_card },
+    { label: 'Cédula', value: studentData?.id_card || '—' },
     {
       label: 'Nacimiento',
       value: `${new Date(
@@ -122,10 +124,15 @@ const StudentProfile: React.FC = () => {
         day: 'numeric',
       })} (${studentData?.age} años)`,
     },
-    { label: 'Correo', value: studentData?.email },
-    { label: 'Teléfono', value: studentData?.phone_number },
-    { label: 'Ciudad', value: studentData?.city },
-    { label: 'Dirección', value: studentData?.address },
+    { label: 'Correo', value: studentData?.email || '—' },
+    { label: 'Teléfono', value: studentData?.phone_number || '—' },
+    {
+      label: 'Tel. emergencia',
+      value: `${studentData?.enrollment.emergency_number || '—'}`,
+    },
+    { label: 'Ciudad', value: studentData?.city || '—' },
+    { label: 'Dirección', value: studentData?.address || '—' },
+    
   ];
 
   let tutorData: DataItem[] = [];
@@ -134,12 +141,12 @@ const StudentProfile: React.FC = () => {
 
     tutorData = [
       { label: 'Parentesco', value: studentData?.tutor_kinship?.name || '—' },
-      { label: 'Nombre', value: !!tutor ? tutor.name : '—' },
-      { label: 'Cédula', value: !!tutor ? tutor.id_card : '—' },
-      { label: 'Correo', value: !!tutor ? tutor.email : '—' },
-      { label: 'Teléfono', value: !!tutor ? tutor.phone_number : '—' },
-      { label: 'Ciudad', value: !!tutor ? tutor.city : '—' },
-      { label: 'Dirección', value: !!tutor ? tutor.address : '—' },
+      { label: 'Nombre', value: tutor.name || '—' },
+      { label: 'Cédula', value: tutor.id_card || '—' },
+      { label: 'Correo', value: tutor.email || '—' },
+      { label: 'Teléfono', value: tutor.phone_number || '—' },
+      { label: 'Ciudad', value: tutor.city || '—' },
+      { label: 'Dirección', value: tutor.address || '—' },
     ];
   }
 
@@ -159,10 +166,6 @@ const StudentProfile: React.FC = () => {
           .map((item) => item.shift.name)
           .join(', ') || '—'
       }`,
-    },
-    {
-      label: 'Tel. emergencia',
-      value: `${studentData?.enrollment.emergency_number || '—'}`,
     },
     {
       label: '¿Exonerada?',
@@ -206,11 +209,11 @@ const StudentProfile: React.FC = () => {
   const academicData: DataItem[] = [
     {
       label: 'Colegio de procedencia',
-      value: !!studentData?.school_name ? studentData?.school_name : '—',
+      value: studentData?.school_name || '—',
     },
     {
       label: 'Año escolar',
-      value: !!studentData?.school_name ? studentData?.school_year : '—',
+      value: studentData?.school_year || '—',
     },
   ];
 
@@ -350,6 +353,7 @@ const StudentProfile: React.FC = () => {
     searchOoo: 'Buscando...',
   };
 
+  //courses edit
   const handleSaveChanges = async () => {
     if (studentData) {
       await processCourseChanges(
@@ -424,7 +428,7 @@ const StudentProfile: React.FC = () => {
               </p>
             </div>
 
-<div className="flex items-center mt-4 sm:mt-0 gap-2 ">
+            <div className="flex items-center mt-4 sm:mt-0 gap-2 ">
               {user?.role === 'admin' ? (
                 <div>
                   {studentData?.enrollment.is_exonerated ? (
@@ -663,7 +667,7 @@ const StudentProfile: React.FC = () => {
               <div
                 className={clsx(
                   'flex h-8.5 w-8.5 items-center justify-center rounded-full hover:cursor-pointer',
-                  colorVariants['white'].btn
+                  colorVariants['white'].btn,
                 )}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -672,7 +676,7 @@ const StudentProfile: React.FC = () => {
               >
                 <FaArrowLeft size={20} />
               </div>
-              </div>
+            </div>
           </div>
         </div>
 
@@ -697,6 +701,69 @@ const StudentProfile: React.FC = () => {
                 </dd>
               </div>
             ))}
+
+            {user?.role === 'admin' && (
+              <>
+                <hr className="mt-3 mb-3" />
+                <div>
+                  <label className="block text-2xl dark:text-white mb-3">
+                    Editar datos personales
+                  </label>
+                  <Switcher
+                    enabled={switcherPersonalEnabled}
+                    onToggle={setSwitcherPersonalEnabled}
+                    labelId="togglePersonal"
+                  />
+                </div>
+
+                {switcherPersonalEnabled && (
+                  <>
+                    <FormStudentEdit
+                      preload={studentData}
+                      onStudentChange={(updated: any) =>
+                        setStudentData((prev) => ({ ...prev, ...updated }))
+                      }
+                    />
+                    <button
+                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline me-3 mt-3"
+                      onClick={() => {
+                        Swal.fire({
+                          title: '¿Estás seguro?',
+                          text: 'Los cursos del estudiante serán modificados. El pago total de las transacciones no será modificado al alterar los cursos, es posible que tengas que revocar las transacciones de mensualidad para evitar incoherencias.',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonText: 'Continuar',
+                          cancelButtonText: 'Cancelar',
+                          customClass: {
+                            popup:
+                              'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                            confirmButton:
+                              'bg-yellow-500 text-white dark:bg-boxdark dark:text-white',
+                            cancelButton:
+                              'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                          },
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            (async () => {
+                              try {
+                                await handleSaveChanges();
+                              } catch (error) {
+                                console.error(
+                                  'Error al actualizar los cursos:',
+                                  error,
+                                );
+                              }
+                            })();
+                          }
+                        });
+                      }}
+                    >
+                      Guardar
+                    </button>
+                  </>
+                )}
+              </>
+            )}
           </div>
 
           <div
@@ -719,6 +786,68 @@ const StudentProfile: React.FC = () => {
                 </dd>
               </div>
             ))}
+            {user?.role === 'admin' && (
+              <>
+                <hr className="mt-3 mb-3" />
+                <div>
+                  <label className="block text-2xl dark:text-white mb-3">
+                    Editar datos personales
+                  </label>
+                  <Switcher
+                    enabled={switcherPersonalEnabled}
+                    onToggle={setSwitcherPersonalEnabled}
+                    labelId="togglePersonal"
+                  />
+                </div>
+
+                {switcherPersonalEnabled && (
+                  <>
+                    <FormStudentEdit
+                      preload={studentData}
+                      onStudentChange={(updated: any) =>
+                        setStudentData((prev) => ({ ...prev, ...updated }))
+                      }
+                    />
+                    <button
+                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline me-3 mt-3"
+                      onClick={() => {
+                        Swal.fire({
+                          title: '¿Estás seguro?',
+                          text: 'Los cursos del estudiante serán modificados. El pago total de las transacciones no será modificado al alterar los cursos, es posible que tengas que revocar las transacciones de mensualidad para evitar incoherencias.',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonText: 'Continuar',
+                          cancelButtonText: 'Cancelar',
+                          customClass: {
+                            popup:
+                              'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                            confirmButton:
+                              'bg-yellow-500 text-white dark:bg-boxdark dark:text-white',
+                            cancelButton:
+                              'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                          },
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            (async () => {
+                              try {
+                                await handleSaveChanges();
+                              } catch (error) {
+                                console.error(
+                                  'Error al actualizar los cursos:',
+                                  error,
+                                );
+                              }
+                            })();
+                          }
+                        });
+                      }}
+                    >
+                      Guardar
+                    </button>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
 
@@ -752,13 +881,13 @@ const StudentProfile: React.FC = () => {
                     Editar curso(s)
                   </label>
                   <Switcher
-                    enabled={switcherSchoolEnabled}
-                    onToggle={setSwitcherSchoolEnabled}
-                    labelId="toggleSchool"
+                    enabled={switcherCourseEnabled}
+                    onToggle={setSwitcherCourseEnabled}
+                    labelId="toggleCourse"
                   />
                 </div>
 
-                {switcherSchoolEnabled && (
+                {switcherCourseEnabled && (
                   <>
                     <FormCourse
                       onCourseChange={setCourseSelection}
@@ -798,7 +927,7 @@ const StudentProfile: React.FC = () => {
                         });
                       }}
                     >
-                      Guardar información
+                      Guardar
                     </button>
                   </>
                 )}
@@ -812,6 +941,7 @@ const StudentProfile: React.FC = () => {
               colorVariants['white'].icon,
             )}
           >
+            <div className='h-[240px]'>
             <h3 className="text-2xl font-semibold mb-4">Datos Académicos</h3>
             {academicData.map((item) => (
               <div
@@ -826,6 +956,71 @@ const StudentProfile: React.FC = () => {
                 </dd>
               </div>
             ))}
+            </div>
+            {user?.role === 'admin' && (
+              <>
+              <div className='items-end'>
+                <hr className="mt-3 mb-3" />
+                <div>
+                  <label className="block text-2xl dark:text-white mb-3">
+                    Editar datos personales
+                  </label>
+                  <Switcher
+                    enabled={switcherPersonalEnabled}
+                    onToggle={setSwitcherPersonalEnabled}
+                    labelId="togglePersonal"
+                  />
+                </div>
+
+                {switcherPersonalEnabled && (
+                  <>
+                    <FormStudentEdit
+                      preload={studentData}
+                      onStudentChange={(updated: any) =>
+                        setStudentData((prev) => ({ ...prev, ...updated }))
+                      }
+                    />
+                    <button
+                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline me-3 mt-3"
+                      onClick={() => {
+                        Swal.fire({
+                          title: '¿Estás seguro?',
+                          text: 'Los cursos del estudiante serán modificados. El pago total de las transacciones no será modificado al alterar los cursos, es posible que tengas que revocar las transacciones de mensualidad para evitar incoherencias.',
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonText: 'Continuar',
+                          cancelButtonText: 'Cancelar',
+                          customClass: {
+                            popup:
+                              'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                            confirmButton:
+                              'bg-yellow-500 text-white dark:bg-boxdark dark:text-white',
+                            cancelButton:
+                              'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                          },
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            (async () => {
+                              try {
+                                await handleSaveChanges();
+                              } catch (error) {
+                                console.error(
+                                  'Error al actualizar los cursos:',
+                                  error,
+                                );
+                              }
+                            })();
+                          }
+                        });
+                      }}
+                    >
+                      Guardar
+                    </button>
+                  </>
+                )}
+                </div>
+              </>
+            )}
           </div>
         </div>
 
