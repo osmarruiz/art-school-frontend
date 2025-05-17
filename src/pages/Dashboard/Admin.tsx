@@ -99,7 +99,7 @@ const Admin: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <CardDataStats
-              title="Ingresos en la Semanal"
+              title="Ingresos en la Semana"
               total={formatCurrency(data?.week_income   || 0)}
             >
               <FaMoneyBills

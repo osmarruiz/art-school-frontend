@@ -62,7 +62,7 @@ const ChartThree: React.FC<ChartThreeProps> = ({ data }) => {
   };
 
   return (
-    <div className="h-full col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-5">
+    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-5">
       <div className="mb-3">
         <h5 className="text-xl font-semibold text-black dark:text-white">
           Disciplinas
