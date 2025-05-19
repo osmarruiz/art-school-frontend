@@ -2,7 +2,7 @@ import flatpickr from 'flatpickr';
 import { useState, useEffect, useRef } from 'react';
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
 
-const MonthPicker = () => {
+const DatePickerMonth = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const flatpickrInstance = useRef<flatpickr.Instance | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<string>('');
@@ -52,4 +52,4 @@ const MonthPicker = () => {
   );
 };
 
-export default MonthPicker;
+export default DatePickerMonth;

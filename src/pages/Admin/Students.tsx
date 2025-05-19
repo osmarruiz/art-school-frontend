@@ -14,7 +14,7 @@ import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
 import CardDataStats from '../../components/Cards/CardDataStats';
 import { colorVariants } from '../../types/colorVariants';
-import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
+import SelectGroup from '../../components/Forms/SelectGroup/SelectGroup';
 import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { useNavigate } from 'react-router-dom';
 import { formatDateFlexible } from '../../utils/formatDateflexible';
@@ -118,10 +118,11 @@ const Students: React.FC = () => {
   const estadoRenderer = (params: { value: boolean }) => {
     return (
       <span
-        className={`text-sm py-1 px-2  rounded ${params.value
-          ? 'bg-green-200 dark:bg-green-900'
-          : 'bg-red-200 dark:bg-red-900'
-          }`}
+        className={`text-sm py-1 px-2  rounded ${
+          params.value
+            ? 'bg-green-200 dark:bg-green-900'
+            : 'bg-red-200 dark:bg-red-900'
+        }`}
       >
         {params.value ? 'Activo' : 'Inactivo'}
       </span>
@@ -134,7 +135,20 @@ const Students: React.FC = () => {
         const valuesToSearch = [student.name ?? '', student.id_card ?? ''];
 
         return valuesToSearch.some((value) =>
-          value.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").includes(searchText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")),
+          value
+            .toLowerCase()
+            .trim()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/\s+/g, ' ')
+            .includes(
+              searchText
+                .toLowerCase()
+                .trim()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, ' '),
+            ),
         );
       }) ?? []
     );
@@ -191,17 +205,17 @@ const Students: React.FC = () => {
   );
 
   const localeText = {
-  loadingOoo: 'Cargando...',
-  noRowsToShow: 'No hay filas para mostrar',
-  page: 'Página',
-  of: 'de',
-  next: 'Siguiente',
-  previous: 'Anterior',
-  filterOoo: 'Filtrando...',
-  applyFilter: 'Aplicar filtro',
-  resetFilter: 'Reiniciar filtro',
-  searchOoo: 'Buscando...',
-};
+    loadingOoo: 'Cargando...',
+    noRowsToShow: 'No hay filas para mostrar',
+    page: 'Página',
+    of: 'de',
+    next: 'Siguiente',
+    previous: 'Anterior',
+    filterOoo: 'Filtrando...',
+    applyFilter: 'Aplicar filtro',
+    resetFilter: 'Reiniciar filtro',
+    searchOoo: 'Buscando...',
+  };
 
   return (
     <>
@@ -238,18 +252,18 @@ const Students: React.FC = () => {
                 navigate('/students');
               }}
             >
-              <FaX size={14}/>
+              <FaX size={14} />
             </button>
           </div>
           <div className="w-1/3">
-            <SelectGroupOne
+            <SelectGroup
               placeholder="Curso"
               course={courseData}
               onChange={(selected: number) => setSelectedCourse(selected)}
             />
           </div>
           <div className="w-1/3">
-            <SelectGroupOne
+            <SelectGroup
               placeholder="Turno"
               shift={shifts}
               onChange={(selected: number) => setSelectedShift(selected)}

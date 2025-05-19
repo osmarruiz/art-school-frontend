@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Switcher from './Switcher/Switcher';
-import DatePickerOne from './DatePicker/DatePickerOne';
+import DatePickerOne from './DatePicker/DatePicker';
 import { motion } from 'framer-motion';
 
 const FormStudent = ({

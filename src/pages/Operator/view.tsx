@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaWallet } from 'react-icons/fa6';
 import CardOperator from '../../components/Cards/CardOperator';
-import TabletStudent from '../../components/Tables/TableStudent';
+import TabletStudentSearch from '../../components/Tables/TableStudentSearch';
 import { Student } from '../../types/student';
 import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
@@ -42,8 +42,8 @@ const View = ({
           Estudiante
         </p>
         {!selectedStudent && (
-        <TabletStudent onSelect={setSelectedStudent} color="red" />
-      )}
+          <TabletStudentSearch onSelect={setSelectedStudent} color="red" />
+        )}
       </div>
     </CardOperator>
   );

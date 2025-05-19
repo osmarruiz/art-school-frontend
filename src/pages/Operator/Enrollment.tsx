@@ -6,7 +6,7 @@ import FormStudent from '../../components/Forms/FormStudent';
 import FormCourse from '../../components/Forms/FormCourse';
 import FormTutor from '../../components/Forms/FormTutor';
 import TableTutor from '../../components/Tables/TableTutor';
-import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
+import SelectGroup from '../../components/Forms/SelectGroup/SelectGroup';
 import clsx from 'clsx';
 import { colorVariants } from '../../types/colorVariants';
 import CardTutor from '../../components/Cards/CardTutor';
@@ -105,7 +105,8 @@ const Enrollment = ({
 
     let tutorInfo = {};
 
-    if (tutorData.name !== '' && tutorData.phone_number !== '') { /* Required fields.  */
+    if (tutorData.name !== '' && tutorData.phone_number !== '') {
+      /* Required fields.  */
       tutorInfo = {
         tutor_kinship: tutorData.tutor_kinship,
         tutor: {
@@ -141,7 +142,7 @@ const Enrollment = ({
         school_year: studentData.school_year ?? null,
         enrollment_date: studentData.enrollment_date
           ? new Date(studentData.enrollment_date).toISOString().split('T')[0]
-          : new Date().toLocaleDateString('en-CA')
+          : new Date().toLocaleDateString('en-CA'),
       },
       courses: courseSelection.map((course) => {
         courses.push({
@@ -173,8 +174,8 @@ const Enrollment = ({
     <p>Cédula: ${payload.student.id_card || '—'}</p>
     <p>Nombre: ${payload.student.name}</p>
     <p>Fecha de Nacimiento: ${new Date(
-          payload.student.date_of_birth + 'T00:00:00-06:00',
-        ).toLocaleDateString()}</p>
+      payload.student.date_of_birth + 'T00:00:00-06:00',
+    ).toLocaleDateString()}</p>
     <p>Email: ${payload.student.email || '—'}</p>
     <p>Ciudad: ${payload.student.city}</p>
     <p>Dirección: ${payload.student.address}</p>
@@ -189,7 +190,7 @@ const Enrollment = ({
       summary += `
     <h4 class="text-1xl font-bold mb-1 mt-3">Información del Tutor:</h4>
     <p>Parentesco: ${kinshipData.find((k) => k.id === tutorData.tutor_kinship)
-          ?.name}</p>
+      ?.name}</p>
     <p>Cédula: ${tutorData.id_card || '—'}</p>
     <p>Nombre: ${tutorData.name}</p>
     <p>Email: ${tutorData.email || '—'}</p>
@@ -202,8 +203,8 @@ const Enrollment = ({
     <h4 class="text-1xl font-bold mb-1 mt-3">Información del Tutor:</h4>
     <p>Nombre: ${selectedTutor?.name}</p>
     <p>Parentesco: ${kinshipData.find(
-        (k) => k.id === selectTutorData.tutor_kinship,
-      )?.name}</p>
+      (k) => k.id === selectTutorData.tutor_kinship,
+    )?.name}</p>
   `;
     }
 
@@ -250,7 +251,11 @@ const Enrollment = ({
             }
 
             if (!response.ok) {
-              showError(data?.detail || 'Error inesperado', data?.hint, data?.with.errors);
+              showError(
+                data?.detail || 'Error inesperado',
+                data?.hint,
+                data?.with.errors,
+              );
               return;
             }
 
@@ -377,7 +382,7 @@ const Enrollment = ({
                         color="violet"
                       />
                     )}
-                    <SelectGroupOne
+                    <SelectGroup
                       title="Parentezco"
                       placeholder="Selecciona un parentezco"
                       kinship={kinshipData}

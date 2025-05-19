@@ -7,7 +7,7 @@ function formatToMMDDYYYY(dateString: string) {
   return `${month}/${day}/${year}`;
 }
 
-const DatePickerOne = ({
+const DatePicker = ({
   onDateChange,
   name,
   value,
@@ -69,4 +69,4 @@ const DatePickerOne = ({
   );
 };
 
-export default DatePickerOne;
+export default DatePicker;

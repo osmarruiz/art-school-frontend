@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FaWallet } from 'react-icons/fa6';
 import CardOperator from '../../components/Cards/CardOperator';
-import CardTransaction from '../../components/Cards/CardTransaction';
-import TabletStudent from '../../components/Tables/TableStudent';
+import CardsTransaction from '../../components/ListTransaction/TransactionList';
+import TabletStudentSearch from '../../components/Tables/TableStudentSearch';
 import { Student } from '../../types/student';
 import { Transaction } from '../../types/transaction';
 import { colorVariants } from '../../types/colorVariants';
@@ -65,7 +65,7 @@ const Payment = ({
           Estudiante
         </p>
         {!selectedStudent ? (
-          <TabletStudent onSelect={setSelectedStudent} color="red" />
+          <TabletStudentSearch onSelect={setSelectedStudent} color="red" />
         ) : (
           <CardStudent
             student={selectedStudent}
@@ -86,7 +86,7 @@ const Payment = ({
         </p>
         {selectedStudent ? (
           selectedStudent && (
-            <CardTransaction
+            <CardsTransaction
               transactions={transactions}
               reloadTransactions={fetchTransactions}
               color="red"

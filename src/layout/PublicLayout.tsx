@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 interface DefaultLayoutProps {
   children: ReactNode;

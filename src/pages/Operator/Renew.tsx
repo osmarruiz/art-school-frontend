@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaArrowRight, FaRepeat } from 'react-icons/fa6';
 import CardOperator from '../../components/Cards/CardOperator';
-import StudentSearch from '../../components/Tables/TableStudent';
+import StudentSearch from '../../components/Tables/TableStudentSearch';
 import { Student } from '../../types/student';
 import { colorVariants } from '../../types/colorVariants';
 import clsx from 'clsx';
@@ -129,17 +129,17 @@ const Renew = ({
   );
 
   const localeText = {
-  loadingOoo: 'Cargando...',
-  noRowsToShow: 'No hay filas para mostrar',
-  page: 'Página',
-  of: 'de',
-  next: 'Siguiente',
-  previous: 'Anterior',
-  filterOoo: 'Filtrando...',
-  applyFilter: 'Aplicar filtro',
-  resetFilter: 'Reiniciar filtro',
-  searchOoo: 'Buscando...',
-};
+    loadingOoo: 'Cargando...',
+    noRowsToShow: 'No hay filas para mostrar',
+    page: 'Página',
+    of: 'de',
+    next: 'Siguiente',
+    previous: 'Anterior',
+    filterOoo: 'Filtrando...',
+    applyFilter: 'Aplicar filtro',
+    resetFilter: 'Reiniciar filtro',
+    searchOoo: 'Buscando...',
+  };
 
   return (
     <CardOperator
