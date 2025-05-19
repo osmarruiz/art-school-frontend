@@ -2,8 +2,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import DropdownUser from './DropdownUser';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import logo from '../../images/logo/logo.svg';
-import MonthPicker from '../Forms/DatePicker/MonthPicker';
-import WeekPicker from '../Forms/DatePicker/WeekPicker';
+import DatePickerMonth from '../Forms/DatePicker/DatePickerMonth';
+import DatePickerWeek from '../Forms/DatePicker/DatePickerWeek';
 import { FaX } from 'react-icons/fa6';
 
 const Header = (props: {
@@ -78,10 +78,10 @@ const Header = (props: {
                     navigate('/');
                   }}
                 >
-                  <FaX size={14}/>
+                  <FaX size={14} />
                 </button>
-                <MonthPicker />
-                <WeekPicker />
+                <DatePickerMonth />
+                <DatePickerWeek />
               </div>
             )}
             {/* <!-- Dark Mode Toggler --> */}

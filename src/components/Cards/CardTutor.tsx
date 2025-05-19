@@ -1,9 +1,8 @@
-import { colorVariants } from "../../types/colorVariants";
-import { clsx } from "clsx";
-import { FaArrowLeft } from "react-icons/fa";
+import { colorVariants } from '../../types/colorVariants';
+import { clsx } from 'clsx';
+import { FaArrowLeft } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { Tutor } from "../../types/tutor";
-
+import { Tutor } from '../../types/tutor';
 
 const CardTutor = ({
   tutor,
@@ -18,7 +17,7 @@ const CardTutor = ({
     <motion.div
       animate={{ scale: [0.9, 1] }}
       transition={{ duration: 0.1 }}
-      className={clsx("p-4 rounded-lg ", colorVariants[color].bg)}
+      className={clsx('p-4 rounded-lg ', colorVariants[color].bg)}
     >
       <div className="flex justify-between">
         <div className={clsx(colorVariants[color].text)}>

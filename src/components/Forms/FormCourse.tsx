@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import SelectGroupOne from './SelectGroup/SelectGroupOne';
+import SelectGroup from './SelectGroup/SelectGroup';
 import { Course } from '../../types/course';
 import { Shift } from '../../types/shift';
-import { FaMinus, FaPlus} from 'react-icons/fa6';
+import { FaMinus, FaPlus } from 'react-icons/fa6';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
 import { CourseShift } from '../../types/courseShift';
 import { motion } from 'framer-motion';
@@ -184,7 +184,7 @@ const FormCourse = ({
               )}
               <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                 <div className="w-full xl:w-1/2">
-                  <SelectGroupOne
+                  <SelectGroup
                     title="Curso"
                     placeholder="Selecciona un curso"
                     course={courseData}
@@ -193,7 +193,7 @@ const FormCourse = ({
                   />
                 </div>
                 <div className="w-full xl:w-1/2 shifts-container">
-                  <SelectGroupOne
+                  <SelectGroup
                     title="Turno"
                     placeholder="Selecciona un turno"
                     shift={shiftOptions}

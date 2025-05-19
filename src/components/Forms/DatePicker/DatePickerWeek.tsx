@@ -1,7 +1,7 @@
 import flatpickr from 'flatpickr';
 import { useState, useEffect, useRef } from 'react';
 
-const WeekPicker = () => {
+const DatePickerWeek = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const flatpickrInstance = useRef<flatpickr.Instance | null>(null);
   const [selectedWeek, setSelectedWeek] = useState<string>('');
@@ -60,5 +60,4 @@ const WeekPicker = () => {
   );
 };
 
-export default WeekPicker;
-``;
+export default DatePickerWeek;

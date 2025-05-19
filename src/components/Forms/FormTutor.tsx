@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Kinship } from '../../types/kinship';
-import SelectGroupOne from './SelectGroup/SelectGroupOne';
+import SelectGroup from './SelectGroup/SelectGroup';
 import { motion } from 'framer-motion';
 
 const FormTutor: React.FC<{
@@ -168,7 +168,7 @@ const FormTutor: React.FC<{
         </div>
 
         <div className="mb-4.5">
-          <SelectGroupOne
+          <SelectGroup
             title="Parentezco"
             placeholder="Selecciona un parentezco"
             kinship={kinship}

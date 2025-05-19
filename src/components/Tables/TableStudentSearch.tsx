@@ -24,7 +24,10 @@ interface TabletStudentProps {
   color: 'violet' | 'white' | 'red' | 'orange' | 'green';
 }
 
-const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
+const TabletStudentSearch: React.FC<TabletStudentProps> = ({
+  onSelect,
+  color,
+}) => {
   const [studentData, setStudentData] = useState<Student[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -114,10 +117,7 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
     );
   });
 
-  useEffect(() => {
-    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
-  }, [colorMode]);
-
+ 
   const columnDefs = useMemo(
     () => [
       { field: 'id', headerName: 'ID' },
@@ -152,6 +152,11 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
     [],
   );
 
+   useEffect(() => {
+    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
+  }, [colorMode]);
+
+  
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
@@ -163,18 +168,17 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
   );
 
   const localeText = {
-  loadingOoo: 'Cargando...',
-  noRowsToShow: 'No hay filas para mostrar',
-  page: 'Página',
-  of: 'de',
-  next: 'Siguiente',
-  previous: 'Anterior',
-  filterOoo: 'Filtrando...',
-  applyFilter: 'Aplicar filtro',
-  resetFilter: 'Reiniciar filtro',
-  searchOoo: 'Buscando...',
-};
-
+    loadingOoo: 'Cargando...',
+    noRowsToShow: 'No hay filas para mostrar',
+    page: 'Página',
+    of: 'de',
+    next: 'Siguiente',
+    previous: 'Anterior',
+    filterOoo: 'Filtrando...',
+    applyFilter: 'Aplicar filtro',
+    resetFilter: 'Reiniciar filtro',
+    searchOoo: 'Buscando...',
+  };
 
   return (
     <motion.div
@@ -218,4 +222,4 @@ const TabletStudent: React.FC<TabletStudentProps> = ({ onSelect, color }) => {
   );
 };
 
-export default TabletStudent;
+export default TabletStudentSearch;

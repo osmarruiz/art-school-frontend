@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import DatePickerOne from './DatePicker/DatePickerOne';
+import DatePickerOne from './DatePicker/DatePicker';
 import { Enrollment } from '../../types/enrollment';
 
 type StudentData = {
@@ -32,7 +32,7 @@ const FormStudentEdit = ({
   // Inicializar datos desde preload si existe
   useEffect(() => {
     if (preload) {
-        console.log('Preload data:', preload);
+      console.log('Preload data:', preload);
       setStudentData(preload);
     }
   }, [preload]);
@@ -92,7 +92,9 @@ const FormStudentEdit = ({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block mb-1 text-black dark:text-white">Cédula</label>
+          <label className="block mb-1 text-black dark:text-white">
+            Cédula
+          </label>
           <input
             type="text"
             name="id_card"
@@ -105,7 +107,9 @@ const FormStudentEdit = ({
         </div>
 
         <div>
-          <label className="block mb-1 text-black dark:text-white">Fecha de nacimiento</label>
+          <label className="block mb-1 text-black dark:text-white">
+            Fecha de nacimiento
+          </label>
           <DatePickerOne
             onDateChange={handleDateChange}
             name="date_of_birth"
@@ -114,7 +118,9 @@ const FormStudentEdit = ({
         </div>
 
         <div>
-          <label className="block mb-1 text-black dark:text-white">Correo electrónico</label>
+          <label className="block mb-1 text-black dark:text-white">
+            Correo electrónico
+          </label>
           <input
             type="email"
             name="email"
@@ -126,7 +132,9 @@ const FormStudentEdit = ({
         </div>
 
         <div>
-          <label className="block mb-1 text-black dark:text-white">Teléfono</label>
+          <label className="block mb-1 text-black dark:text-white">
+            Teléfono
+          </label>
           <input
             type="tel"
             name="phone_number"
@@ -137,7 +145,9 @@ const FormStudentEdit = ({
           />
         </div>
         <div>
-          <label className="block mb-1 text-black dark:text-white">Teléfono de emergencia</label>
+          <label className="block mb-1 text-black dark:text-white">
+            Teléfono de emergencia
+          </label>
           <input
             type="tel"
             name="phone_number"
@@ -149,7 +159,9 @@ const FormStudentEdit = ({
         </div>
 
         <div>
-          <label className="block mb-1 text-black dark:text-white">Ciudad</label>
+          <label className="block mb-1 text-black dark:text-white">
+            Ciudad
+          </label>
           <input
             type="text"
             name="city"
@@ -161,7 +173,9 @@ const FormStudentEdit = ({
         </div>
 
         <div className="md:col-span-2">
-          <label className="block mb-1 text-black dark:text-white">Dirección</label>
+          <label className="block mb-1 text-black dark:text-white">
+            Dirección
+          </label>
           <textarea
             name="address"
             value={studentData.address || ''}

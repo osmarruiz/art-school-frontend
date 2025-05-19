@@ -13,7 +13,7 @@ interface SelectProps {
   selectedValue?: number | null;
 }
 
-const SelectGroupOne: React.FC<SelectProps> = ({
+const SelectGroup: React.FC<SelectProps> = ({
   title,
   course,
   placeholder,
@@ -118,4 +118,4 @@ const SelectGroupOne: React.FC<SelectProps> = ({
   );
 };
 
-export default SelectGroupOne;
+export default SelectGroup;
