@@ -8,7 +8,7 @@ import React, {
 import { useNavigate } from 'react-router-dom';
 import Loader from '../common/Loader';
 import useToast from '../hooks/useToast';
-import { API_URL, API_KEY } from './apiConfig';
+import { API_URL, API_KEY } from '../utils/apiConfig';
 
 interface AuthContextType {
   user: tokenDecode | null;

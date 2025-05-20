@@ -3,7 +3,7 @@ import { FaArrowRight, FaRepeat } from 'react-icons/fa6';
 import CardOperator from '../../components/Cards/CardOperator';
 import StudentSearch from '../../components/Tables/TableStudentSearch';
 import { Student } from '../../types/student';
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import clsx from 'clsx';
 import CardStudent from '../../components/Cards/CardStudent';
 import { AgGridReact } from 'ag-grid-react';

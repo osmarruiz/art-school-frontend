@@ -1,29 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AllCommunityModule,
-  ModuleRegistry,
-  colorSchemeLightCold,
-  colorSchemeDarkBlue,
-  themeQuartz,
+  ModuleRegistry
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import useColorMode from '../../hooks/useColorMode';
 import { FaUserGroup, FaX } from 'react-icons/fa6';
 import { Student } from '../../types/student';
 import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
 import CardDataStats from '../../components/Cards/CardDataStats';
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import SelectGroup from '../../components/Forms/SelectGroup/SelectGroup';
 import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { useNavigate } from 'react-router-dom';
 import { formatDateFlexible } from '../../utils/formatDateflexible';
 import { Course } from '../../types/course';
 import { Shift } from '../../types/shift';
+import { useAgGridConfig } from '../../hooks/useAgGridConfig';
+import { normalizeSearchText, normalizeText } from '../../utils/normalizeText';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
-const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
-const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
 interface StudentResponse {
   total: number;
@@ -33,9 +29,7 @@ interface StudentResponse {
 }
 
 const Students: React.FC = () => {
-  const [colorMode] = useColorMode();
   const gridRef = useRef<AgGridReact<any> | null>(null);
-  const [theme, setTheme] = useState(themeLightCold);
   const [rowData, setRowData] = useState<StudentResponse>();
   const [searchText, setSearchText] = useState('');
   const [courseData, setCourseData] = useState<Course[]>([]);
@@ -59,6 +53,7 @@ const Students: React.FC = () => {
   const [selectedShift, setSelectedShift] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { theme, defaultColDef, localeText } = useAgGridConfig();
 
   const fetchData = async (course?: number, shift?: number) => {
     try {
@@ -111,10 +106,6 @@ const Students: React.FC = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
-  }, [colorMode]);
-
   const estadoRenderer = (params: { value: boolean }) => {
     return (
       <span
@@ -129,30 +120,20 @@ const Students: React.FC = () => {
     );
   };
 
-  const filteredData = useMemo(() => {
-    return (
-      rowData?.students?.filter((student) => {
-        const valuesToSearch = [student.name ?? '', student.id_card ?? ''];
+ const filteredData = useMemo(() => {
+  if (!searchText) return rowData?.students ?? [];
+  if (!rowData?.students) return [];
 
-        return valuesToSearch.some((value) =>
-          value
-            .toLowerCase()
-            .trim()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/\s+/g, ' ')
-            .includes(
-              searchText
-                .toLowerCase()
-                .trim()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/\s+/g, ' '),
-            ),
-        );
-      }) ?? []
-    );
-  }, [rowData, searchText]);
+  const normalizedSearch = normalizeSearchText(searchText);
+
+  return rowData.students.filter(student => {
+    const studentName = normalizeText(student.name);
+    const studentId = normalizeText(student.id_card);
+    
+    return studentName.includes(normalizedSearch) || 
+           studentId.includes(normalizedSearch);
+  });
+}, [rowData, searchText]);
 
   const columnDefs = useMemo(
     () => [
@@ -193,29 +174,6 @@ const Students: React.FC = () => {
     [],
   );
 
-  const defaultColDef = useMemo(
-    () => ({
-      sortable: true,
-      resizable: true,
-
-      flex: 1,
-      minWidth: 100,
-    }),
-    [],
-  );
-
-  const localeText = {
-    loadingOoo: 'Cargando...',
-    noRowsToShow: 'No hay filas para mostrar',
-    page: 'Página',
-    of: 'de',
-    next: 'Siguiente',
-    previous: 'Anterior',
-    filterOoo: 'Filtrando...',
-    applyFilter: 'Aplicar filtro',
-    resetFilter: 'Reiniciar filtro',
-    searchOoo: 'Buscando...',
-  };
 
   return (
     <>

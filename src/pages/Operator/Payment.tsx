@@ -5,11 +5,11 @@ import CardsTransaction from '../../components/ListTransaction/TransactionList';
 import TabletStudentSearch from '../../components/Tables/TableStudentSearch';
 import { Student } from '../../types/student';
 import { Transaction } from '../../types/transaction';
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import clsx from 'clsx';
 import CardStudent from '../../components/Cards/CardStudent';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
-import { addTransactionButton } from '../../utils/actionButton';
+import { addTransactionButton } from '../../components/buttons/TransactionButtons';
 import useToast from '../../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 

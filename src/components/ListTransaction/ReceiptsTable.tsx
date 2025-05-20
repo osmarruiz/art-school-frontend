@@ -7,7 +7,7 @@ import useToast from '../../hooks/useToast';
 import { formatDateFlexible } from '../../utils/formatDateflexible';
 import ActionButton from './ActionButton';
 import { FaRegTrashCan } from 'react-icons/fa6';
-import { revokeReceiptButton } from '../../utils/actionButton';
+import { revokeReceiptButton } from '../buttons/TransactionButtons';
 import { ColDef } from 'ag-grid-community';
 
 interface ReceiptsTableProps {

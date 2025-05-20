@@ -1,38 +1,33 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AllCommunityModule,
-  ModuleRegistry,
-  colorSchemeLightCold,
-  colorSchemeDarkBlue,
-  themeQuartz,
+  ModuleRegistry
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import useColorMode from '../../hooks/useColorMode';
 import { FaArrowRight, FaMoneyBillWave } from 'react-icons/fa6';
 import clsx from 'clsx';
 import { FaSearch, FaBell } from 'react-icons/fa';
 import CardDataStats from '../../components/Cards/CardDataStats';
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import { API_KEY, API_URL } from '../../utils/apiConfig';
 import { PendingAggregate } from '../../types/pendingAggregate';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { useNavigate } from 'react-router-dom';
 import { formatDateFlexible } from '../../utils/formatDateflexible';
-import { useAuth } from '../../utils/AuthContext';
+import { useAuth } from '../../context/AuthContext';
+import { useAgGridConfig } from '../../hooks/useAgGridConfig';
+import { normalizeSearchText, normalizeText } from '../../utils/normalizeText';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
-const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
-const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
 const Pendings: React.FC = () => {
-  const [colorMode] = useColorMode();
   const gridRef = useRef<AgGridReact<any> | null>(null);
-  const [theme, setTheme] = useState(themeLightCold);
   const [rowData, setRowData] = useState<PendingAggregate>();
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { theme, defaultColDef, localeText } = useAgGridConfig();
 
   const fetchData = async () => {
     try {
@@ -56,24 +51,20 @@ const Pendings: React.FC = () => {
   };
 
   const filteredData = useMemo(() => {
-    return (
-      rowData?.payload?.filter((item) => {
-        const valuesToSearch = [item.student.name ?? ''];
+  if (!searchText) return rowData?.payload || [];
+  if (!rowData?.payload) return []; 
 
-        return valuesToSearch.some((value) =>
-          value.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").includes(searchText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")),
-        );
-      }) || []
-    );
-  }, [rowData, searchText]);
+  const normalizedSearch = normalizeSearchText(searchText);
+
+  return rowData.payload.filter(item => 
+    normalizeText(item.student.name).includes(normalizedSearch)
+  );
+}, [rowData, searchText]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
-  }, [colorMode]);
 
   const opcionesRenderer = (params: any) => {
     return (
@@ -93,19 +84,6 @@ const Pendings: React.FC = () => {
     );
   };
 
- const localeText = {
-  loadingOoo: 'Cargando...',
-  noRowsToShow: 'No hay filas para mostrar',
-  page: 'Página',
-  of: 'de',
-  next: 'Siguiente',
-  previous: 'Anterior',
-  filterOoo: 'Filtrando...',
-  applyFilter: 'Aplicar filtro',
-  resetFilter: 'Reiniciar filtro',
-  searchOoo: 'Buscando...',
-};
-
   const columnDefs = useMemo(
     () => [
       { field: 'student.name', headerName: 'Estudiante' },
@@ -124,20 +102,26 @@ const Pendings: React.FC = () => {
         field: 'min_due_date',
         headerName: 'Mes mín. pte.',
         valueFormatter: (params: any) =>
-          formatDateFlexible(new Date(params.value + "T00:00:00-06:00").toString(), {
-            type: 'month-year',
-            withTimezoneOffset: true,
-          }),
+          formatDateFlexible(
+            new Date(params.value + 'T00:00:00-06:00').toString(),
+            {
+              type: 'month-year',
+              withTimezoneOffset: true,
+            },
+          ),
       },
 
       {
         field: 'max_due_date',
         headerName: 'Mes máx. pte.',
         valueFormatter: (params: any) =>
-          formatDateFlexible(new Date(params.value + "T00:00:00-06:00").toString(), {
-            type: 'month-year',
-            withTimezoneOffset: true,
-          }),
+          formatDateFlexible(
+            new Date(params.value + 'T00:00:00-06:00').toString(),
+            {
+              type: 'month-year',
+              withTimezoneOffset: true,
+            },
+          ),
       },
       {
         field: 'opciones',
@@ -145,17 +129,6 @@ const Pendings: React.FC = () => {
         cellRenderer: opcionesRenderer,
       },
     ],
-    [],
-  );
-
-  const defaultColDef = useMemo(
-    () => ({
-      sortable: true,
-      resizable: true,
-
-      flex: 1,
-      minWidth: 100,
-    }),
     [],
   );
 

@@ -1,6 +1,6 @@
 import background from '../../images/background/background1.webp';
 import { useState } from 'react';
-import { useAuth } from '../../utils/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import useToast from '../../hooks/useToast';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
@@ -53,7 +53,7 @@ const SignIn: React.FC = () => {
       }
 
       await login();
-      showSuccess('Inicio de sesión correctamente','');
+      showSuccess('Inicio de sesión correctamente', '');
       navigate('/');
     } catch (error) {
       console.error('Error en la solicitud:', error);
@@ -68,9 +68,12 @@ const SignIn: React.FC = () => {
   return (
     <>
       <div className="flex h-screen items-center mx-4">
-        <motion.div initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2, delay: 0.3 }} className="rounded-sm border border-stroke bg-white shadow-default">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.3 }}
+          className="rounded-sm border border-stroke bg-white shadow-default"
+        >
           <div className="flex flex-wrap items-center">
             <div className="hidden w-full xl:block xl:w-1/2">
               <img className="" src={background} alt="background" />

@@ -1,13 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AllCommunityModule,
-  ModuleRegistry,
-  colorSchemeLightCold,
-  colorSchemeDarkBlue,
-  themeQuartz,
+  ModuleRegistry
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import useColorMode from '../../hooks/useColorMode';
 import { FaDollarSign, FaMoneyBillWave } from 'react-icons/fa6';
 import CardDataStats from '../../components/Cards/CardDataStats';
 import { Transaction } from '../../types/transaction';
@@ -16,20 +12,19 @@ import { Aggregate } from '../../types/aggregate';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { formatDateFlexible } from '../../utils/formatDateflexible';
 import { useNavigate } from 'react-router-dom';
+import { useAgGridConfig } from '../../hooks/useAgGridConfig';
+import { normalizeSearchText, normalizeText } from '../../utils/normalizeText';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
-const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
-const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
 const Transactions: React.FC = () => {
-  const [colorMode] = useColorMode();
   const gridRef = useRef<AgGridReact<any> | null>(null);
-  const [theme, setTheme] = useState(themeLightCold);
   const [rowData, setRowData] = useState<Aggregate>();
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
   const [filterParam, setFilterParam] = useState<string>('');
   const navigate = useNavigate();
+  const { theme, defaultColDef, localeText } = useAgGridConfig();
 
   const fetchData = async () => {
     try {
@@ -55,10 +50,6 @@ const Transactions: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, [filterParam]);
-
-  useEffect(() => {
-    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
-  }, [colorMode]);
 
   const columnDefs = useMemo(
     () => [
@@ -99,44 +90,23 @@ const Transactions: React.FC = () => {
     [],
   );
 
-  const defaultColDef = useMemo(
-    () => ({
-      sortable: true,
-      resizable: true,
 
-      flex: 1,
-      minWidth: 100,
-    }),
-    [],
-  );
+ const filteredData = useMemo(() => {
+  if (!searchText) return rowData?.payload ?? [];
+  if (!rowData?.payload) return [];
 
-  const filteredData = useMemo(() => {
-    return (
-      rowData?.payload?.filter((item: Transaction) => {
-        const valuesToSearch = [
-          item.student?.name ?? '',
-          item.fee?.label ?? '',
-        ];
+  const normalizedSearch = normalizeSearchText(searchText);
 
-        return valuesToSearch.some((value) =>
-          value.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").includes(searchText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")),
-        );
-      }) ?? []
-    );
-  }, [rowData, searchText]);
+  return rowData.payload.filter((item: Transaction) => {
+    const studentName = normalizeText(item.student?.name);
+    const feeLabel = normalizeText(item.fee?.label);
+    
+    return studentName.includes(normalizedSearch) || 
+           feeLabel.includes(normalizedSearch);
+  });
+}, [rowData, searchText]);
 
-  const localeText = {
-  loadingOoo: 'Cargando...',
-  noRowsToShow: 'No hay filas para mostrar',
-  page: 'Página',
-  of: 'de',
-  next: 'Siguiente',
-  previous: 'Anterior',
-  filterOoo: 'Filtrando...',
-  applyFilter: 'Aplicar filtro',
-  resetFilter: 'Reiniciar filtro',
-  searchOoo: 'Buscando...',
-};
+
 
   return (
     <>

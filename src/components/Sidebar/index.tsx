@@ -9,7 +9,7 @@ import {
   FaBook,
 } from 'react-icons/fa6';
 import { FaStar } from 'react-icons/fa';
-import { useAuth } from '../../utils/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
   sidebarOpen: boolean;

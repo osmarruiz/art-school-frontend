@@ -1,35 +1,26 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  AllCommunityModule,
-  ModuleRegistry,
-  colorSchemeLightCold,
-  colorSchemeDarkBlue,
-  themeQuartz,
-} from 'ag-grid-community';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import useColorMode from '../../hooks/useColorMode';
 import { FaStar } from 'react-icons/fa6';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
 import clsx from 'clsx';
 import { FaSearch } from 'react-icons/fa';
 import CardDataStats from '../../components/Cards/CardDataStats';
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import { Course } from '../../types/course';
 import { Shift } from '../../types/shift';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { useAgGridConfig } from '../../hooks/useAgGridConfig';
+import { normalizeSearchText, normalizeText } from '../../utils/normalizeText';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
-const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
-
 const Disciplines: React.FC = () => {
-  const [colorMode] = useColorMode();
   const gridRef = useRef<AgGridReact<any> | null>(null);
-  const [theme, setTheme] = useState(themeLightCold);
   const [rowData, setRowData] = useState<Course[]>([]);
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(true);
+  const { theme, defaultColDef, localeText } = useAgGridConfig();
 
   const fetchData = async () => {
     try {
@@ -53,26 +44,22 @@ const Disciplines: React.FC = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
-  }, [colorMode]);
-
   const getShiftsAsString = (shifts: Shift[] | null): string => {
     if (!shifts || shifts.length === 0) return '';
     return shifts.map((s) => s.name).join(', ');
   };
 
   const filteredData = useMemo(() => {
+    if (!searchText) return rowData; // Si no hay búsqueda, devuelve todos los datos
+
+    const normalizedSearch = normalizeSearchText(searchText);
+
     return rowData.filter((item) => {
       const shifts = getShiftsAsString(item.shifts);
-      const valuesToSearch = [
-        item.name ?? '',
-        shifts ?? '',
-        item.type.name ?? '',
-      ];
+      const valuesToSearch = [item.name, shifts, item.type.name];
 
       return valuesToSearch.some((value) =>
-        value.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").includes(searchText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")),
+        normalizeText(value).includes(normalizedSearch),
       );
     });
   }, [rowData, searchText]);
@@ -262,29 +249,6 @@ const Disciplines: React.FC = () => {
     ],
     [],
   );
-
-  const defaultColDef = useMemo(
-    () => ({
-      sortable: true,
-      resizable: true,
-      flex: 1,
-      minWidth: 100,
-    }),
-    [],
-  );
-
-  const localeText = {
-  loadingOoo: 'Cargando...',
-  noRowsToShow: 'No hay filas para mostrar',
-  page: 'Página',
-  of: 'de',
-  next: 'Siguiente',
-  previous: 'Anterior',
-  filterOoo: 'Filtrando...',
-  applyFilter: 'Aplicar filtro',
-  resetFilter: 'Reiniciar filtro',
-  searchOoo: 'Buscando...',
-};
 
   return (
     <>

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { colorVariants } from '../../utils/colorVariants';
+import { colorVariants } from '../../../utils/colorVariants';
 
 interface ActionButtonProps {
   icon: React.ReactNode;
