@@ -5,17 +5,17 @@ import { FaAddressBook, FaEye } from 'react-icons/fa';
 import { FaWallet, FaRepeat } from 'react-icons/fa6';
 
 const Operator: React.FC = () => {
-  const [mensaje, setMensaje] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const horaActual = new Date().getHours();
 
     if (horaActual >= 5 && horaActual < 12) {
-      setMensaje('¡Buenos días! ☀️');
+      setMessage('¡Buenos días! ☀️');
     } else if (horaActual >= 12 && horaActual < 18) {
-      setMensaje('¡Buenas tardes! 🌤️');
+      setMessage('¡Buenas tardes! 🌤️');
     } else {
-      setMensaje('¡Buenas noches! 🌙');
+      setMessage('¡Buenas noches! 🌙');
     }
   }, []);
 
@@ -26,7 +26,7 @@ const Operator: React.FC = () => {
           <div className=" mb-4 flex items-end justify-between">
             <div>
               <h4 className="text-title-md font-bold text-black dark:text-white">
-                {mensaje}
+                {message}
               </h4>
               <span className="text-s font-medium">
                 Selecciona cualquiera de las siguientes operaciones

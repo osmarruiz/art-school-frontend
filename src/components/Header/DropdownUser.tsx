@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user.png';
-import { useAuth } from '../../utils/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import clsx from 'clsx';
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import { FaArrowLeft } from 'react-icons/fa6';
 
 interface CardDataStatsProps {

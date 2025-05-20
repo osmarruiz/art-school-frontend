@@ -3,9 +3,9 @@ import {
   revokeReceipt,
   addReceipt,
   revokeTransaction,
-} from '../utils/transactionAction';
-import { API_KEY, API_URL } from './apiConfig';
-import { Fee } from '../types/fee';
+} from '../../utils/transactionActionApi';
+import { API_KEY, API_URL } from '../../utils/apiConfig';
+import { Fee } from '../../types/fee';
 
 export const revokeReceiptButton = async (
   receipt_id: number,

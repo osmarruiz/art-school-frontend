@@ -3,19 +3,15 @@ import { Tutor } from '../../types/tutor';
 import {
   AllCommunityModule,
   ModuleRegistry,
-  colorSchemeLightCold,
-  colorSchemeDarkBlue,
-  themeQuartz,
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import useColorMode from '../../hooks/useColorMode';
 import { motion } from 'framer-motion';
 import { FaSearch } from 'react-icons/fa';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
+import { useAgGridConfig } from '../../hooks/useAgGridConfig';
+import { normalizeText } from '../../utils/normalizeText';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
-const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
-const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
 interface TabletTutorProps {
   onSelect: (tutor: Tutor) => void;
@@ -26,8 +22,7 @@ const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const gridRef = useRef<AgGridReact<any> | null>(null);
-  const [colorMode] = useColorMode();
-  const [theme, setTheme] = useState(themeLightCold);
+  const { theme, defaultColDef, localeText } = useAgGridConfig();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,16 +47,18 @@ const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
     fetchData();
   }, []);
 
-  const filteredStudents = tutorData.filter(
-    (tutor) =>
-      tutor.name.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").includes(searchTerm.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ")) ||
-      tutor.id_card != null && tutor.id_card.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredTutors = tutorData.filter((tutor) => {
+  const normalizedSearch = normalizeText(searchTerm);
+  const normalizedName = normalizeText(tutor.name);
+  const normalizedIdCard = tutor.id_card ? normalizeText(tutor.id_card) : null;
+
+  return (
+    normalizedName.includes(normalizedSearch) ||
+    (normalizedIdCard && normalizedIdCard.includes(normalizedSearch))
   );
+});
 
-  useEffect(() => {
-    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
-  }, [colorMode]);
-
+ 
   const columnDefs = useMemo(
     () => [
       { field: 'name', headerName: 'Nombre' },
@@ -70,28 +67,6 @@ const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
     [],
   );
 
-  const defaultColDef = useMemo(
-    () => ({
-      sortable: true,
-      resizable: true,
-      flex: 1,
-      minWidth: 100,
-    }),
-    [],
-  );
-
-  const localeText = {
-  loadingOoo: 'Cargando...',
-  noRowsToShow: 'No hay filas para mostrar',
-  page: 'Página',
-  of: 'de',
-  next: 'Siguiente',
-  previous: 'Anterior',
-  filterOoo: 'Filtrando...',
-  applyFilter: 'Aplicar filtro',
-  resetFilter: 'Reiniciar filtro',
-  searchOoo: 'Buscando...',
-};
 
   return (
     <motion.div
@@ -118,7 +93,7 @@ const TabletTutor: React.FC<TabletTutorProps> = ({ onSelect }) => {
           columnDefs={columnDefs}
           localeText={localeText}
           defaultColDef={defaultColDef}
-          rowData={filteredStudents}
+          rowData={filteredTutors}
           loading={loading}
           onRowClicked={(event) => onSelect(event.data)}
           rowStyle={{ cursor: 'pointer' }}

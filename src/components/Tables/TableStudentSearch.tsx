@@ -1,23 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Student } from '../../types/student';
-import {
-  AllCommunityModule,
-  ModuleRegistry,
-  colorSchemeLightCold,
-  colorSchemeDarkBlue,
-  themeQuartz,
-} from 'ag-grid-community';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import useColorMode from '../../hooks/useColorMode';
 import { motion } from 'framer-motion';
 import { FaSearch } from 'react-icons/fa';
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import clsx from 'clsx';
 import { API_URL, API_KEY } from '../../utils/apiConfig';
 import { formatDateFlexible } from '../../utils/formatDateflexible';
+import { useAgGridConfig } from '../../hooks/useAgGridConfig';
+import { normalizeText } from '../../utils/normalizeText';
+
 ModuleRegistry.registerModules([AllCommunityModule]);
-const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
-const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
 interface TabletStudentProps {
   onSelect: (student: Student) => void;
@@ -32,8 +26,7 @@ const TabletStudentSearch: React.FC<TabletStudentProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const gridRef = useRef<AgGridReact<any> | null>(null);
-  const [colorMode] = useColorMode();
-  const [theme, setTheme] = useState(themeLightCold);
+  const { theme, defaultColDef, localeText } = useAgGridConfig();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,57 +60,13 @@ const TabletStudentSearch: React.FC<TabletStudentProps> = ({
   }, []);
 
   const filteredStudents = studentData.filter((student) => {
-    const name =
-      student?.name
-        ?.toLowerCase()
-        .trim()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, ' ') || '';
-    const idCard =
-      student?.id_card
-        ?.toLowerCase()
-        .trim()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, ' ') || '';
-    const coursesString =
-      student?.coursesString
-        ?.toLowerCase()
-        .trim()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, ' ') || '';
+    const searchTermNormalized = normalizeText(searchTerm);
 
-    return (
-      name.includes(
-        searchTerm
-          .toLowerCase()
-          .trim()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/\s+/g, ' '),
-      ) ||
-      idCard.includes(
-        searchTerm
-          .toLowerCase()
-          .trim()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/\s+/g, ' '),
-      ) ||
-      coursesString.includes(
-        searchTerm
-          .toLowerCase()
-          .trim()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/\s+/g, ' '),
-      )
+    return [student.name, student.id_card, student.coursesString].some(
+      (field) => normalizeText(field).includes(searchTermNormalized),
     );
   });
 
- 
   const columnDefs = useMemo(
     () => [
       { field: 'id', headerName: 'ID' },
@@ -152,34 +101,6 @@ const TabletStudentSearch: React.FC<TabletStudentProps> = ({
     [],
   );
 
-   useEffect(() => {
-    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
-  }, [colorMode]);
-
-  
-  const defaultColDef = useMemo(
-    () => ({
-      sortable: true,
-      resizable: true,
-      flex: 1,
-      minWidth: 100,
-    }),
-    [],
-  );
-
-  const localeText = {
-    loadingOoo: 'Cargando...',
-    noRowsToShow: 'No hay filas para mostrar',
-    page: 'Página',
-    of: 'de',
-    next: 'Siguiente',
-    previous: 'Anterior',
-    filterOoo: 'Filtrando...',
-    applyFilter: 'Aplicar filtro',
-    resetFilter: 'Reiniciar filtro',
-    searchOoo: 'Buscando...',
-  };
-
   return (
     <motion.div
       animate={{ scale: [0.9, 1] }}
@@ -192,7 +113,7 @@ const TabletStudentSearch: React.FC<TabletStudentProps> = ({
         </span>
         <input
           type="text"
-          placeholder="Busca un estudiante para continuar..."
+          placeholder="Busca un estudiante para continuar (nombre, cédula o curso)"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className={clsx(

@@ -4,11 +4,11 @@ import 'moment/locale/es';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { Transaction } from '../../types/transaction';
 import useToast from '../../hooks/useToast';
-import { finishTransaction } from '../../utils/transactionAction';
+import { finishTransaction } from '../../utils/transactionActionApi';
 import {
   revokeTransactionButton,
   addReceiptButton,
-} from '../../utils/actionButton';
+} from '../../components/buttons/TransactionButtons';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import TransactionCard from './TransactionCard';
@@ -99,7 +99,6 @@ const CardTransaction: React.FC<TransactionListProps> = ({
   );
 
   // Column definitions
-  
 
   const memoizedReload = useCallback(async () => {
     await reloadTransactions();

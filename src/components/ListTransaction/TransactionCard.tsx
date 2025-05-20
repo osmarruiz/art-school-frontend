@@ -11,7 +11,7 @@ import {
   FaEye,
 } from 'react-icons/fa6';
 import { formatCurrency } from '../../utils/formatCurrency';
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import clsx from 'clsx';
 import ActionButton from './ActionButton';
 

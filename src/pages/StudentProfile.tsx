@@ -12,9 +12,9 @@ import useColorMode from '../hooks/useColorMode';
 import { useParams } from 'react-router-dom';
 import { API_KEY, API_URL } from '../utils/apiConfig';
 import Swal from 'sweetalert2';
-import { useAuth } from '../utils/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { colorVariants } from '../types/colorVariants';
+import { colorVariants } from '../utils/colorVariants';
 import clsx from 'clsx';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { Student } from '../types/student';
@@ -132,7 +132,6 @@ const StudentProfile: React.FC = () => {
     },
     { label: 'Ciudad', value: studentData?.city || '—' },
     { label: 'Dirección', value: studentData?.address || '—' },
-    
   ];
 
   let tutorData: DataItem[] = [];
@@ -941,83 +940,83 @@ const StudentProfile: React.FC = () => {
               colorVariants['white'].icon,
             )}
           >
-            <div className='h-[240px]'>
-            <h3 className="text-2xl font-semibold mb-4">Datos Académicos</h3>
-            {academicData.map((item) => (
-              <div
-                key={item.label}
-                className="grid grid-cols-2 gap-y-4 text-lg"
-              >
-                <dt className="font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {item.label}
-                </dt>
-                <dd className="text-gray-600 dark:text-gray-400">
-                  {item.value}
-                </dd>
-              </div>
-            ))}
+            <div className="h-[240px]">
+              <h3 className="text-2xl font-semibold mb-4">Datos Académicos</h3>
+              {academicData.map((item) => (
+                <div
+                  key={item.label}
+                  className="grid grid-cols-2 gap-y-4 text-lg"
+                >
+                  <dt className="font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    {item.label}
+                  </dt>
+                  <dd className="text-gray-600 dark:text-gray-400">
+                    {item.value}
+                  </dd>
+                </div>
+              ))}
             </div>
             {user?.role === 'admin' && (
               <>
-              <div className='items-end'>
-                <hr className="mt-3 mb-3" />
-                <div>
-                  <label className="block text-2xl dark:text-white mb-3">
-                    Editar datos personales
-                  </label>
-                  <Switcher
-                    enabled={switcherPersonalEnabled}
-                    onToggle={setSwitcherPersonalEnabled}
-                    labelId="togglePersonal"
-                  />
-                </div>
-
-                {switcherPersonalEnabled && (
-                  <>
-                    <FormStudentEdit
-                      preload={studentData}
-                      onStudentChange={(updated: any) =>
-                        setStudentData((prev) => ({ ...prev, ...updated }))
-                      }
+                <div className="items-end">
+                  <hr className="mt-3 mb-3" />
+                  <div>
+                    <label className="block text-2xl dark:text-white mb-3">
+                      Editar datos personales
+                    </label>
+                    <Switcher
+                      enabled={switcherPersonalEnabled}
+                      onToggle={setSwitcherPersonalEnabled}
+                      labelId="togglePersonal"
                     />
-                    <button
-                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline me-3 mt-3"
-                      onClick={() => {
-                        Swal.fire({
-                          title: '¿Estás seguro?',
-                          text: 'Los cursos del estudiante serán modificados. El pago total de las transacciones no será modificado al alterar los cursos, es posible que tengas que revocar las transacciones de mensualidad para evitar incoherencias.',
-                          icon: 'warning',
-                          showCancelButton: true,
-                          confirmButtonText: 'Continuar',
-                          cancelButtonText: 'Cancelar',
-                          customClass: {
-                            popup:
-                              'bg-white text-black dark:bg-boxdark-2 dark:text-white',
-                            confirmButton:
-                              'bg-yellow-500 text-white dark:bg-boxdark dark:text-white',
-                            cancelButton:
-                              'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
-                          },
-                        }).then((result) => {
-                          if (result.isConfirmed) {
-                            (async () => {
-                              try {
-                                await handleSaveChanges();
-                              } catch (error) {
-                                console.error(
-                                  'Error al actualizar los cursos:',
-                                  error,
-                                );
-                              }
-                            })();
-                          }
-                        });
-                      }}
-                    >
-                      Guardar
-                    </button>
-                  </>
-                )}
+                  </div>
+
+                  {switcherPersonalEnabled && (
+                    <>
+                      <FormStudentEdit
+                        preload={studentData}
+                        onStudentChange={(updated: any) =>
+                          setStudentData((prev) => ({ ...prev, ...updated }))
+                        }
+                      />
+                      <button
+                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline me-3 mt-3"
+                        onClick={() => {
+                          Swal.fire({
+                            title: '¿Estás seguro?',
+                            text: 'Los cursos del estudiante serán modificados. El pago total de las transacciones no será modificado al alterar los cursos, es posible que tengas que revocar las transacciones de mensualidad para evitar incoherencias.',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Continuar',
+                            cancelButtonText: 'Cancelar',
+                            customClass: {
+                              popup:
+                                'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                              confirmButton:
+                                'bg-yellow-500 text-white dark:bg-boxdark dark:text-white',
+                              cancelButton:
+                                'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                            },
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              (async () => {
+                                try {
+                                  await handleSaveChanges();
+                                } catch (error) {
+                                  console.error(
+                                    'Error al actualizar los cursos:',
+                                    error,
+                                  );
+                                }
+                              })();
+                            }
+                          });
+                        }}
+                      >
+                        Guardar
+                      </button>
+                    </>
+                  )}
                 </div>
               </>
             )}

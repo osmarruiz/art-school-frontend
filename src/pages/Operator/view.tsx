@@ -3,7 +3,7 @@ import { FaWallet } from 'react-icons/fa6';
 import CardOperator from '../../components/Cards/CardOperator';
 import TabletStudentSearch from '../../components/Tables/TableStudentSearch';
 import { Student } from '../../types/student';
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import clsx from 'clsx';
 
 import { useNavigate } from 'react-router-dom';

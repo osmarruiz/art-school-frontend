@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import clsx from 'clsx';
 
 interface CardDataStatsProps {

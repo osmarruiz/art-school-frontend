@@ -1,4 +1,4 @@
-import { colorVariants } from '../../types/colorVariants';
+import { colorVariants } from '../../utils/colorVariants';
 import { clsx } from 'clsx';
 import { FaArrowLeft } from 'react-icons/fa';
 import { motion } from 'framer-motion';
