@@ -17,7 +17,7 @@ const FormStudent = ({
   const [studentData, setStudentData] = useState({
     id_card: '',
     name: '',
-    enrollment_date: new Date().toLocaleDateString(),
+    enrollment_date: new Date().toISOString().split('T')[0],
     date_of_birth: '',
     email: '',
     city: '',
