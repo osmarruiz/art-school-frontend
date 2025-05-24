@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { colorVariants } from '../../utils/colorVariants';
 import Switcher from '../../components/Forms/Switcher/Switcher';
 import FormStudentEdit from '../../components/Forms/FormStudentEdit';
@@ -11,6 +11,13 @@ import processCourseChanges from '../../utils/processCourseChanges';
 import FormCourse from '../../components/Forms/FormCourse';
 import { API_KEY, API_URL } from '../../utils/apiConfig';
 import  useToast  from '../../hooks/useToast';
+import { FaX } from 'react-icons/fa6';
+import TableTutorSearch from '../../components/Tables/TableTutorSearch';
+import CardTutor from '../../components/Cards/CardTutor';
+import { Kinship } from '../../types/kinship';
+import { Tutor } from '../../types/tutor';
+import SelectGroup from '../../components/Forms/SelectGroup/SelectGroup';
+import FormTutorEdit from '../../components/Forms/FormTutorEdit';
 
 interface ListCardsInfoProps {
   studentData: Student;
@@ -33,6 +40,12 @@ const ListCardsInfo: React.FC<ListCardsInfoProps> = ({
   const [switcherTutorEnabled, setSwitcherTutorEnabled] = useState(false);
   const [switcherAcademicEnabled, setSwitcherAcademicEnabled] = useState(false);
   const { showSuccess, showError } = useToast();
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedTutor, setSelectedTutor] = useState<any>(null);
+  const [kinshipData, setKinshipData] = useState<Kinship[]>([]);
+  const [editedTutor, setEditedTutor] = useState<Tutor | null>(
+    studentData?.tutor || null,
+  );
   const [studentDataUpdated, setStudentDataUpdated] = useState<Student>({
     ...studentData,
   });
@@ -157,6 +170,52 @@ const ListCardsInfo: React.FC<ListCardsInfoProps> = ({
     }
   };
 
+  const handleEditedTutor = (updatedTutor: Tutor) => {
+    setEditedTutor(updatedTutor);
+  };
+
+  const updateTutorData = async () => {
+    if (!studentData || !editedTutor) {
+      showError('No hay datos de tutor para actualizar');
+      return;
+    }
+
+    const payload = {
+      student_id: studentData.id,
+      tutor: {
+        name: editedTutor.name,
+        email: editedTutor.email,
+        phone_number: editedTutor.phone_number,
+        city: editedTutor.city,
+        address: editedTutor.address,
+      },
+    };
+
+    try {
+      const response = await fetch(`${API_URL}/students.update`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          Authorization: API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.status === 204) {
+        showSuccess('Tutor actualizado correctamente');
+        navigate(`/student/${studentData.id}`);
+        return true;
+      }
+
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    } catch (error) {
+      console.error('Error al actualizar tutor:', error);
+      showError('Error al actualizar tutor');
+      return false;
+    }
+  };
+
   const prepareStudentUpdateData = (studentData: any) => {
     const {
       id,
@@ -186,6 +245,11 @@ const ListCardsInfo: React.FC<ListCardsInfoProps> = ({
       school_year,
     };
   };
+
+  const [selectTutorData, setSelectTutorData] = useState({
+    tutor_kinship: 0,
+    tutor_id: 0,
+  });
 
   const updateStudent = async (studentDataUpdated: Student) => {
     const updatePayload = prepareStudentUpdateData(studentDataUpdated);
@@ -256,6 +320,82 @@ const ListCardsInfo: React.FC<ListCardsInfoProps> = ({
         `Error al actualizar los datos ${section}.`);
     }
   };
+
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${API_URL}/students.kinship.list`, {
+            headers: {
+              Authorization: API_KEY,
+            },
+            credentials: 'include',
+          });
+          const data: Kinship[] = await response.json();
+          setKinshipData(data);
+        } catch (error) {
+          console.error('Error al obtener los datos', error);
+        }
+      };
+      fetchData();
+    }, []);
+  
+    const handleKinshipChange = (kinshipId: number) => {
+      setSelectTutorData((prevState) => ({
+        ...prevState,
+        tutor_kinship: kinshipId,
+      }));
+    };
+  
+    const handleTutorSelection = (tutor: Tutor) => {
+      setSelectTutorData((prevState) => ({
+        ...prevState,
+        tutor_id: tutor.id,
+      }));
+      setSelectedTutor(tutor);
+    };
+  
+    const updateTutor = async () => {
+      if (
+        !studentData ||
+        !selectTutorData.tutor_id ||
+        !selectTutorData.tutor_kinship
+      ) {
+        showError('Debe seleccionar tutor y parentesco');
+        return;
+      }
+
+      const payload = {
+        student_id: studentData.id,
+        tutor_id: selectTutorData.tutor_id,
+        tutor_kinship: selectTutorData.tutor_kinship,
+      };
+
+      try {
+        const response = await fetch(`${API_URL}/students.update`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            Authorization: API_KEY,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (response.status === 204) {
+          showSuccess('Tutor actualizado correctamente');
+          // Opcional: recargar o actualizar el estado con nuevo tutor
+          navigate(`/student/${studentData.id}`);
+          return true;
+        }
+
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      } catch (error) {
+        console.error('Error al actualizar tutor:', error);
+        showError('Error al actualizar tutor');
+        return false;
+      }
+    };
+
   
   return (
     <>
@@ -346,15 +486,133 @@ const ListCardsInfo: React.FC<ListCardsInfoProps> = ({
 
               {switcherTutorEnabled && (
                 <>
-                  <h1>holis</h1>
-                  <button
-                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline me-3 mt-3"
-                    onClick={() => {
-                      handleSaveChanges('tutor');
-                    }}
-                  >
-                    Guardar
-                  </button>
+                  {selectedOption === null ? (
+                    <div className="flex justify-center gap-2 xl:gap-7 m-7">
+                      <button type="button" className="hidden">
+                        hidden
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedOption('search')}
+                        className="inline-flex items-center justify-center py-4 px-10 text-black bg-white dark:text-white dark:bg-boxdark dark:hover:bg-black hover:bg-slate-100"
+                      >
+                        Cambiar tutor
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedOption('form')}
+                        className="inline-flex items-center justify-center py-4 px-10 text-black bg-white dark:text-white dark:bg-boxdark dark:hover:bg-black hover:bg-slate-100"
+                      >
+                        Editar tutor
+                      </button>
+                    </div>
+                  ) : selectedOption === 'search' ? (
+                    <>
+                      <div className="flex justify-end mb-4">
+                        <button
+                          onClick={() => {
+                            setSelectedOption(null);
+                          }}
+                          className={clsx(colorVariants['white'].btnSc)}
+                        >
+                          <FaX size={18} />
+                        </button>
+                      </div>
+
+                      {!selectedTutor ? (
+                        <TableTutorSearch onSelect={handleTutorSelection} />
+                      ) : (
+                        <CardTutor
+                          tutor={selectedTutor}
+                          onReset={() => {
+                            setSelectedTutor(null);
+                            setSelectTutorData({
+                              tutor_kinship: 0,
+                              tutor_id: 0,
+                            });
+                          }}
+                          color="white"
+                        />
+                      )}
+                      <SelectGroup
+                        title="Parentesco"
+                        placeholder="Selecciona un parentesco"
+                        kinship={kinshipData}
+                        onChange={(kinshipId) => handleKinshipChange(kinshipId)}
+                      />
+
+                      <button
+                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4"
+                        onClick={() => {
+                          Swal.fire({
+                            title: '¿Estás seguro?',
+                            text: 'Vas a cambiar el tutor del estudiante.',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Continuar',
+                            cancelButtonText: 'Cancelar',
+                            customClass: {
+                              popup:
+                                'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                              confirmButton:
+                                'bg-yellow-500 text-white dark:bg-boxdark dark:text-white',
+                              cancelButton:
+                                'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                            },
+                          }).then(async (result) => {
+                            if (result.isConfirmed) {
+                              await updateTutor();
+                            }
+                          });
+                        }}
+                      >
+                        Guardar Tutor
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-end mb-4">
+                        <button
+                          onClick={() => setSelectedOption(null)}
+                          className={clsx(colorVariants['white'].btnSc)}
+                        >
+                          <FaX size={18} />
+                        </button>
+                      </div>
+
+                      <FormTutorEdit
+                        initialData={studentData.tutor}
+                        onTutorChange={handleEditedTutor}
+                      />
+
+                      <button
+                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4"
+                        onClick={async () => {
+                          const result = await Swal.fire({
+                            title: '¿Estás seguro?',
+                            text: 'Vas a actualizar los datos del tutor.',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Continuar',
+                            cancelButtonText: 'Cancelar',
+                            customClass: {
+                              popup:
+                                'bg-white text-black dark:bg-boxdark-2 dark:text-white',
+                              confirmButton:
+                                'bg-yellow-500 text-white dark:bg-boxdark dark:text-white',
+                              cancelButton:
+                                'bg-blue-500 text-white dark:bg-boxdark dark:text-white',
+                            },
+                          });
+                          if (result.isConfirmed) {
+                            await updateTutorData();
+                          }
+                        }}
+                      >
+                        Guardar Cambios
+                      </button>
+                    </>
+                  )}
                 </>
               )}
             </>
