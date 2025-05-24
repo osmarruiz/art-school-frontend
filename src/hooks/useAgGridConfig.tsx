@@ -25,7 +25,7 @@ export const useAgGridConfig = () => {
 
   const localeText = useMemo(
     () => ({
-      loadingOoo: 'Cargando...',
+      loadingOoo: 'Cargando..',
       noRowsToShow: 'No hay filas para mostrar',
       page: 'Página',
       of: 'de',
