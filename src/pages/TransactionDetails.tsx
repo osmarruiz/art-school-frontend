@@ -1,13 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AllCommunityModule,
-  ModuleRegistry,
-  colorSchemeLightCold,
-  colorSchemeDarkBlue,
-  themeQuartz,
+  ModuleRegistry
 } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import useColorMode from '../hooks/useColorMode';
 import { useParams } from 'react-router-dom';
 import { API_KEY, API_URL } from '../utils/apiConfig';
 import { useAuth } from '../context/AuthContext';
@@ -23,10 +19,9 @@ import {
   revokeTransactionButton,
 } from '../components/buttons/TransactionButtons';
 import useToast from '../hooks/useToast';
+import { useAgGridConfig } from '../hooks/useAgGridConfig';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
-const themeLightCold = themeQuartz.withPart(colorSchemeLightCold);
-const themeDarkBlue = themeQuartz.withPart(colorSchemeDarkBlue);
 
 interface DataItem {
   label: string;
@@ -35,8 +30,6 @@ interface DataItem {
 
 const TransactionDetails: React.FC = () => {
   const { id } = useParams();
-  const [colorMode] = useColorMode();
-  const [theme, setTheme] = useState(themeLightCold);
   const [transactionData, setTransactionData] = useState<Transaction>();
   const [receiptsData, setReceiptsData] = useState<Transaction[]>();
   const [loading, setLoading] = useState(true);
@@ -44,6 +37,7 @@ const TransactionDetails: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
+  const { theme, defaultColDef, localeText } = useAgGridConfig();
 
   useEffect(() => {
     const fetchStudentInfo = async () => {
@@ -132,21 +126,6 @@ const TransactionDetails: React.FC = () => {
     { label: 'Descripción', value: transactionData?.fee.description },
   ];
 
-  useEffect(() => {
-    setTheme(colorMode === 'dark' ? themeDarkBlue : themeLightCold);
-  }, [colorMode]);
-
-  const defaultColDef = useMemo(
-    () => ({
-      sortable: true,
-      resizable: true,
-
-      flex: 1,
-      minWidth: 100,
-    }),
-    [],
-  );
-
   const finalizedGridRef = useRef<AgGridReact>(null);
   const finalizedColumnDefs = useMemo(
     () => [
@@ -210,19 +189,6 @@ const TransactionDetails: React.FC = () => {
     ],
     [revokeReceiptButton, transactionData],
   );
-
-  const localeText = {
-    loadingOoo: 'Cargando...',
-    noRowsToShow: 'No hay filas para mostrar',
-    page: 'Página',
-    of: 'de',
-    next: 'Siguiente',
-    previous: 'Anterior',
-    filterOoo: 'Filtrando...',
-    applyFilter: 'Aplicar filtro',
-    resetFilter: 'Reiniciar filtro',
-    searchOoo: 'Buscando...',
-  };
 
   if (!txFound) {
     return (

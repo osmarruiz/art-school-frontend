@@ -7,7 +7,7 @@ const useToast = () => {
   toast.custom(() => (
     <motion.div
       initial={{ x: 200, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
+      animate={{ x: -10, opacity: 1 }}
       className="flex w-full max-w-xs border-l-6 border-green-500 bg-white px-6 py-6 shadow-md dark:bg-boxdark md:p-7"
     >
       <div className="mr-4 flex h-9 w-9 items-center justify-center rounded-lg bg-green-500">
@@ -31,7 +31,7 @@ const useToast = () => {
   toast.custom(() => (
     <motion.div
       initial={{ x: 200, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
+      animate={{ x: -10, opacity: 1 }}
       className="flex w-full max-w-xs border-l-6 border-red-600 bg-white px-6 py-6 shadow-md dark:bg-boxdark md:p-7"
     >
       <div className="mr-4 flex h-9 w-9 items-center justify-center rounded-lg bg-red-600">

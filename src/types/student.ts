@@ -21,6 +21,7 @@ export interface Student {
   is_active: boolean;
   registered_at: Date;
   updated_at: string;
+  tutor_id: number;
   tutor: Tutor;
   tutor_kinship: {id: number; name: string};
   enrollment: Enrollment;

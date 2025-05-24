@@ -20,7 +20,7 @@ import Pendings from './pages/Admin/Pendings';
 import PrivateRoute from './routes/PrivateRoute';
 import ProtectedRoute from './routes/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
-import StudentProfile from './pages/StudentProfile';
+import StudentProfile from './pages/StudentProfile/StudentProfile';
 import View from './pages/Operator/view';
 import TransactionDetails from './pages/TransactionDetails';
 

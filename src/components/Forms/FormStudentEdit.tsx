@@ -1,54 +1,48 @@
 import { useEffect, useState } from 'react';
 import DatePickerOne from './DatePicker/DatePicker';
-import { Enrollment } from '../../types/enrollment';
+import { Student } from '../../types/student';
 
-type StudentData = {
-  id_card: string;
-  date_of_birth: string;
-  email: string;
-  phone_number: string;
-  enrollment: Enrollment;
-  city: string;
-  address: string;
+type StudentFormProps = {
+  studentData: Student;
+  onStudentChange: (updatedData: Partial<Student>) => void;
 };
 
 const FormStudentEdit = ({
-  preload,
+  studentData,
   onStudentChange,
-}: {
-  preload?: StudentData;
-  onStudentChange: (updated: StudentData) => void;
-}) => {
-  const [studentData, setStudentData] = useState<StudentData>({
-    id_card: '',
-    date_of_birth: '',
-    email: '',
-    phone_number: '',
-    enrollment: {} as Enrollment,
-    city: '',
-    address: '',
+}: StudentFormProps) => {
+  const [formData, setFormData] = useState({
+    id_card: studentData.id_card || '',
+    date_of_birth: studentData.date_of_birth || '',
+    email: studentData.email || '',
+    phone_number: studentData.phone_number || '',
+    city: studentData.city || '',
+    address: studentData.address || '',
+    emergency_number: studentData.enrollment.emergency_number || '',
   });
 
-  // Inicializar datos desde preload si existe
+  // Sincronizar cuando cambian los props
   useEffect(() => {
-    if (preload) {
-      console.log('Preload data:', preload);
-      setStudentData(preload);
-    }
-  }, [preload]);
+    setFormData({
+      id_card: studentData.id_card || '',
+      date_of_birth: studentData.date_of_birth || '',
+      email: studentData.email || '',
+      phone_number: studentData.phone_number || '',
+      city: studentData.city || '',
+      address: studentData.address || '',
+      emergency_number: studentData.enrollment.emergency_number || '',
+    });
+  }, [studentData]);
 
   const formatIdCard = (input: string) => {
     let cleaned = input.replace(/[^0-9a-zA-Z]/g, '');
-
     if (cleaned.length > 0 && /[a-zA-Z]/.test(cleaned[cleaned.length - 1])) {
       cleaned =
         cleaned.slice(0, -1) + cleaned[cleaned.length - 1].toUpperCase();
     }
-
     if (cleaned.length >= 13) {
       return cleaned.replace(/^(\d{3})(\d{6})(\d{4})([a-zA-Z])$/, '$1-$2-$3$4');
     }
-
     return cleaned.replace(/^(\d{3})(\d{6})(\d{4})$/, '$1$2$3');
   };
 
@@ -59,29 +53,37 @@ const FormStudentEdit = ({
     return `+505 ${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
   };
 
-  const handleChange = (
+  const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     const formattedValue =
       name === 'id_card'
         ? formatIdCard(value)
-        : name === 'phone_number'
-        ? formatPhone(value)
-        : value;
+        : name === 'phone_number' || name === 'emergency_number'
+          ? formatPhone(value)
+          : value;
 
-    const updated = { ...studentData, [name]: formattedValue };
-    setStudentData(updated);
-    onStudentChange(updated);
+    const updated = { ...formData, [name]: formattedValue };
+    setFormData(updated);
+
+    // Notificar cambios al componente padre
+    if (name === 'emergency_number') {
+      onStudentChange({
+        enrollment: {
+          ...studentData.enrollment,
+          emergency_number: formattedValue,
+        },
+      });
+    } else {
+      onStudentChange({ [name]: formattedValue });
+    }
   };
 
   const handleDateChange = (date: Date | null) => {
-    const updated = {
-      ...studentData,
-      date_of_birth: date ? date.toISOString().split('T')[0] : '',
-    };
-    setStudentData(updated);
-    onStudentChange(updated);
+    const dateValue = date ? date.toISOString().split('T')[0] : '';
+    setFormData((prev) => ({ ...prev, date_of_birth: dateValue }));
+    onStudentChange({ date_of_birth: dateValue });
   };
 
   return (
@@ -98,8 +100,8 @@ const FormStudentEdit = ({
           <input
             type="text"
             name="id_card"
-            value={studentData.id_card || ''}
-            onChange={handleChange}
+            value={formData.id_card}
+            onChange={handleInputChange}
             maxLength={16}
             placeholder="Ej: 0001111112222A"
             className="w-full rounded border border-gray-300 py-2 px-4 dark:border-form-strokedark dark:bg-form-input dark:text-white"
@@ -113,7 +115,7 @@ const FormStudentEdit = ({
           <DatePickerOne
             onDateChange={handleDateChange}
             name="date_of_birth"
-            value={studentData.date_of_birth || ''}
+            value={formData.date_of_birth}
           />
         </div>
 
@@ -124,8 +126,8 @@ const FormStudentEdit = ({
           <input
             type="email"
             name="email"
-            value={studentData.email}
-            onChange={handleChange}
+            value={formData.email}
+            onChange={handleInputChange}
             placeholder="Ingresa el correo"
             className="w-full rounded border border-gray-300 py-2 px-4 dark:border-form-strokedark dark:bg-form-input dark:text-white"
           />
@@ -138,21 +140,22 @@ const FormStudentEdit = ({
           <input
             type="tel"
             name="phone_number"
-            value={studentData.phone_number || ''}
-            onChange={handleChange}
+            value={formData.phone_number}
+            onChange={handleInputChange}
             placeholder="Ej: +505 1234-5678"
             className="w-full rounded border border-gray-300 py-2 px-4 dark:border-form-strokedark dark:bg-form-input dark:text-white"
           />
         </div>
+
         <div>
           <label className="block mb-1 text-black dark:text-white">
             Teléfono de emergencia
           </label>
           <input
             type="tel"
-            name="phone_number"
-            value={studentData.enrollment.emergency_number || ''}
-            onChange={handleChange}
+            name="emergency_number"
+            value={formData.emergency_number}
+            onChange={handleInputChange}
             placeholder="Ej: +505 1234-5678"
             className="w-full rounded border border-gray-300 py-2 px-4 dark:border-form-strokedark dark:bg-form-input dark:text-white"
           />
@@ -165,8 +168,8 @@ const FormStudentEdit = ({
           <input
             type="text"
             name="city"
-            value={studentData.city || ''}
-            onChange={handleChange}
+            value={formData.city}
+            onChange={handleInputChange}
             placeholder="Ciudad o departamento"
             className="w-full rounded border border-gray-300 py-2 px-4 dark:border-form-strokedark dark:bg-form-input dark:text-white"
           />
@@ -178,8 +181,8 @@ const FormStudentEdit = ({
           </label>
           <textarea
             name="address"
-            value={studentData.address || ''}
-            onChange={handleChange}
+            value={formData.address}
+            onChange={handleInputChange}
             rows={3}
             placeholder="Dirección completa"
             className="w-full rounded border border-gray-300 py-2 px-4 dark:border-form-strokedark dark:bg-form-input dark:text-white"
