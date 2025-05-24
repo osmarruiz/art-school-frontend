@@ -383,8 +383,8 @@ const Enrollment = ({
                       />
                     )}
                     <SelectGroup
-                      title="Parentezco"
-                      placeholder="Selecciona un parentezco"
+                      title="Parentesco"
+                      placeholder="Selecciona un parentesco"
                       kinship={kinshipData}
                       onChange={(kinshipId) => handleKinshipChange(kinshipId)}
                     />

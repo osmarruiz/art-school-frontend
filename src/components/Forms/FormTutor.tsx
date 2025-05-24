@@ -169,8 +169,8 @@ const FormTutor: React.FC<{
 
         <div className="mb-4.5">
           <SelectGroup
-            title="Parentezco"
-            placeholder="Selecciona un parentezco"
+            title="Parentesco"
+            placeholder="Selecciona un parentesco"
             kinship={kinship}
             onChange={(kinshipId) => handleKinshipChange(kinshipId)}
           />
