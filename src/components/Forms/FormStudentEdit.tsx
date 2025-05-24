@@ -92,6 +92,21 @@ const FormStudentEdit = ({
         Datos Personales
       </h2>
 
+      <div className="mb-4.5">
+        <label className="mb-2.5 block text-black dark:text-white">
+          Nombres y apellidos 
+        </label>
+        <input
+          type="text"
+          name="name"
+          value={studentData.name}
+          onChange={handleInputChange}
+          required
+          placeholder="Ingresa los nombres y apellidos"
+          className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block mb-1 text-black dark:text-white">
